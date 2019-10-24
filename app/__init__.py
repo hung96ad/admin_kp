@@ -12,6 +12,7 @@ from flask_admin import BaseView, expose
 
 from .views.mymodelview import MyModelView
 from .views.userview import UserView
+from .views.electionview import ElectionView
 
 
 # Create Flask application
@@ -21,6 +22,7 @@ db = SQLAlchemy(app)
 
 from .models.role import Role
 from .models.user import User
+from .models.election import Election
 
 # Setup Flask-Security
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
@@ -42,6 +44,7 @@ admin = flask_admin.Admin(
 # Add model views
 admin.add_view(MyModelView(Role, db.session, menu_icon_type='fa', menu_icon_value='fa-server', name="Roles"))
 admin.add_view(UserView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-users', name="Users"))
+admin.add_view(ElectionView(Election, db.session, menu_icon_type='fa', menu_icon_value='fa-server', name="Election"))
 # admin.add_view(CustomView(name="Custom view", endpoint='custom', menu_icon_type='fa', menu_icon_value='fa-connectdevelop',))
 
 # define a context processor for merging flask-admin's template context into the
