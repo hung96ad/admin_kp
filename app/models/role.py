@@ -1,6 +1,5 @@
 from app import db
 from flask_security import RoleMixin
-# db = SQLAlchemy()
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)

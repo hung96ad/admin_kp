@@ -10,8 +10,8 @@ from flask_admin.contrib import sqla
 from flask_admin import helpers as admin_helpers
 from flask_admin import BaseView, expose
 
-from views.mymodelview import MyModelView
-from views.userview import UserView
+from .views.mymodelview import MyModelView
+from .views.userview import UserView
 
 
 # Create Flask application
@@ -19,8 +19,8 @@ app = Flask(__name__)
 app.config.from_pyfile('../config.py')
 db = SQLAlchemy(app)
 
-from models.role import Role
-from models.user import User
+from .models.role import Role
+from .models.user import User
 
 # Setup Flask-Security
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
