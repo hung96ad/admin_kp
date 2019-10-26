@@ -12,4 +12,5 @@ class Election(db.Model):
     num_persons = db.Column(db.Integer(), nullable=False)
     min_persions = db.Column(db.Integer(), nullable=False)
     is_delete = db.Column(db.Boolean(), default=False)
+    image = db.Column(db.String(255), default='')
 

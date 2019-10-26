@@ -3,29 +3,55 @@
 {{ super() }}
 
 {% if current_user.is_authenticated %}
-
-<!-- Content Header (Page header) -->
-<section class="content-header">
-    <h1>
-      Quản lý bầu cử
-  </h1>
-  <h2 class="breadcrumb">
-    <a href="/admin/add" class="btn btn-sm btn-info btn-flat pull-left">Thêm cuộc bầu cử</a>
-  </h2>
-</section>
-
 <section class="content">
 
   <div class="row">
-    <section class="container">      
-      
+      <div class="col-sm-12">
+      <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">{% if admin_view.category %}{{ admin_view.category }} - {% endif %}{{ admin_view.name }}</h3>
+            </div>
+            <!-- form start -->
+            <form class="form-horizontal">
+              <div class="box-body">
+                
+                <div class="form-group">
+                  <label  class="col-sm-2 control-label" for="line_1">ID cuộc bầu cử</label>
+                  <div class="col-sm-10"> 
+                      <input type='number' class="form-control" id="line_1" placeholder="12">
+                    </div>
+                </div>
 
-    </section>
+                <div class="form-group">
+                  <label  class="col-sm-2 control-label" for="exampleInputFile">File ảnh</label>
+                  <div class="col-sm-10"> 
+                      <input type="file" id="exampleInputFile" accept="image/*">
+                    </div>
+                </div>
+
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary">Cập nhật</button>
+              </div>
+            </form>
+          </div>
+
 
   </div>
-
+</div>
 </section>
+<script>
 
+window.onload = (function () {
+    //Date picker
+    $('#datepicker').datepicker({
+      autoclose: true,
+    })
+
+  })
+</script>
 
 <!-- /.content -->
 {% else %}
@@ -55,6 +81,8 @@
                     <a class="btn btn-primary" href="/"><i class="glyphicon glyphicon-chevron-left"></i> Back</a>
                 </p>
             </div>
+
+            
         </section>
     </center>
 

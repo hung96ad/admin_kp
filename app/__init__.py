@@ -13,6 +13,10 @@ from flask_admin import BaseView, expose
 from .views.mymodelview import MyModelView
 from .views.userview import UserView
 from .views.electionview import ElectionView
+from .views.customview import CustomView
+from .views.add import AddView
+from .views.update import UpdateView
+
 
 
 # Create Flask application
@@ -42,10 +46,8 @@ admin = flask_admin.Admin(
 )
 
 # Add model views
-admin.add_view(MyModelView(Role, db.session, menu_icon_type='fa', menu_icon_value='fa-server', name="Roles"))
-admin.add_view(UserView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-users', name="Users"))
-admin.add_view(ElectionView(Election, db.session, menu_icon_type='fa', menu_icon_value='fa-server', name="Election"))
-# admin.add_view(CustomView(name="Custom view", endpoint='custom', menu_icon_type='fa', menu_icon_value='fa-connectdevelop',))
+admin.add_view(AddView(name="Thêm cuộc bầu cử", endpoint='add', menu_icon_type='fa', menu_icon_value='fa-calendar-plus-o',))
+admin.add_view(UpdateView(name="Thêm ảnh cuộc bầu cử", endpoint='update', menu_icon_type='fa', menu_icon_value='fa-edit (alias)',))
 
 # define a context processor for merging flask-admin's template context into the
 # flask-security views.

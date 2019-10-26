@@ -181,7 +181,7 @@
         {% block main_menu %}
         {{ layout.menu() }}
         {% endblock %}
-        <li>
+        <!-- <li>
           <a href="#">
             <i class="fa fa-envelope"></i> <span>Mailbox</span>
             <span class="pull-right-container">
@@ -190,8 +190,8 @@
               <small class="label pull-right bg-red">5</small>
             </span>
           </a>
-        </li>
-        <li class="treeview">
+        </li> -->
+        <!-- <li class="treeview">
           <a href="#">
             <i class="fa fa-share"></i> <span>Multilevel</span>
             <span class="pull-right-container">
@@ -223,7 +223,7 @@
             </li>
             <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
           </ul>
-        </li>
+        </li> -->
       </ul>
     </section>
     <!-- /.sidebar -->
@@ -446,9 +446,9 @@
 <script src="{{url_for('static',filename='js/app.min.js')}}"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{{url_for('static',filename='js/demo.js')}}"></script>
-{% if admin_view.name=="Home" %}
+<!-- {% if admin_view.name=="Home" %}
   <script src="{{url_for('static',filename='js/pages/dashboard.js')}}"></script>
-{% endif %}
+{% endif %} -->
 
 {% endblock tail_js%}
 
