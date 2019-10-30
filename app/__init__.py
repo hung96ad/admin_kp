@@ -16,7 +16,14 @@ from .views.electionview import ElectionView
 from .views.customview import CustomView
 from .views.add import AddView
 from .views.update import UpdateView
+import warnings
 
+def fxn():
+    warnings.warn("deprecated", DeprecationWarning)
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    fxn()
 
 
 # Create Flask application
@@ -37,6 +44,16 @@ security = Security(app, user_datastore)
 def index():
     return render_template('index.html')
 
+@app.route("/upload-file", methods=["GET", "POST"])
+def upload_file():
+    if request.method == "POST":
+        if request.files:
+            if "input_file" in request.files.keys():
+                file_data = request.files["input_file"]
+                file_data.save(file_data.filename)  
+                return redirect(request.url)
+
+    return render_template('index.html')
 # Create admin
 admin = flask_admin.Admin(
     app,
