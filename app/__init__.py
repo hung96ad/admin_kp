@@ -47,6 +47,8 @@ def index():
 @app.route("/upload-file", methods=["GET", "POST"])
 def upload_file():
     if request.method == "POST":
+        print(request.form.get('line_1'))
+
         if request.files:
             if "input_file" in request.files.keys():
                 file_data = request.files["input_file"]
