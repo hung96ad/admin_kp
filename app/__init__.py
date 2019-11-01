@@ -93,15 +93,15 @@ def upload_file():
 # Create admin
 admin = flask_admin.Admin(
     app,
-    'My Dashboard',
+    'Quản lý  bầu cử',
     base_template='my_master.html',
-    template_mode='bootstrap3',
+    template_mode='bootstrap3'
 )
 
 # Add model views
 admin.add_view(AddView(name="Thêm cuộc bầu cử", endpoint='add', menu_icon_type='fa', menu_icon_value='fa-calendar-plus-o',))
 admin.add_view(UpdateView(name="Thêm ảnh cuộc bầu cử", endpoint='update', menu_icon_type='fa', menu_icon_value='fa-edit (alias)',))
-
+admin.add_view(ElectionView(Election, db.session, menu_icon_type='fa', menu_icon_value='fa-server', name="Xem danh sách các cuộc bầu cử"))
 # define a context processor for merging flask-admin's template context into the
 # flask-security views.
 @security.context_processor
