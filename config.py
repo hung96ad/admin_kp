@@ -26,5 +26,5 @@ SECURITY_SEND_REGISTER_EMAIL = False
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # File upload
-EXCEL = "uploads/excels/"
+EXCEL = "app/static/uploads/excels/"
 IMAGE = "app/static/uploads/images/"

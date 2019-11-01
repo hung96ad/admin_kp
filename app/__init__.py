@@ -39,6 +39,7 @@ db = SQLAlchemy(app)
 from .models.role import Role
 from .models.user import User
 from .models.election import Election
+from .models.eletion_detail import Eletion_Detail
 
 # Setup Flask-Security
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
@@ -58,6 +59,7 @@ def upload_file():
         line_3 = request.form.get('line_3')
         line_4 = request.form.get('line_4')
         line = [line_1, line_2, line_3, line_4]
+        title = ' '.join(filter(None, line))
         min_persions = request.form.get('number')
         file_data = request.files["input_file"]
         file_data.filename = str(election_id) + ".xlsx"
@@ -70,6 +72,18 @@ def upload_file():
         ho_ten = ho_ten.sort_values(['Tên', 'Họ']).reset_index(drop=True)
         ho_ten['full_name'] = ho_ten['Họ'] + " " + ho_ten['Tên']
         image = gen_by_ho_ten(ho_ten['full_name'], election_id, line, app.config['IMAGE'])
+
+        # add vao db
+        objects = []
+        elec = Election(title = title, num_persons=ho_ten.shape[0], min_persions=min_persions, image=image, file=path_excel)
+        objects.append(elec)
+        
+        for i in range(ho_ten.shape[0]):
+            ed = Eletion_Detail(full_name=ho_ten['full_name'][i], id_election=election_id, order_number=i+1)
+            objects.append(ed)
+        
+        db.session.bulk_save_objects(objects)
+        db.session.commit()
 
     return render_template('upload_file.html', user_image = image)
 # Create admin
