@@ -53,7 +53,11 @@ def index():
 @app.route("/upload-file", methods=["GET", "POST"])
 def upload_file():
     if request.method == "POST":
-        election_id = db.session.query(db.func.max(Election.id)).scalar() + 1
+        election_id = db.session.query(db.func.max(Election.id)).scalar()
+        if election_id is None:
+            election_id = 1
+        else:
+            election_id += 1
         line_1 = request.form.get('line_1')
         line_2 = request.form.get('line_2')
         line_3 = request.form.get('line_3')
