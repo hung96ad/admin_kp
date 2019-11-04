@@ -134,7 +134,7 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
             </body>
             </html>
             '''
-    directory = prefix + "/%s/"%id_election
+    directory = prefix + "%s/"%id_election
     try:
         shutil.rmtree(directory, ignore_errors=True)
     except:

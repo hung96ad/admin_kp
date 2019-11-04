@@ -64,7 +64,8 @@ def upload_file():
         line_4 = request.form.get('line_4')
         line = [line_1, line_2, line_3, line_4]
         title = ' '.join(filter(None, line))
-        min_persions = request.form.get('number')
+        min_persions = request.form.get('min_persions')
+        max_persions = request.form.get('max_persions')
         file_data = request.files["input_file"]
         file_data.filename = str(election_id) + ".xlsx"
         path_excel = app.config['EXCEL'] + file_data.filename
@@ -79,7 +80,7 @@ def upload_file():
 
         # add vao db
         objects = []
-        elec = Election(title = title, num_persons=ho_ten.shape[0], min_persions=min_persions, image=image, file=path_excel)
+        elec = Election(title = title, num_persons=ho_ten.shape[0], min_persions=min_persions, max_persions=max_persions, image=image, file=path_excel)
         objects.append(elec)
         
         for i in range(ho_ten.shape[0]):
@@ -97,11 +98,11 @@ admin = flask_admin.Admin(
     base_template='my_master.html',
     template_mode='bootstrap3'
 )
-
+# print(Election().all())
 # Add model views
+admin.add_view(ElectionView(endpoint='election', menu_icon_type='fa', menu_icon_value='fa-server', name="Xem danh sách các cuộc bầu cử", model=Election, db=db))
 admin.add_view(AddView(name="Thêm cuộc bầu cử", endpoint='add', menu_icon_type='fa', menu_icon_value='fa-calendar-plus-o',))
 admin.add_view(UpdateView(name="Thêm ảnh cuộc bầu cử", endpoint='update', menu_icon_type='fa', menu_icon_value='fa-edit (alias)',))
-admin.add_view(ElectionView(Election, db.session, menu_icon_type='fa', menu_icon_value='fa-server', name="Xem danh sách các cuộc bầu cử"))
 # define a context processor for merging flask-admin's template context into the
 # flask-security views.
 @security.context_processor
