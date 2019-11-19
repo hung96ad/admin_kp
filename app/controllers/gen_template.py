@@ -4,6 +4,7 @@ import lxml
 import os
 import shutil
 import random
+import pdfkit 
 
 def DataFrame_to_image(css, outputfile="out.jpg", format="jpg"):
     fn = str(random.random()*100000000).split(".")[0] + ".html"
@@ -22,7 +23,8 @@ def DataFrame_to_image(css, outputfile="out.jpg", format="jpg"):
     # e.g. cropping of final image
     imgkitoptions = {"format": format}
     
-    imgkit.from_file(fn, outputfile, options=imgkitoptions)
+    imgkit.from_file(fn, outputfile.replace('pdf', 'jpg'), options=imgkitoptions)
+    pdfkit.from_file(fn, outputfile) 
     os.remove(fn)
 
 def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
@@ -141,6 +143,6 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
         print('')
     if not os.path.exists(directory):
         os.makedirs(directory)
-    outputfile = directory + "%s.jpg"%id_election
+    outputfile = directory + "%s.pdf"%id_election
     DataFrame_to_image(html, outputfile=outputfile)
     return outputfile.replace('app', '')
