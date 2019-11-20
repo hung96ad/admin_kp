@@ -22,8 +22,8 @@
                     <th class="column-header col-num_persons">Số lượng người bầu cử</th>
                     <th class="column-header col-min_persions">Số lượng bầu tối thiểu</th>
                     <th class="column-header col-max_persions">Số lượng bầu tối đa</th>
-                    <th class="column-header col-image">Image</th>
-                    <th class="column-header col-file">File</th>
+                    <th class="column-header col-image">Phiếu bầu cử</th>
+                    <th class="column-header col-file">File excel</th>
                 </tr>
             </thead>
 
@@ -70,8 +70,7 @@
                     </td>
 
                     <td class="col-image">
-                            <a href="{%  print(dt['image'])  %}" target="_blank">
-                                <img src="{%  print(dt['image'])  %}" style="width:1cm;height:1.5cm;" height alt="">
+                            <a href="{%  print(dt['image'])  %}" target="_blank"> Tải về
                             </a>
                     </td>
                     <td class="col-file">
