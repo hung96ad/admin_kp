@@ -66,6 +66,7 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
             ''' + line[1] +'''<br>
             ''' + line[2] +'''<br>
             ''' + line[3] +'''<br>
+            <br>
             </div>
             <div style="position:relative; left:4.5cm;">
             <table style="width:80%;">
@@ -119,6 +120,7 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
             ''' + line[1] +'''<br>
             ''' + line[2] +'''<br>
             ''' + line[3] +'''<br>
+            <br>
             </h2>
             </div>
             <div style="position:relative; left:4.5cm;">
