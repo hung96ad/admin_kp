@@ -1,0 +1,469 @@
+2019-11-24 14:07:13,806 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:07:13,807 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:07:13,807 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:07:13,808 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:07:13,808 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:07:13,809 INFO sqlalchemy.engine.base.Engine SELECT election.id AS election_id, election.title AS election_title, election.line_1 AS election_line_1, election.line_2 AS election_line_2, election.line_3 AS election_line_3, election.line_4 AS election_line_4, election.time_created AS election_time_created, election.num_persons AS election_num_persons, election.min_persions AS election_min_persions, election.max_persions AS election_max_persions, election.is_delete AS election_is_delete, election.image AS election_image, election.file AS election_file, election.status AS election_status 
+FROM election 
+WHERE election.is_delete = 0
+2019-11-24 14:07:13,809 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:07:13,811 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:07:13] "GET /admin/election/ HTTP/1.1" 200 -
+2019-11-24 14:07:14,572 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:07:14,573 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:07:14,573 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:07:14,574 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:07:14,574 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:07:14,575 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:07:14] "GET /static/css/bootstrap-table.min.css HTTP/1.1" 200 -
+2019-11-24 14:07:33,059 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:07:33,059 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:07:33,060 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:07:33,060 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:07:33,061 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:07:33,062 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:07:33] "GET /admin/election/upload_zip/4 HTTP/1.1" 308 -
+2019-11-24 14:07:33,601 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:07:33,601 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:07:33,601 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:07:33,602 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:07:33,602 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:07:33,603 INFO sqlalchemy.engine.base.Engine SELECT election.id AS election_id, election.title AS election_title, election.line_1 AS election_line_1, election.line_2 AS election_line_2, election.line_3 AS election_line_3, election.line_4 AS election_line_4, election.time_created AS election_time_created, election.num_persons AS election_num_persons, election.min_persions AS election_min_persions, election.max_persions AS election_max_persions, election.is_delete AS election_is_delete, election.image AS election_image, election.file AS election_file, election.status AS election_status 
+FROM election 
+WHERE election.id = ?
+2019-11-24 14:07:33,604 INFO sqlalchemy.engine.base.Engine ('4',)
+2019-11-24 14:07:33,611 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:07:33] "GET /admin/election/upload_zip/4/ HTTP/1.1" 200 -
+2019-11-24 14:08:23,340 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:08:23,341 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:08:23,341 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:08:23,342 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:08:23,342 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:11:01,316 INFO sqlalchemy.engine.base.Engine UPDATE election SET status=? WHERE election.id = ?
+2019-11-24 14:11:01,316 INFO sqlalchemy.engine.base.Engine (1, '4')
+2019-11-24 14:11:01,317 INFO sqlalchemy.engine.base.Engine INSERT INTO result (id_election, image, description, processed) VALUES (?, ?, ?, ?)
+2019-11-24 14:11:01,317 INFO sqlalchemy.engine.base.Engine (('4', 'app/static/uploads/images/4/7a8781d6-1495-4124-816e-3b362b2e4f95/0001-11.jpg', '', 0), ('4', 'app/static/uploads/images/4/7a8781d6-1495-4124-816e-3b362b2e4f95/0001-12.jpg', '', 0), ('4', 'app/static/uploads/images/4/7a8781d6-1495-4124-816e-3b362b2e4f95/0001-10.jpg', '', 0), ('4', 'app/static/uploads/images/4/7a8781d6-1495-4124-816e-3b362b2e4f95/0001-15.jpg', '', 0), ('4', 'app/static/uploads/images/4/7a8781d6-1495-4124-816e-3b362b2e4f95/0001-09.jpg', '', 0), ('4', 'app/static/uploads/images/4/7a8781d6-1495-4124-816e-3b362b2e4f95/0001-25.jpg', '', 0), ('4', 'app/static/uploads/images/4/7a8781d6-1495-4124-816e-3b362b2e4f95/0001-05.jpg', '', 0), ('4', 'app/static/uploads/images/4/7a8781d6-1495-4124-816e-3b362b2e4f95/0001-20.jpg', '', 0)  ... displaying 10 of 25 total bound parameter sets ...  ('4', 'app/static/uploads/images/4/7a8781d6-1495-4124-816e-3b362b2e4f95/0001-02.jpg', '', 0), ('4', 'app/static/uploads/images/4/7a8781d6-1495-4124-816e-3b362b2e4f95/0001-06.jpg', '', 0))
+2019-11-24 14:11:01,318 INFO sqlalchemy.engine.base.Engine SELECT result.id AS result_id, result.id_election AS result_id_election, result.image AS result_image, result.description AS result_description, result.processed AS result_processed 
+FROM result 
+WHERE result.processed = ?
+2019-11-24 14:11:01,318 INFO sqlalchemy.engine.base.Engine (0,)
+2019-11-24 14:11:01,319 INFO sqlalchemy.engine.base.Engine UPDATE election SET status=? WHERE election.id = ?
+2019-11-24 14:11:01,319 INFO sqlalchemy.engine.base.Engine (2, 4)
+2019-11-24 14:11:01,320 INFO sqlalchemy.engine.base.Engine SELECT election.id AS election_id, election.title AS election_title, election.line_1 AS election_line_1, election.line_2 AS election_line_2, election.line_3 AS election_line_3, election.line_4 AS election_line_4, election.time_created AS election_time_created, election.num_persons AS election_num_persons, election.min_persions AS election_min_persions, election.max_persions AS election_max_persions, election.is_delete AS election_is_delete, election.image AS election_image, election.file AS election_file, election.status AS election_status 
+FROM election 
+WHERE election.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:11:01,320 INFO sqlalchemy.engine.base.Engine (4, 1, 0)
+2019-11-24 14:11:09,893 INFO sqlalchemy.engine.base.Engine UPDATE result SET description=?, processed=? WHERE result.id = ?
+2019-11-24 14:11:09,893 INFO sqlalchemy.engine.base.Engine (('Gạch ở phần title', 3, 151), ('Gạch ở phần title', 3, 152), ('Gạch ở phần title', 3, 153), ('Gạch ở phần title', 3, 154), ('Gạch ở phần title', 3, 155), ('Gạch ở ngoài bảng', 3, 156), ('Gạch ở phần title', 3, 157), ('Gạch ở phần title', 3, 158)  ... displaying 10 of 25 total bound parameter sets ...  ('Gạch ở ngoài bảng', 3, 174), ('Gạch ở trên phần con dấu', 3, 175))
+2019-11-24 14:11:09,894 INFO sqlalchemy.engine.base.Engine COMMIT
+/home/googlecloud/admin_kp/app/utils/utils_v2.py:56: RuntimeWarning: invalid value encountered in true_divide
+  return vector / np.linalg.norm(vector)
+127.0.0.1 - - [24/Nov/2019 14:11:09] "POST /upload_zip/ HTTP/1.1" 200 -
+2019-11-24 14:11:16,446 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:11:16,446 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:11:16,446 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:11:16,447 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:11:16,447 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:11:16,449 INFO sqlalchemy.engine.base.Engine SELECT election.id AS election_id, election.title AS election_title, election.line_1 AS election_line_1, election.line_2 AS election_line_2, election.line_3 AS election_line_3, election.line_4 AS election_line_4, election.time_created AS election_time_created, election.num_persons AS election_num_persons, election.min_persions AS election_min_persions, election.max_persions AS election_max_persions, election.is_delete AS election_is_delete, election.image AS election_image, election.file AS election_file, election.status AS election_status 
+FROM election 
+WHERE election.is_delete = 0
+2019-11-24 14:11:16,449 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:11:16,450 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:11:16] "GET /admin/election/ HTTP/1.1" 200 -
+2019-11-24 14:11:17,332 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:11:17,333 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:11:17,333 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:11:17,334 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:11:17,334 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:11:17,335 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:11:17] "GET /static/css/bootstrap-table.min.css HTTP/1.1" 200 -
+2019-11-24 14:11:17,534 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:11:17,535 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:11:17,535 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:11:17,536 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:11:17,536 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:11:17,537 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:11:17] "GET /static/js/jquery-3.3.1.min.js HTTP/1.1" 200 -
+2019-11-24 14:11:17,834 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:11:17,834 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:11:17,834 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:11:17,835 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:11:17,835 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:11:17,837 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:11:17] "GET /static/js/popper.min.js HTTP/1.1" 200 -
+2019-11-24 14:11:18,055 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:11:18,055 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:11:18,055 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:11:18,056 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:11:18,056 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:11:18,058 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:11:18] "GET /static/js/bootstrap-table.min.js HTTP/1.1" 200 -
+2019-11-24 14:11:23,362 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:11:23,362 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:11:23,362 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:11:23,363 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:11:23,363 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:11:23,365 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:11:23] "GET /admin/statistical/detail/4 HTTP/1.1" 308 -
+2019-11-24 14:11:23,900 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:11:23,901 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:11:23,901 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:11:23,902 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:11:23,902 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:11:23,902 INFO sqlalchemy.engine.base.Engine SELECT e.title, a.*, b.num_valid, (a.total-b.num_valid) num_invalid             FROM         ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a         JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election        JOIN election e ON e.id = a.id_election AND e.is_delete = 0 AND e.id = 4
+2019-11-24 14:11:23,903 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:11:23,903 INFO sqlalchemy.engine.base.Engine SELECT ed.full_name, a.*                FROM election_detail ed             	JOIN (SELECT r.id_election, rd.order_number, SUM( rd.vote ) AS total_vote                      FROM result_detail rd                     JOIN result r ON r.id = rd.id_result                     GROUP BY r.id_election, rd.order_number  ) a ON ed.id_election = a.id_election             	AND ed.order_number = a.order_number AND ed.id_election = 4
+2019-11-24 14:11:23,903 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:11:23,905 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:11:23] "GET /admin/statistical/detail/4/ HTTP/1.1" 200 -
+2019-11-24 14:13:32,411 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:13:32,412 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:13:32,412 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:13:32,413 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:13:32,413 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:13:32,413 INFO sqlalchemy.engine.base.Engine SELECT e.title, a.*, b.num_valid, (a.total-b.num_valid) num_invalid             FROM         ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a         JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election        JOIN election e ON e.id = a.id_election AND e.is_delete = 0 AND e.id = 4
+2019-11-24 14:13:32,413 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:13:32,414 INFO sqlalchemy.engine.base.Engine SELECT ed.full_name, a.*                FROM election_detail ed             	JOIN (SELECT r.id_election, rd.order_number, SUM( rd.vote ) AS total_vote                      FROM result_detail rd                     JOIN result r ON r.id = rd.id_result                     GROUP BY r.id_election, rd.order_number  ) a ON ed.id_election = a.id_election             	AND ed.order_number = a.order_number AND ed.id_election = 4
+2019-11-24 14:13:32,414 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:13:32,416 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:13:32] "GET /admin/statistical/detail/4/ HTTP/1.1" 200 -
+2019-11-24 14:13:34,889 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:13:34,889 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:13:34,889 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:13:34,890 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:13:34,890 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:13:34,890 INFO sqlalchemy.engine.base.Engine SELECT e.title, a.*, b.num_valid, (a.total-b.num_valid) num_invalid             FROM         ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a         JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election        JOIN election e ON e.id = a.id_election AND e.is_delete = 0 AND e.id = 4
+2019-11-24 14:13:34,891 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:13:34,891 INFO sqlalchemy.engine.base.Engine SELECT ed.full_name, a.*                FROM election_detail ed             	JOIN (SELECT r.id_election, rd.order_number, SUM( rd.vote ) AS total_vote                      FROM result_detail rd                     JOIN result r ON r.id = rd.id_result                     GROUP BY r.id_election, rd.order_number  ) a ON ed.id_election = a.id_election             	AND ed.order_number = a.order_number AND ed.id_election = 4
+2019-11-24 14:13:34,891 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:13:34,893 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:13:34] "GET /admin/statistical/detail/4/ HTTP/1.1" 200 -
+2019-11-24 14:13:44,655 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:13:44,656 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:13:44,656 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:13:44,657 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:13:44,657 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:13:44,658 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:13:44] "GET /admin/statistical HTTP/1.1" 308 -
+2019-11-24 14:13:45,145 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:13:45,145 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:13:45,145 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:13:45,146 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:13:45,146 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:13:45,147 INFO sqlalchemy.engine.base.Engine SELECT e.title, a.*, b.num_valid, (a.total-b.num_valid) num_invalid                     FROM                 ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a                 JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election                JOIN election e ON e.id = a.id_election AND e.is_delete = 0
+2019-11-24 14:13:45,147 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:13:45,156 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:13:45] "GET /admin/statistical/ HTTP/1.1" 200 -
+2019-11-24 14:13:45,965 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:13:45,965 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:13:45,966 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:13:45,966 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:13:45,966 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:13:45,966 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:13:45,967 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:13:45,968 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:13:45,968 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:13:45,968 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:13:45,970 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:13:45] "GET /static/css/bootstrap-table.min.css HTTP/1.1" 200 -
+2019-11-24 14:13:45,972 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:13:45] "GET /static/js/bootstrap-table.min.js HTTP/1.1" 200 -
+2019-11-24 14:15:12,931 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:15:12,931 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:15:12,931 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:15:12,932 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:15:12,932 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:15:12,933 INFO sqlalchemy.engine.base.Engine SELECT e.title, a.*, b.num_valid, (a.total-b.num_valid) num_invalid                     FROM                 ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a                 JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election                JOIN election e ON e.id = a.id_election AND e.is_delete = 0
+2019-11-24 14:15:12,933 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:15:12,935 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:15:12] "GET /admin/statistical/ HTTP/1.1" 200 -
+2019-11-24 14:15:13,763 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:15:13,764 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:15:13,764 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:15:13,765 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:15:13,765 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:15:13,766 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:15:13] "GET /static/css/bootstrap-table.min.css HTTP/1.1" 200 -
+2019-11-24 14:15:19,159 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:15:19,159 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:15:19,159 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:15:19,160 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:15:19,160 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:15:19,161 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:15:19] "GET /admin/statistical/error/1 HTTP/1.1" 308 -
+2019-11-24 14:15:19,719 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:15:19,720 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:15:19,720 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:15:19,721 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:15:19,721 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:15:19,721 INFO sqlalchemy.engine.base.Engine SELECT * FROM result WHERE processed = 3 AND id_election = 1
+2019-11-24 14:15:19,721 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:15:19,728 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:15:19] "GET /admin/statistical/error/1/ HTTP/1.1" 200 -
+2019-11-24 14:15:20,490 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:15:20,491 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:15:20,491 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:15:20,493 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:15:20,493 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:15:20,494 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:15:20] "GET /static/css/bootstrap-table.min.css HTTP/1.1" 200 -
+2019-11-24 14:15:20,750 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:15:20,750 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:15:20,750 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:15:20,753 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:15:20,753 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:15:20,753 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:15:20,753 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:15:20,754 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:15:20,755 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:15:20,755 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:15:20,756 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:15:20] "GET /static/js/jquery-3.3.1.min.js HTTP/1.1" 200 -
+2019-11-24 14:15:20,757 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:15:20] "GET /static/js/popper.min.js HTTP/1.1" 200 -
+2019-11-24 14:15:20,956 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:15:20,957 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:15:20,957 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:15:20,958 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:15:20,958 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:15:20,959 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:15:20] "GET /static/js/bootstrap-table.min.js HTTP/1.1" 200 -
+2019-11-24 14:15:24,225 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:15:24,226 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:15:24,226 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:15:24,227 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:15:24,227 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:15:24,229 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:15:24] "GET /admin/statistical/error/4 HTTP/1.1" 308 -
+2019-11-24 14:15:24,750 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:15:24,751 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:15:24,751 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:15:24,752 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:15:24,752 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:15:24,752 INFO sqlalchemy.engine.base.Engine SELECT * FROM result WHERE processed = 3 AND id_election = 4
+2019-11-24 14:15:24,752 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:15:24,756 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:15:24] "GET /admin/statistical/error/4/ HTTP/1.1" 200 -
+2019-11-24 14:15:25,853 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:15:25,854 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:15:25,854 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:15:25,854 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:15:25,854 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:15:25,856 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:15:25] "GET /static/css/bootstrap-table.min.css HTTP/1.1" 200 -
+2019-11-24 14:15:30,039 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:15:30,040 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:15:30,041 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:15:30,042 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:15:30,042 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:15:30,042 INFO sqlalchemy.engine.base.Engine SELECT e.title, a.*, b.num_valid, (a.total-b.num_valid) num_invalid                     FROM                 ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a                 JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election                JOIN election e ON e.id = a.id_election AND e.is_delete = 0
+2019-11-24 14:15:30,042 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:15:30,044 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:15:30] "GET /admin/statistical/ HTTP/1.1" 200 -
+2019-11-24 14:15:30,827 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:15:30,827 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:15:30,827 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:15:30,828 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:15:30,828 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:15:30,829 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:15:30] "GET /static/css/bootstrap-table.min.css HTTP/1.1" 200 -
+2019-11-24 14:16:04,621 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:16:04,622 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:16:04,622 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:16:04,623 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:16:04,623 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:16:04,624 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:16:04] "GET /admin/statistical/detail/1 HTTP/1.1" 308 -
+2019-11-24 14:16:05,296 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:16:05,296 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:16:05,296 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:16:05,297 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:16:05,297 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:16:05,298 INFO sqlalchemy.engine.base.Engine SELECT e.title, a.*, b.num_valid, (a.total-b.num_valid) num_invalid             FROM         ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a         JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election        JOIN election e ON e.id = a.id_election AND e.is_delete = 0 AND e.id = 1
+2019-11-24 14:16:05,298 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:16:05,298 INFO sqlalchemy.engine.base.Engine SELECT ed.full_name, a.*                FROM election_detail ed             	JOIN (SELECT r.id_election, rd.order_number, SUM( rd.vote ) AS total_vote                      FROM result_detail rd                     JOIN result r ON r.id = rd.id_result                     GROUP BY r.id_election, rd.order_number  ) a ON ed.id_election = a.id_election             	AND ed.order_number = a.order_number AND ed.id_election = 1
+2019-11-24 14:16:05,298 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:16:05,301 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:16:05] "GET /admin/statistical/detail/1/ HTTP/1.1" 200 -
+2019-11-24 14:16:08,799 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-11-24 14:16:08,800 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.first_name AS user_first_name, user.last_name AS user_last_name, user.email AS user_email, user.password AS user_password, user.active AS user_active, user.confirmed_at AS user_confirmed_at 
+FROM user 
+WHERE user.id = ?
+ LIMIT ? OFFSET ?
+2019-11-24 14:16:08,800 INFO sqlalchemy.engine.base.Engine ('1', 1, 0)
+2019-11-24 14:16:08,801 INFO sqlalchemy.engine.base.Engine SELECT role.id AS role_id, role.name AS role_name, role.description AS role_description 
+FROM role, roles_users 
+WHERE ? = roles_users.user_id AND role.id = roles_users.role_id
+2019-11-24 14:16:08,801 INFO sqlalchemy.engine.base.Engine (1,)
+2019-11-24 14:16:08,801 INFO sqlalchemy.engine.base.Engine SELECT e.title, a.*, b.num_valid, (a.total-b.num_valid) num_invalid             FROM         ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a         JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election        JOIN election e ON e.id = a.id_election AND e.is_delete = 0 AND e.id = 4
+2019-11-24 14:16:08,802 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:16:08,802 INFO sqlalchemy.engine.base.Engine SELECT ed.full_name, a.*                FROM election_detail ed             	JOIN (SELECT r.id_election, rd.order_number, SUM( rd.vote ) AS total_vote                      FROM result_detail rd                     JOIN result r ON r.id = rd.id_result                     GROUP BY r.id_election, rd.order_number  ) a ON ed.id_election = a.id_election             	AND ed.order_number = a.order_number AND ed.id_election = 4
+2019-11-24 14:16:08,802 INFO sqlalchemy.engine.base.Engine ()
+2019-11-24 14:16:08,805 INFO sqlalchemy.engine.base.Engine ROLLBACK
+127.0.0.1 - - [24/Nov/2019 14:16:08] "GET /admin/statistical/detail/4/ HTTP/1.1" 200 -

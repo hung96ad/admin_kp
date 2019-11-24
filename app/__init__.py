@@ -162,6 +162,7 @@ def upload_zip():
         db.session.bulk_save_objects(objects)
         # db.session.commit()
         run_all(db)
+        db.session.commit()
     return render_template('upload_zip_success.html')
 
 # Create admin
