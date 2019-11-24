@@ -1,0 +1,94 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+{{ super() }}
+
+{% if current_user.is_authenticated %}
+<!-- <link rel="stylesheet" href="/static/css/all.css"> -->
+<link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+<section class="content">
+        
+        <table id="table" 
+                     data-toggle="table"
+                     data-search="true"
+                     data-filter-control="true" 
+                     data-show-export="true"
+                     data-click-to-select="true">
+            <thead>
+                <tr>                   
+                    <th class="column-header">STT</th>
+                    <th class="column-header">Lỗi</th>
+                    <th class="column-header">Link ảnh</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                    {% set count = namespace(value=1) %}
+                    {%  for dt in data  %}
+                <tr>
+                    <td class="col-stt">
+                            {{ count.value }}
+                            {% set count.value = count.value + 1 %}
+                    </td>
+                    <td class="col-description">
+                            {%  print(dt['description'])  %}
+                    </td>
+
+                    <td class="col-image">
+                            <a href="{{dt['image'].replace("app","")}}">Tải về</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    
+</section>
+<script src="/static/js/jquery-3.3.1.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/bootstrap-table.min.js"></script>
+<script>
+var $table = $('#table');
+		var trBoldBlue = $("table");
+
+	$(trBoldBlue).on("click", "tr", function (){
+			$(this).toggleClass("bold-blue");
+	});
+</script>
+<!-- /.content -->
+{% else %}
+
+<center>
+    <section class="content" style="color: white">
+        <div class="col-sm-12">
+            <h1>Admin Manager</h1>
+            <!-- <p class="lead">
+                Authentication
+            </p>
+            <p>
+                This example shows how you can use Flask-Admin in an admin template, <br> here I used AdminLTE and <a href="https://pythonhosted.org/Flask-Security/index.html" target="_blank">Flask-Security</a> for authentication.
+            </p> -->
+            {% if not current_user.is_authenticated %}
+            <meta http-equiv="Refresh" content="0; url={{ url_for('security.login') }}" />
+
+            <!-- email: <b>admin</b> <br> -->
+            <!-- password: <b>admin</b> <br> -->
+            <br>
+            <p>
+                <a class="btn btn-primary" href="{{ url_for('security.login') }}">Login</a>
+            </p>
+            {% endif %}
+            <br>
+            <p>
+                <a class="btn btn-primary" href="/"><i class="glyphicon glyphicon-chevron-left"></i> Back</a>
+            </p>
+        </div>
+
+
+    </section>
+</center>
+
+<br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br>
+{% endif %}
+
+{% endblock body %}

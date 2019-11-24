@@ -182,9 +182,9 @@ def get_all_cell(gray, num_col = 4, min_cell_w= 20, min_cell_h = 20):
     # Thresholding the image
     gray_img = gray.copy()
     h, w = gray_img.shape
-    img_name =  (("img_path".split("/")[-1]).split("."))[0]
-    output_dir = "output/%s"%img_name
-    os.makedirs(output_dir, exist_ok=True)
+    # img_name =  (("img_path".split("/")[-1]).split("."))[0]
+    # output_dir = "output/%s"%img_name
+    # os.makedirs(output_dir, exist_ok=True)
     # contours, angle = get_contours_angle(gray_img, min_w = 0.3*w)
     # if angle >0 and angle <30:
     #     gray_img = rotate_image(gray_img, -angle)

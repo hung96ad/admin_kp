@@ -15,7 +15,7 @@
                      data-click-to-select="true">
             <thead>
                 <tr>                   
-                    <th class="column-header">ID</th>
+                    <th class="column-header">STT</th>
                     <th class="column-header">Tên cuộc bầu cử</th>
                     <th class="column-header">Tổng số phiếu bầu</th>
                     <th class="column-header">Số phiếu bầu hợp lệ</th>
@@ -26,33 +26,40 @@
             </thead>
 
             <tbody>
+                    {% set count = namespace(value=1) %}
                     {%  for dt in data  %}
                 <tr>
                     <td class="col-id">
-                            {%  print(dt['id_election'])  %}
+                            {{ count.value }}
+                            {% set count.value = count.value + 1 %}
                     </td>
                     <td class="col-title">
-                            {%  print(dt['title'])  %}
+                            {{dt['title']}}
                     </td>
 
                     <td class="col-total">
-                            {%  print(dt['total'])  %}
+                            {{dt['total']}}
                     </td>
 
                     <td class="col-num_valid">
-                            {%  print(dt['num_valid'])  %}
+                            {{dt['num_valid']}}
                     </td>
 
                     <td class="col-num_invalid">
-                            {%  print(dt['num_invalid'])  %}
+                        {% if dt['num_invalid'] != 0 %}
+                            {{dt['num_invalid']}} 
+                            <a href="/admin/statistical/error/{{dt['id_election']}}">Xem chi tiết</a>
+                            {% else %}
+                            {{dt['num_invalid']}} 
+                            {% endif %}
                     </td>
 
                     <td class="col-download">
-                            <a href="{%  print(dt['id_election'])  %}" target="_blank"> Tải về
+                            <a href="{{dt['id_election']}}" target="_blank"> Tải về
                             </a>
                     </td>
                     <td class="col-detail">
-                            <a href="/admin/statistical/detail/{%  print(dt['id_election'])  %}">Xem chi tiết</a>
+                            <a href="/admin/statistical/detail/{{dt['id_election']}}">Xem chi tiết</a>
                     </td>
                 </tr>
                 {% endfor %}

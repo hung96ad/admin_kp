@@ -1,5 +1,5 @@
 from flask_admin import BaseView, expose
-from sqlalchemy import func
+from sqlalchemy import and_, or_, not_
 
 class ElectionView(BaseView):
     def __init__(self, name=None, category=None, endpoint=None, url=None,
@@ -67,11 +67,18 @@ class ElectionView(BaseView):
     
     @expose('/delete/<id>/', methods=('GET', 'POST'))
     def delete(self, id):
-        self.model.query.filter(self.model.id == id).update({"is_delete":True})
+        self.model.query.filter(and_(self.model.id == id, self.model.status == 0)).update({"is_delete":True})
         self.db.session.commit()
         data = self.model.query.filter(self.model.is_delete == False)
         return self.render('admin/election.html', data=data)
         
+    @expose('/confirm_end/<id>/', methods=('GET', 'POST'))
+    def confirm_end(self, id):
+        self.model.query.filter(self.model.id == id).update({"status":4})
+        self.db.session.commit()
+        data = self.model.query.filter(self.model.is_delete == False)
+        return self.render('admin/election.html', data=data)
+
     @expose('/edit/<id>/', methods=('GET', 'POST'))
     def edit(self, id):
         self.name = "Sửa thông tin cuộc bầu cử"

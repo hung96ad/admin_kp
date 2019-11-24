@@ -23,13 +23,13 @@
         }
         </style>
 <section class="content">
-<h3>Tên cuộc bầu cử: <b>Họ tên</b>
+<h3>Tên cuộc bầu cử: <b>{{data['content']['title']}}</b>
 </br>
-Tổng số phiếu bầu: <b></b>
+Tổng số phiếu bầu: {{data['content']['total']}}
 </br>
-Số phiếu bầu hợp lệ: <b></b>
+Số phiếu bầu hợp lệ: {{data['content']['num_valid']}}
 </br>
-Số phiếu bầu không hợp lệ: <b></b>
+Số phiếu bầu không hợp lệ: {{data['content']['num_invalid']}}
 </br></h3>
         <h2>Kết quả chi tiết</h2>
         <table>
@@ -42,16 +42,20 @@ Số phiếu bầu không hợp lệ: <b></b>
             </thead>
 
             <tbody>
-                <tr>
-                    <td class="col-id">
-1                    </td>
+                    {%  for dt in data['table']  %}
+                    <tr>
+                        <td class="col-id">
+                                {{dt['order_number']}}
+                            </td>
                     <td class="col-title">
-Hùng                    </td>
+                            {{dt['full_name']}}
+                        </td>
 
                     <td class="col-total">
-10%                    </td>
-
+                            {{ (dt['total_vote']/data['content']['num_valid'] * 100)|round(2)}}% ({{dt['total_vote']}}/{{data['content']['num_valid']}})
+                        </td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     
