@@ -11,6 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Flask-Admin dashboard login template">
   <meta name="author" content="Jonathan Ars">
+  <link rel="shortcut icon" href="http://cskh.evnhanoi.com.vn/Content/Images/LogoEVN.png" />
   {% endblock head_meta %}
 
   {% block head_css %}
@@ -164,66 +165,38 @@
            <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
          </div>
        </div>
-       <!-- search form -->
-       <form action="#" method="get" class="sidebar-form">
-        <div class="input-group">
-          <input type="text" name="q" class="form-control" placeholder="Search...">
-          <span class="input-group-btn">
-            <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-            </button>
-          </span>
-        </div>
-      </form>
+
+      </form> -->
       <!-- /.search form -->
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu">
-        <li class="header">MAIN NAVIGATION</li>
-        {% block main_menu %}
-        {{ layout.menu() }}
-        {% endblock %}
-        <!-- <li>
+        <li class="header">Menu chính</li>
+        <!-- Quản trị bầu cử -->
+        <li class="treeview">
           <a href="#">
-            <i class="fa fa-envelope"></i> <span>Mailbox</span>
-            <span class="pull-right-container">
-              <small class="label pull-right bg-yellow">12</small>
-              <small class="label pull-right bg-green">16</small>
-              <small class="label pull-right bg-red">5</small>
-            </span>
-          </a>
-        </li> -->
-        <!-- <li class="treeview">
-          <a href="#">
-            <i class="fa fa-share"></i> <span>Multilevel</span>
+            <i class="fa fa-edit"></i> <span><b>Quản trị bầu cử</b></span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
-            <li>
-              <a href="#"><i class="fa fa-circle-o"></i> Level One
-                <span class="pull-right-container">
-                  <i class="fa fa-angle-left pull-right"></i>
-                </span>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-circle-o"></i> Level Two</a></li>
-                <li>
-                  <a href="#"><i class="fa fa-circle-o"></i> Level Two
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                  </a>
-                  <ul class="treeview-menu">
-                    <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
-                    <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
+            <li><a href="/admin/election/"><i class="fa fa-circle-o"></i>Danh sách bầu cử</a></li>
+            <li><a href="/admin/add/"><i class="fa fa-circle-o"></i>Thêm mới bầu cử</a></li>
+            <li><a href="/admin/election/upload_zip/0/"><i class="fa fa-circle-o"></i>Nộp phiếu bầu</a></li>
           </ul>
-        </li> -->
+        </li>
+        <!-- Thống kê bầu cử -->
+        <li class="treeview">
+            <a href="#">
+              <i class="fa fa-table"></i> <span><b>Thống kê bầu cử</b></span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li><a href="/admin/statistical/"><i class="fa fa-circle-o"></i>Kết quả bầu cử</a></li>
+            </ul>
+          </li>
       </ul>
     </section>
     <!-- /.sidebar -->
@@ -391,8 +364,8 @@
   <div class="control-sidebar-bg"></div>
 
   <footer class="main-footer">
-     <strong>Copyright &copy; 2018 <div class="pull-right hidden-xs">
-      <b>Version</b> 0.2
+     <strong>PHẦN MỀM KIỂM PHIẾU<div class="pull-right hidden-xs">
+      <b>Công ty Công nghệ Thông tin Điện lực Hà Nội - Tổng công ty Điện lực Hà Nội - 2019</b>
     </div>
   </footer>
   {% endif %}

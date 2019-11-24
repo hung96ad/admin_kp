@@ -1,4 +1,5 @@
 from flask_admin import BaseView, expose
+from sqlalchemy import func
 
 class ElectionView(BaseView):
     def __init__(self, name=None, category=None, endpoint=None, url=None,
@@ -70,4 +71,22 @@ class ElectionView(BaseView):
         self.db.session.commit()
         data = self.model.query.filter(self.model.is_delete == False)
         return self.render('admin/election.html', data=data)
+        
+    @expose('/edit/<id>/', methods=('GET', 'POST'))
+    def edit(self, id):
+        self.name = "Sửa thông tin cuộc bầu cử"
+        data = self.model.query.get(id)
+        return self.render('admin/edit.html', data=data)
+
+    @expose('/upload_zip/<id>/', methods=('GET', 'POST'))
+    def upload(self, id=0):
+        data = {"type": 0}
+        if id == "0":
+            data['data'] = self.model.query.filter(self.model.is_delete == False, self.model.status != 3)      
+        else:
+            data = {"type": 1}
+            data['data'] = self.model.query.get(id)
+
+        self.name = "Nộp phiếu bầu cử"
+        return self.render('admin/upload_zip.html', data=data)
     

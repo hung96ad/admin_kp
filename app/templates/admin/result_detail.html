@@ -1,0 +1,99 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+{{ super() }}
+
+{% if current_user.is_authenticated %}
+<!-- <link rel="stylesheet" href="/static/css/all.css"> -->
+<!-- <link rel="stylesheet" href="/static/css/bootstrap-table.min.css"> -->
+<style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+        </style>
+<section class="content">
+<h3>Tên cuộc bầu cử: <b>Họ tên</b>
+</br>
+Tổng số phiếu bầu: <b></b>
+</br>
+Số phiếu bầu hợp lệ: <b></b>
+</br>
+Số phiếu bầu không hợp lệ: <b></b>
+</br></h3>
+        <h2>Kết quả chi tiết</h2>
+        <table>
+            <thead>
+                <tr>                   
+                    <th class="column-header">STT</th>
+                    <th class="column-header">Họ và tên</th>
+                    <th class="column-header">Tỷ lệ trúng cử</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td class="col-id">
+1                    </td>
+                    <td class="col-title">
+Hùng                    </td>
+
+                    <td class="col-total">
+10%                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+    
+</section>
+<script src="/static/js/jquery-3.3.1.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<!-- /.content -->
+{% else %}
+
+<center>
+    <section class="content" style="color: white">
+        <div class="col-sm-12">
+            <h1>Admin Manager</h1>
+            <!-- <p class="lead">
+                Authentication
+            </p>
+            <p>
+                This example shows how you can use Flask-Admin in an admin template, <br> here I used AdminLTE and <a href="https://pythonhosted.org/Flask-Security/index.html" target="_blank">Flask-Security</a> for authentication.
+            </p> -->
+            {% if not current_user.is_authenticated %}
+            <meta http-equiv="Refresh" content="0; url={{ url_for('security.login') }}" />
+
+            <!-- email: <b>admin</b> <br> -->
+            <!-- password: <b>admin</b> <br> -->
+            <br>
+            <p>
+                <a class="btn btn-primary" href="{{ url_for('security.login') }}">Login</a>
+            </p>
+            {% endif %}
+            <br>
+            <p>
+                <a class="btn btn-primary" href="/"><i class="glyphicon glyphicon-chevron-left"></i> Back</a>
+            </p>
+        </div>
+
+
+    </section>
+</center>
+
+<br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br>
+{% endif %}
+
+{% endblock body %}

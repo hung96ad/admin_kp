@@ -5,8 +5,13 @@
 {% if current_user.is_authenticated %}
 <!-- <link rel="stylesheet" href="/static/css/all.css"> -->
 <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+<section class="content-header">
+        <h1>Danh sách bầu cử </h1>
+        <h2 class="breadcrumb">
+            <a href="/admin/add" class="btn btn-primary btn-flat pull-left">Thêm cuộc bầu cử</a>
+        </h2>
+    </section>
 <section class="content">
-        
         <table id="table" 
                      data-toggle="table"
                      data-search="true"
@@ -15,66 +20,73 @@
                      data-click-to-select="true">
             <thead>
                 <tr>                   
-                    <th class="col-md-1">Action</th>
-                    <th class="column-header col-id">ID</th>
+                    <th class="column-header col-id">STT</th>
                     <th class="column-header col-title">Tên cuộc bầu cử</th>
                     <th class="column-header col-time_created">Ngày bầu</th>
                     <th class="column-header col-num_persons">Số lượng người bầu cử</th>
                     <th class="column-header col-min_persions">Số lượng bầu tối thiểu</th>
                     <th class="column-header col-max_persions">Số lượng bầu tối đa</th>
                     <th class="column-header col-image">Phiếu bầu cử</th>
-                    <th class="column-header col-file">File excel</th>
+                    <th class="column-header col-file">Danh sách bầu cử</th>
+                    <th class="col-md-1">Hành động</th>
                 </tr>
             </thead>
 
             <tbody>
+                    {% set count = namespace(value=1) %}
+
                     {%  for dt in data  %}
                 <tr>
-                    <td class="list-buttons-column">
-                        <a class="icon" data-target="#fa_modal_window" title="View Record"
-                            href="/admin/election/details/?id=1&amp;url=%2Fadmin%2Felection%2F&amp;modal=True"
-                            data-toggle="modal">
-                            <span class="fa fa-eye glyphicon glyphicon-eye-open"></span>
-                        </a>
-                        <form class="icon" method="GET" action="/admin/election/delete/{%  print(dt['id'])  %}">
-
-                            <button onclick="return confirm('Bạn có chắc chắn muốn xóa cuộc bầu cử này?');"
-                                title="Delete record">
-                                <span class="fa fa-trash glyphicon glyphicon-trash"></span>
-                            </button>
-                        </form>
-
-                    </td>
-
-                    <td class="col-id">
-                            {%  print(dt['id'])  %}
+                    <td class="col-STT">
+                            {{ count.value }}
+                            {% set count.value = count.value + 1 %}
                     </td>
                     <td class="col-title">
-                            {%  print(dt['title'])  %}
+                            {{  dt['title'] }}
                     </td>
 
                     <td class="col-time_created">
-                            {%  print(dt['time_created'].date())  %}
+                            {{dt['time_created'].date()}}
                     </td>
 
                     <td class="col-num_persons">
-                            {%  print(dt['num_persons'])  %}
+                            {{dt['num_persons']}}
                     </td>
 
                     <td class="col-min_persions">
-                            {%  print(dt['min_persions'])  %}
+                            {{dt['min_persions']}}
                     </td>
 
                     <td class="col-max_persions">
-                            {%  print(dt['max_persions'])  %}
+                            {{dt['max_persions']}}
                     </td>
 
                     <td class="col-image">
-                            <a href="{%  print(dt['image'])  %}" target="_blank"> Tải về
+                            <a href="{{dt['image']}}" target="_blank"> Tải về
                             </a>
                     </td>
                     <td class="col-file">
-                            <a href="{%  print(dt['file'].replace("app",""))  %}">Tải về</a>
+                            <a href="{{dt['file'].replace("app","")}}">Tải về</a>
+                    </td>
+
+                    <td class="list-buttons-column">
+                            {% if dt['status'] == 0 %}
+                            <a href="/admin/election/edit/{{dt['id']}}" class="btn btn-default btn-block btn-sm">Sửa</a>
+                            <a href="/admin/election/upload_zip/{{dt['id']}}" class="btn btn-primary btn-block btn-sm">Bổ sung phiếu bầu</a>
+                            <a href="/admin/election/delete/{{dt['id']}}" 
+                            class="btn btn-danger btn-block btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa cuộc bầu cử này?');" >Xóa</a>
+                               <!-- Cần sửa lại -->
+                            {% elif dt['status'] == 1 %}
+                            <button type="button" class="btn btn-warning btn-block btn-sm">Đang xử lý</button>
+                            {% elif dt['status'] == 2 %}
+                            <a href="/admin/election/upload_zip/{{dt['id']}}" class="btn btn-primary btn-block btn-sm">Bổ sung phiếu bầu</a>
+                            <a href="/admin/statistical/detail/{{dt['id']}}" class="btn btn-info btn-block btn-sm">Xem thống kê</a>
+                            <a href="/admin/election/confirm_end/{{dt['id']}}" class="btn btn-danger btn-block btn-sm" 
+                            onclick="return confirm('Bạn có chắc chắn muốn kết thúc cuộc bầu cử này?');" >Kết thúc cuộc bầu cử</a>
+                            {% else %}
+                            <a href="/admin/statistical/detail/{{dt['id']}}" class="btn btn-info btn-block btn-sm">Xem thống kê</a>
+
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}

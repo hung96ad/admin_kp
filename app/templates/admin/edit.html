@@ -1,0 +1,127 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+{{ super() }}
+
+{% if current_user.is_authenticated %}
+<section class="content">
+
+  <div class="row">
+      <div class="col-sm-12">
+      <div class="box box-info">
+            <div class="box-header with-border">
+                    <h3 class="box-title">{% if admin_view.category %}{{ admin_view.category }} - {% endif %}{{ admin_view.name }}</h3>
+                </div>
+            <!-- form start -->
+            <form class="form-horizontal" action="/upload-file" method="POST" enctype="multipart/form-data">
+              <div class="box-body">
+                <div class="form-group">
+                  <label  class="col-sm-2 control-label" for="line_1">Tiêu đề dòng 1</label>
+                  <div class="col-sm-10"> 
+                      <input class="form-control" name="id" name="id" type="hidden" value='{{data["id"]}}'>
+                      <input class="form-control" name="file" name="file" type="hidden" value='{{data["file"]}}'>
+                      <input class="form-control" name="line_1" name="line_1" placeholder="Ví dụ: PHIẾU BẦU CỬ" required value='{{data["line_1"]}}'>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label  class="col-sm-2 control-label" for="line_1">Tiêu đề dòng 2</label>
+                    <div class="col-sm-10"> <input class="form-control" id="line_2" name="line_2" placeholder="Ví dụ: BAN CHẤP HÀNH ĐẢNG BỘ CÔNG TY ĐIỆN LỰC TP HÀ NỘI" value='{{data["line_2"]}}'>
+                        </div>
+                    </div>
+                <div class="form-group">
+                  <label  class="col-sm-2 control-label" for="line_1">Tiêu đề dòng 3</label>
+                  <div class="col-sm-10"> <input class="form-control" id="line_3" name="line_3" placeholder="Ví dụ: LẦN THỨ XX" value='{{data["line_3"]}}'>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label  class="col-sm-2 control-label" for="line_1">Tiêu đề dòng 4</label>
+                    <div class="col-sm-10"> <input class="form-control" id="line_4" name="line_4" placeholder="Ví dụ: NHIỆM KỲ 2019-2020" value='{{data["line_4"]}}'>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                  <label  class="col-sm-2 control-label" for="line_1">Số lượng người bầu tối thiểu</label>
+                  <div class="col-sm-10"> 
+                      <input type='number' class="form-control" id="min_persions" name="min_persions" placeholder="12" required value='{{data["min_persions"]}}'>
+                    </div>
+                </div>
+                <div class="form-group">
+                  <label  class="col-sm-2 control-label" for="line_1">Số lượng người bầu tối đa</label>
+                  <div class="col-sm-10"> 
+                      <input type='number' class="form-control" id="max_persions" name="max_persions" placeholder="18" required value='{{data["max_persions"]}}'>
+                    </div>
+                </div>
+
+                <!-- <div class="form-group">
+                  <label  class="col-sm-2 control-label" for="input_file">File excel họ, tên (nếu sửa)</label>
+                  <div class="col-sm-2"> 
+                      <input type="file" id="input_file" name="input_file" accept=".xlsx, .xls">
+                    </div>
+                    <div class='col-sm-8'><a href="/static/uploads/MAU_HO_TEN.xlsx" target="_blank"><b>Tải xem file mẫu</b></a></div>
+                </div> -->
+
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary">Thêm</button>
+              </div>
+            </form>
+          </div>
+
+
+  </div>
+</div>
+
+
+</section>
+<script>
+
+window.onload = (function () {
+    //Date picker
+    $('#datepicker').datepicker({
+      autoclose: true,
+    })
+
+  })
+</script>
+
+<!-- /.content -->
+{% else %}
+
+<center>
+    <section class="content" style="color: white">
+        <div class="col-sm-12">
+            <h1>Admin Manager</h1>
+            <!-- <p class="lead">
+                Authentication
+            </p>
+            <p>
+                This example shows how you can use Flask-Admin in an admin template, <br> here I used AdminLTE and <a href="https://pythonhosted.org/Flask-Security/index.html" target="_blank">Flask-Security</a> for authentication.
+            </p> -->
+            {% if not current_user.is_authenticated %}
+            <meta http-equiv="Refresh" content="0; url={{ url_for('security.login') }}" />
+
+                <!-- email: <b>admin</b> <br> -->
+                <!-- password: <b>admin</b> <br> -->
+                <br>
+                <p>
+                    <a class="btn btn-primary" href="{{ url_for('security.login') }}">Login</a>
+                </p>
+                {% endif %}
+                <br>
+                <p>
+                    <a class="btn btn-primary" href="/"><i class="glyphicon glyphicon-chevron-left"></i> Back</a>
+                </p>
+            </div>
+
+            
+        </section>
+    </center>
+
+    <br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br>
+ {% endif %}
+
+  {% endblock body %}

@@ -14,6 +14,7 @@ from sqlalchemy.sql.expression import func
 from .views.mymodelview import MyModelView
 from .views.userview import UserView
 from .views.electionview import ElectionView
+from .views.resultview import ResultView
 from .views.customview import CustomView
 from .views.add import AddView
 from .views.update import UpdateView
@@ -22,6 +23,10 @@ from .controllers.gen_template import gen_by_ho_ten
 
 import warnings
 import pandas as pd
+import zipfile
+import uuid
+
+from subprocess import Popen, PIPE, STDOUT
 
 def fxn():
     warnings.warn("deprecated", DeprecationWarning)
@@ -40,6 +45,8 @@ from .models.role import Role
 from .models.user import User
 from .models.election import Election
 from .models.eletion_detail import Eletion_Detail
+from .models.result import Result
+from .models.result_detail import Result_Detail
 
 # Setup Flask-Security
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
@@ -53,11 +60,7 @@ def index():
 @app.route("/upload-file", methods=["GET", "POST"])
 def upload_file():
     if request.method == "POST":
-        election_id = db.session.query(db.func.max(Election.id)).scalar()
-        if election_id is None:
-            election_id = 1
-        else:
-            election_id += 1
+        election_id = request.form.get('id')
         line_1 = request.form.get('line_1')
         line_2 = request.form.get('line_2')
         line_3 = request.form.get('line_3')
@@ -66,42 +69,94 @@ def upload_file():
         title = ' '.join(filter(None, line))
         min_persions = request.form.get('min_persions')
         max_persions = request.form.get('max_persions')
-        file_data = request.files["input_file"]
-        file_data.filename = str(election_id) + ".xlsx"
-        path_excel = app.config['EXCEL'] + file_data.filename
-        file_data.save(path_excel)
 
-        # sinh ra file ảnh
-        ho_ten = pd.read_excel(path_excel)
-        num_persons = ho_ten.shape[0]
-        ho_ten = ho_ten.sort_values(['Tên', 'Họ']).reset_index(drop=True)
-        ho_ten['full_name'] = ho_ten['Họ'] + " " + ho_ten['Tên']
-        image = gen_by_ho_ten(ho_ten['full_name'], election_id, line, app.config['IMAGE'])
+        if election_id is None:
+            election_id = db.session.query(db.func.max(Election.id)).scalar()
+            if election_id is None:
+                election_id = 1
+            else:
+                election_id += 1
+            file_data = request.files["input_file"]
+            file_data.filename = str(election_id) + ".xlsx"
+            path_excel = app.config['EXCEL'] + file_data.filename
+            file_data.save(path_excel)
 
-        # add vao db
-        objects = []
-        elec = Election(title = title, num_persons=ho_ten.shape[0], min_persions=min_persions, max_persions=max_persions, image=image, file=path_excel)
-        objects.append(elec)
-        
-        for i in range(ho_ten.shape[0]):
-            ed = Eletion_Detail(full_name=ho_ten['full_name'][i], id_election=election_id, order_number=i+1)
-            objects.append(ed)
-        
-        db.session.bulk_save_objects(objects)
-        db.session.commit()
+            # sinh ra file ảnh
+            ho_ten = pd.read_excel(path_excel)
+            num_persons = ho_ten.shape[0]
+            ho_ten = ho_ten.sort_values(['Tên', 'Họ']).reset_index(drop=True)
+            ho_ten['full_name'] = ho_ten['Họ'] + " " + ho_ten['Tên']
+            image = gen_by_ho_ten(ho_ten['full_name'], election_id, line, app.config['IMAGE'])
+
+            # add vao db
+            objects = []
+            elec = Election(title = title, num_persons=ho_ten.shape[0], min_persions=min_persions, max_persions=max_persions, image=image, file=path_excel,
+            line_1=line_1, line_2=line_2, line_3=line_3, line_4=line_4)
+            objects.append(elec)
+            
+            for i in range(ho_ten.shape[0]):
+                ed = Eletion_Detail(full_name=ho_ten['full_name'][i], id_election=election_id, order_number=i+1)
+                objects.append(ed)
+            
+            db.session.bulk_save_objects(objects)
+            db.session.commit()
+        else:
+            elec = Election.query.get(election_id)
+            path_excel = request.form.get('file')
+            ho_ten = pd.read_excel(path_excel)
+            ho_ten = ho_ten.sort_values(['Tên', 'Họ']).reset_index(drop=True)
+            ho_ten['full_name'] = ho_ten['Họ'] + " " + ho_ten['Tên']
+            image = gen_by_ho_ten(ho_ten['full_name'], election_id, line, app.config['IMAGE'])
+
+            elec.title = title
+            elec.line_1 = line_1
+            elec.line_2 = line_2
+            elec.line_3 = line_3
+            elec.line_4 = line_4
+            elec.min_persions = min_persions
+            elec.max_persions = max_persions
+            db.session.commit()
+
 
     return render_template('upload_file.html', user_image = image)
+
+@app.route("/upload_zip/", methods=["GET", "POST"])
+def upload_zip():
+    if request.method == "POST":
+        id = request.form.get('comp_select')
+        file_data = request.files["input_file"]
+        path_folder = app.config['IMAGE'] + str(id) +  '/' + str(uuid.uuid4())
+        path_file = path_folder + file_data.filename
+        file_data.save(path_file)
+        with zipfile.ZipFile(path_file, 'r') as zip_ref:
+            zip_ref.extractall(path_folder)
+        list_image = os.listdir(path_folder)
+        if not os.path.isfile(path_folder + '/' + list_image[0]):
+            path_folder += '/' + list_image[0]
+            list_image = os.listdir(path_folder)
+
+        objects = []
+        for image in list_image:
+            rs = Result(id_election=id, image = path_folder + '/' + image)
+            objects.append(rs)
+        
+        el = Election.query.filter_by(id=id).update({'status': 1})
+        db.session.bulk_save_objects(objects)
+        db.session.commit()
+    return render_template('upload_zip_success.html')
+
 # Create admin
 admin = flask_admin.Admin(
     app,
-    'Quản lý  bầu cử',
+    'Phần mềm kiểm phiếu',
     base_template='my_master.html',
     template_mode='bootstrap3'
 )
 # print(Election().all())
 # Add model views
-admin.add_view(AddView(name="Quản trị bầu cử", endpoint='add', menu_icon_type='fa', menu_icon_value='fa-calendar-plus-o',))
+admin.add_view(AddView(name="Thêm mới bầu cử", endpoint='add', menu_icon_type='fa', menu_icon_value='fa-calendar-plus-o',))
 admin.add_view(ElectionView(endpoint='election', menu_icon_type='fa', menu_icon_value='fa-server', name="Quản lý danh sách các cuộc bầu cử", model=Election, db=db))
+admin.add_view(ResultView(endpoint='statistical', menu_icon_type='fa', menu_icon_value='fa-table', name="Thống kê báo cáo", db=db))
 # admin.add_view(UpdateView(name="Bổ sung phiếu bầu cử", endpoint='update', menu_icon_type='fa', menu_icon_value='fa-edit (alias)',))
 # define a context processor for merging flask-admin's template context into the
 # flask-security views.
