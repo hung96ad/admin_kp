@@ -22,7 +22,14 @@
           background-color: #dddddd;
         }
         </style>
+        <section class="content-header">
+            <h1>Kết quả bầu cử </h1>
+            <h2 class="breadcrumb">
+                <a href="/admin/statistical/export_excel/{{data['id']}}" class="btn btn-primary btn-flat pull-left">Kết xuất file excel</a>
+            </h2>
+        </section>
 <section class="content">
+
 <h3>Tên cuộc bầu cử: <b>{{data['content']['title']}}</b>
 </br>
 Tổng số phiếu bầu: {{data['content']['total']}}

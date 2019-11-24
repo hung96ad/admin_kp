@@ -175,7 +175,7 @@ admin = flask_admin.Admin(
 # Add model views
 admin.add_view(AddView(name="Thêm mới bầu cử", endpoint='add', menu_icon_type='fa', menu_icon_value='fa-calendar-plus-o',))
 admin.add_view(ElectionView(endpoint='election', menu_icon_type='fa', menu_icon_value='fa-server', name="Quản lý danh sách các cuộc bầu cử", model=Election, db=db))
-admin.add_view(ResultView(endpoint='statistical', menu_icon_type='fa', menu_icon_value='fa-table', name="Thống kê báo cáo", db=db))
+admin.add_view(ResultView(endpoint='statistical', menu_icon_type='fa', menu_icon_value='fa-table', name="Thống kê bầu cử", db=db))
 # admin.add_view(UpdateView(name="Bổ sung phiếu bầu cử", endpoint='update', menu_icon_type='fa', menu_icon_value='fa-edit (alias)',))
 # define a context processor for merging flask-admin's template context into the
 # flask-security views.

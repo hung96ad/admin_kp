@@ -5,6 +5,9 @@
 {% if current_user.is_authenticated %}
 <!-- <link rel="stylesheet" href="/static/css/all.css"> -->
 <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+<section class="content-header">
+        <h1>Thống kê bầu cử </h1>
+    </section>
 <section class="content">
         
         <table id="table" 
@@ -55,7 +58,7 @@
                     </td>
 
                     <td class="col-download">
-                            <a href="{{dt['id_election']}}" target="_blank"> Tải về
+                            <a href="/admin/statistical/export_excel/{{dt['id_election']}}" target="_blank"> Tải về
                             </a>
                     </td>
                     <td class="col-detail">

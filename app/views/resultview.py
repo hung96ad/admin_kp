@@ -1,4 +1,6 @@
 from flask_admin import BaseView, expose
+import pandas as pd
+from flask import request, redirect
 
 class ResultView(BaseView):
     def __init__(self, name=None, category=None, endpoint=None, url=None,
@@ -39,7 +41,7 @@ class ResultView(BaseView):
     
     @expose('/detail/<id>/')
     def detail(self, id):
-        data = {}
+        data = {'id':id}
         sql = "SELECT e.title, a.*, b.num_valid, (a.total-b.num_valid) num_invalid \
             FROM \
         ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a \
@@ -68,3 +70,41 @@ class ResultView(BaseView):
         data = self.db.engine.execute(sql)
         return self.render('admin/error.html', data=data)
     
+    @expose('/export_excel/<id>/')
+    def export_excel(self, id):
+        data = {}
+        sql = "SELECT e.title, a.*, b.num_valid, (a.total-b.num_valid) num_invalid \
+            FROM \
+        ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a \
+        JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election\
+        JOIN election e ON e.id = a.id_election AND e.is_delete = 0 AND e.id = %s"%id
+        data['content'] = self.db.engine.execute(sql).first()
+
+        sql_2 = "SELECT ed.full_name, a.*\
+                FROM election_detail ed \
+            	JOIN (SELECT r.id_election, rd.order_number, SUM( rd.vote ) AS total_vote  \
+                    FROM result_detail rd \
+                    JOIN result r ON r.id = rd.id_result \
+                    GROUP BY r.id_election, rd.order_number  ) a ON ed.id_election = a.id_election \
+            	AND ed.order_number = a.order_number AND ed.id_election = %s"%(id)
+        data['table'] = self.db.engine.execute(sql_2)
+
+        dict_dt = [{'A': "Tên cuộc bầu cử:", "B": data['content']['title'], "C": None}]
+        dict_dt.append({'A': "Tổng số phiếu bầu:", "B": data['content']['total'], "C": None})
+        dict_dt.append({'A': "Số phiếu bầu hợp lệ:", "B": data['content']['num_valid'], "C": None})
+        dict_dt.append({'A': "Số phiếu bầu không hợp lệ:", "B": data['content']['num_invalid'], "C": None})
+        dict_dt.append({'A': "Kết quả chi tiết:", "B": "", "C": None})
+        dict_dt.append({'A': "STT", "B": "Họ và tên", "C": "Tỷ lệ trúng cử"})
+        for dt in data['table']:
+            persen = round((dt['total_vote']/data['content']['num_valid'] * 100), 2) 
+            str_temp = str(persen) + "%" + " (%s/%s)" %(dt['total_vote'], data['content']['num_valid'])
+
+            dict_dt.append({'A': dt['order_number'], "B": dt['full_name'], "C": str_temp})
+
+        df = pd.DataFrame(dict_dt)
+        path_excel = "app/static/uploads/excels/" + "KQBC_%s.xlsx"%id
+        df.to_excel(path_excel, index=False, header=False)
+        # self.model.query.filter(self.model.id == id).update({"is_delete":True})
+        # self.db.session.commit()
+        # data = self.model.query.filter(self.model.is_delete == False)
+        return redirect(path_excel.replace("app",""))
