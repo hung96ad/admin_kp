@@ -62,6 +62,7 @@ class ElectionView(BaseView):
 
     @expose('/')
     def index(self):
+        self.name = "Danh sách các cuộc bầu cử"
         data = self.model.query.filter(self.model.is_delete == False)
         return self.render('admin/election.html', data=data)
     
