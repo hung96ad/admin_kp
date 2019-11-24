@@ -7,3 +7,10 @@ pdfkit
 lxml
 html5lib
 imgkit
+scipy
+imutils
+matplotlib
+opencv-python
+pandas
+xlrd
+openpyxl
