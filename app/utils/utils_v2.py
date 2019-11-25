@@ -310,7 +310,7 @@ def validate_cell(gray_origin, gray_file, i=0):
         gray_file_cp[y:y+h, x:x+w] = 0
 
     ratio = gray_file_cp.sum()/(gray_file_cp.shape[0]*gray_file_cp.shape[1])
-    if ratio > 1.1:
+    if ratio > 1.2:
 #         f = plt.figure()
 #         f.add_subplot(1,2, 1)
 #         plt.imshow(gray_file, 'gray')
