@@ -71,14 +71,14 @@ class ElectionView(BaseView):
     def delete(self, id):
         self.model.query.filter(and_(self.model.id == id, self.model.status == 0)).update({"is_delete":True})
         self.db.session.commit()
-        data = self.model.query.filter(self.model.is_delete == False)
+        data = self.model.query.filter(self.model.is_delete == False).order_by(desc(self.model.id))
         return self.render('admin/election.html', data=data)
         
     @expose('/confirm_end/<id>/', methods=('GET', 'POST'))
     def confirm_end(self, id):
         self.model.query.filter(self.model.id == id).update({"status":4})
         self.db.session.commit()
-        data = self.model.query.filter(self.model.is_delete == False)
+        data = self.model.query.filter(self.model.is_delete == False).order_by(desc(self.model.id))
         return self.render('admin/election.html', data=data)
 
     @expose('/edit/<id>/', methods=('GET', 'POST'))
