@@ -155,8 +155,9 @@ def upload_zip():
 
         objects = []
         for image in list_image:
-            rs = Result(id_election=id, image = path_folder + '/' + image)
-            objects.append(rs)
+            if image.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')):
+                rs = Result(id_election=id, image = path_folder + '/' + image)
+                objects.append(rs)
         
         el = Election.query.filter_by(id=id).update({'status': 1})
         db.session.bulk_save_objects(objects)
