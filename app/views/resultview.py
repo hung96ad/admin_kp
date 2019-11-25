@@ -44,7 +44,7 @@ class ResultView(BaseView):
     @expose('/detail/<id>/')
     def detail(self, id):
         data = {'id':id}
-        sql = self.sql + " AND e.id = %s"%id
+        sql = self.sql + " WHERE e.id = %s"%id
         data['content'] = self.db.engine.execute(sql).first()
 
         sql_2 = "SELECT ed.full_name, ed.order_number, a.id_election, IFNULL(a.total_vote,0) total_vote \
