@@ -59,8 +59,12 @@ Số phiếu bầu không hợp lệ: {{data['content']['num_invalid']}}
                         </td>
 
                     <td class="col-total">
-                            {{ (dt['total_vote']/data['content']['num_valid'] * 100)|round(2)}}% ({{dt['total_vote']}}/{{data['content']['num_valid']}})
-                        </td>
+                        {% if data['content']['num_valid'] == 0%}
+                        0%
+                        {% else %}
+                        {{ (dt['total_vote']/data['content']['num_valid'] * 100)|round(2)}}% ({{dt['total_vote']}}/{{data['content']['num_valid']}})
+                        {% endif %}    
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

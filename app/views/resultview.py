@@ -47,9 +47,9 @@ class ResultView(BaseView):
         sql = self.sql + " AND e.id = %s"%id
         data['content'] = self.db.engine.execute(sql).first()
 
-        sql_2 = "SELECT ed.full_name, a.*\
+        sql_2 = "SELECT ed.full_name, ed.order_number, a.id_election, IFNULL(a.total_vote,0) total_vote \
                 FROM election_detail ed \
-            	JOIN (SELECT r.id_election, rd.order_number, SUM( rd.vote ) AS total_vote  \
+            	LEFT JOIN (SELECT r.id_election, rd.order_number, SUM( rd.vote ) AS total_vote  \
                     FROM result_detail rd \
                     JOIN result r ON r.id = rd.id_result \
                     GROUP BY r.id_election, rd.order_number  ) a ON ed.id_election = a.id_election \
