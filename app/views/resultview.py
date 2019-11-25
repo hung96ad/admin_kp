@@ -34,7 +34,7 @@ class ResultView(BaseView):
                     FROM \
                 ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a \
                 JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election\
-                JOIN election e ON e.id = a.id_election AND e.is_delete = 0 ORDER BY a.id_election"
+                JOIN election e ON e.id = a.id_election AND e.is_delete = 0 ORDER BY a.id_election DESC"
 
         data = self.db.engine.execute(sql)
         return self.render('admin/statistical.html', data=data)
