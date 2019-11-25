@@ -1,5 +1,6 @@
 from flask_admin import BaseView, expose
 from sqlalchemy import and_, or_, not_
+from sqlalchemy import desc
 
 class ElectionView(BaseView):
     def __init__(self, name=None, category=None, endpoint=None, url=None,
@@ -63,7 +64,7 @@ class ElectionView(BaseView):
     @expose('/')
     def index(self):
         self.name = "Danh sách các cuộc bầu cử"
-        data = self.model.query.filter(self.model.is_delete == False)
+        data = self.model.query.filter(self.model.is_delete == False).order_by(desc(self.model.id))
         return self.render('admin/election.html', data=data)
     
     @expose('/delete/<id>/', methods=('GET', 'POST'))
