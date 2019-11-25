@@ -258,8 +258,8 @@ def check_stamp(dilates_test, bboxs_test):
     ## phần dấu bắt buộc phải dưới phần tiêu đề, bảng trên góc 5x5cm
     if  'spam' in bboxs_test or len(bboxs_test) != 3:
         return False, "Gạch ở ngoài bảng spam"
-    if dilates_test['stamp'].sum()/len(dilates_test['stamp']) > 0.01:
-        return False, "Gạch ở trên phần con dấu"
+    # if dilates_test['stamp'].sum()/len(dilates_test['stamp']) > 0.01:
+    #     return False, "Gạch ở trên phần con dấu"
     return True, ""
     
 def check_tile_outside(dilate_test, bboxs_test):
@@ -268,7 +268,7 @@ def check_tile_outside(dilate_test, bboxs_test):
     for item in bboxs_test:
         x,y,w,h = bboxs_test[item]
         dilate_test_cp[y:y+h, x:x+w] = 0
-    if dilate_test_cp.sum()/(dilate_test_cp.shape[0])> 5:
+    if dilate_test_cp.sum()/(dilate_test_cp.shape[0]*dilate_test_cp.shape[1])> 2:
         return False, "Gạch ở ngoài bảng"
     return True, ""
 
