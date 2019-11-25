@@ -91,7 +91,7 @@ class ElectionView(BaseView):
     def upload(self, id=0):
         data = {"type": 0}
         if id == "0":
-            data['data'] = self.model.query.filter(self.model.is_delete == False, self.model.status != 3)      
+            data['data'] = self.model.query.filter(self.model.is_delete == False, self.model.status != 3).order_by(desc(self.model.id))      
         else:
             data = {"type": 1}
             data['data'] = self.model.query.get(id)
