@@ -53,7 +53,7 @@ class ResultView(BaseView):
                     FROM result_detail rd \
                     JOIN result r ON r.id = rd.id_result \
                     GROUP BY r.id_election, rd.order_number  ) a ON ed.id_election = a.id_election \
-            	AND ed.order_number = a.order_number AND ed.id_election = %s"%(id)
+            	AND ed.order_number = a.order_number WHERE ed.id_election = %s"%(id)
         data['table'] = self.db.engine.execute(sql_2)
 
         # self.model.query.filter(self.model.id == id).update({"is_delete":True})
@@ -71,7 +71,7 @@ class ResultView(BaseView):
     @expose('/export_excel/<id>/')
     def export_excel(self, id):
         data = {}
-        sql = self.sql + " AND e.id = %s"%id
+        sql = self.sql + " WHERE e.id = %s"%id
         data['content'] = self.db.engine.execute(sql).first()
 
         sql_2 = "SELECT ed.full_name, a.*\
