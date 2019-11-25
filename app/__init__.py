@@ -161,9 +161,12 @@ def upload_zip():
         el = Election.query.filter_by(id=id).update({'status': 1})
         db.session.bulk_save_objects(objects)
         # db.session.commit()
-        run_all(db)
-        db.session.commit()
-    return render_template('upload_zip_success.html')
+        process_img = run_all(db)
+        if process_img == True:
+            return render_template('upload_zip_success.html', data="Upload file thành công vui lòng đợi để xử lý. Trang sẽ tự động trở về Danh sách các cuộc bầu cử để chờ kết quả sau 5s.")
+        else:
+            db.session.rollback()
+    return render_template('upload_zip_success.html', data="Gặp lỗi trong quá trình xử lý")
 
 # Create admin
 admin = flask_admin.Admin(

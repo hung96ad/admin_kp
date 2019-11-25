@@ -22,6 +22,12 @@ class ResultView(BaseView):
         self.admin = None
         self.blueprint = None
         self.db = db
+        self.sql = "SELECT e.title, a.*, b.num_valid, IFNULL( b.num_valid, 0 ) AS num_valid, IFNULL( c.num_invalid, 0 ) AS num_invalid\
+                    FROM \
+                ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a \
+                LEFT JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election \
+                LEFT JOIN ( SELECT id_election, COUNT( * ) AS num_invalid FROM result WHERE result.processed = 3 GROUP BY id_election ) AS c ON a.id_election = c.id_election \
+                JOIN election e ON e.id = a.id_election AND e.is_delete = 0"
 
         # Default view
         if self._default_view is None:
@@ -30,11 +36,7 @@ class ResultView(BaseView):
 
     @expose('/')
     def index(self):
-        sql = "SELECT e.title, a.*, b.num_valid, (a.total-b.num_valid) num_invalid \
-                    FROM \
-                ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a \
-                JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election\
-                JOIN election e ON e.id = a.id_election AND e.is_delete = 0 ORDER BY a.id_election DESC"
+        sql = self.sql + " ORDER BY a.id_election DESC"
 
         data = self.db.engine.execute(sql)
         return self.render('admin/statistical.html', data=data)
@@ -42,11 +44,7 @@ class ResultView(BaseView):
     @expose('/detail/<id>/')
     def detail(self, id):
         data = {'id':id}
-        sql = "SELECT e.title, a.*, b.num_valid, (a.total-b.num_valid) num_invalid \
-            FROM \
-        ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a \
-        JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election\
-        JOIN election e ON e.id = a.id_election AND e.is_delete = 0 AND e.id = %s"%id
+        sql = self.sql + " AND e.id = %s"%id
         data['content'] = self.db.engine.execute(sql).first()
 
         sql_2 = "SELECT ed.full_name, a.*\
@@ -73,11 +71,7 @@ class ResultView(BaseView):
     @expose('/export_excel/<id>/')
     def export_excel(self, id):
         data = {}
-        sql = "SELECT e.title, a.*, b.num_valid, (a.total-b.num_valid) num_invalid \
-            FROM \
-        ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a \
-        JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election\
-        JOIN election e ON e.id = a.id_election AND e.is_delete = 0 AND e.id = %s"%id
+        sql = self.sql + " AND e.id = %s"%id
         data['content'] = self.db.engine.execute(sql).first()
 
         sql_2 = "SELECT ed.full_name, a.*\

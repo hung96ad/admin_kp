@@ -88,6 +88,6 @@ def run_all(db):
     # insert_result_detail(data_result_detail)
     # update_result(data_result)
     # update_election(election['id)
-
+    return True
 if __name__ == '__main__':
     run_all()
