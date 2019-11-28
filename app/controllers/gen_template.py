@@ -21,7 +21,8 @@ def DataFrame_to_image(css, outputfile="out.jpg", format="jpg"):
     
     # See IMGKit options for full configuration,
     # e.g. cropping of final image
-    imgkitoptions = {"format": format,  "xvfb": ""}
+    # imgkitoptions = {"format": format,  "xvfb": ""}
+    imgkitoptions = {"format": format}
     
     imgkit.from_file(fn, outputfile.replace('pdf', 'jpg'), options=imgkitoptions)
     pdfkit.from_file(fn, outputfile) 
@@ -61,15 +62,16 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
                   </div>
             <div style="width:21cm; height:24.7cm; position:relative; z-index:2;">
             <div style="position:relative; left:4.5cm;">
-            <h3 style="text-align: center; width:80%;">
+            <h2 style="text-align: center; width:100%;">
             ''' + line[0] +'''<br>
             ''' + line[1] +'''<br>
             ''' + line[2] +'''<br>
             ''' + line[3] +'''<br>
             <br>
+            </h2>
             </div>
-            <div style="position:relative; left:4.5cm;">
-            <table style="width:80%;">
+            <div style="position:relative; left:9.5cm;">
+            <table style="width:50%;">
               <tr>
                 <th style="width:10px;">TT</th>
                 <th>HỌ VÀ TÊN</th>
@@ -115,7 +117,7 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
                   </div>
             <div style="width:21cm; height:24.7cm; position:relative; z-index:2;">
             <div style="position:relative; left:4.5cm;">
-            <h3 style="text-align: center; width:80%;">
+            <h2 style="text-align: center; width:80%;">
             ''' + line[0] +'''<br>
             ''' + line[1] +'''<br>
             ''' + line[2] +'''<br>
