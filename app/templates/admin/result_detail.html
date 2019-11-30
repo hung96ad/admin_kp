@@ -36,7 +36,7 @@ Tổng số phiếu bầu: {{data['content']['total']}}
 </br>
 Số phiếu bầu hợp lệ: {{data['content']['num_valid']}}
 </br>
-Số phiếu bầu không hợp lệ: {{data['content']['num_invalid']}}
+Số phiếu bầu không hợp lệ: {{data['content']['num_invalid']}} <a href="/admin/statistical/error/{{data['id']}}">Xem chi tiết</a>
 </br></h3>
         <h2>Kết quả chi tiết</h2>
         <table>
@@ -51,10 +51,10 @@ Số phiếu bầu không hợp lệ: {{data['content']['num_invalid']}}
             <tbody>
                     {%  for dt in data['table']  %}
                     <tr>
-                        <td class="col-id">
+                        <td class="col-order_number">
                                 {{dt['order_number']}}
                             </td>
-                    <td class="col-title">
+                    <td class="col-full_name">
                             {{dt['full_name']}}
                         </td>
 
