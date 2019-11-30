@@ -5,7 +5,7 @@ from .models.election import Election
 from .models.result import Result
 from .models.result_detail import Result_Detail
 
-DB = "sample_db.sqlite"
+load_model()
 
 def get_all( sql='' ):
     conn = sqlite3.connect( DB )
@@ -55,7 +55,7 @@ def run_all(db):
     data_result_detail = []
     for result in results:
         temp = validation_full(path_origin='app/static/uploads/images/%s/%s.jpg'%(result.id_election, result.id_election), 
-                            path_test=result.image, num_col=num_col)
+                            path_test=result.image, num_person = election.num_persons)
         if temp[0] == False:
             result.processed = 3
             result.description = temp[1]
@@ -89,5 +89,3 @@ def run_all(db):
     # update_result(data_result)
     # update_election(election['id)
     return True
-if __name__ == '__main__':
-    run_all()

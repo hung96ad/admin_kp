@@ -21,8 +21,8 @@ def DataFrame_to_image(css, outputfile="out.jpg", format="jpg"):
     
     # See IMGKit options for full configuration,
     # e.g. cropping of final image
-    # imgkitoptions = {"format": format,  "xvfb": ""}
-    imgkitoptions = {"format": format}
+    imgkitoptions = {"format": format,  "xvfb": ""}
+    # imgkitoptions = {"format": format}
     
     imgkit.from_file(fn, outputfile.replace('pdf', 'jpg'), options=imgkitoptions)
     pdfkit.from_file(fn, outputfile) 
