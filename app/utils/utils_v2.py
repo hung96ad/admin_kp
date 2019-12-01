@@ -314,8 +314,8 @@ def validation_full(path_origin='', path_test='', num_person=10):
             max_pred = np.argmax(pred)
             if max_pred == 3 and max(pred) > 0.75:
                 return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-            if max_pred == 1 or max_pred == 2:
+            elif max_pred == 1 or max_pred == 2:
                 results.append({'vote': 0, 'order_number': stt})
-            if max_pred == 0:
+            else:
                 results.append({'vote': 1, 'order_number': stt})
     return True, results
