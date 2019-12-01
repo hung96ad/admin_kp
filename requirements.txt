@@ -16,3 +16,4 @@ xlrd
 openpyxl
 keras==2.2.5
 tensorflow==1.14
+patool

@@ -24,6 +24,7 @@ from .controllers.gen_template import gen_by_ho_ten
 import warnings
 import pandas as pd
 import zipfile
+import patoolib
 import uuid
 
 from subprocess import Popen, PIPE, STDOUT
@@ -146,8 +147,12 @@ def upload_zip():
         path_folder = app.config['IMAGE'] + str(id) +  '/' + str(uuid.uuid4())
         path_file = path_folder + file_data.filename
         file_data.save(path_file)
-        with zipfile.ZipFile(path_file, 'r') as zip_ref:
-            zip_ref.extractall(path_folder)
+        if path_file.split('.')[-1] == 'zip':
+            with zipfile.ZipFile(path_file, 'r') as zip_ref:
+                zip_ref.extractall(path_folder)
+        else:
+            os.makedirs(path_folder, exist_ok=True)
+            patoolib.extract_archive(path_file, outdir=path_folder)
         list_image = os.listdir(path_folder)
         if not os.path.isfile(path_folder + '/' + list_image[0]):
             path_folder += '/' + list_image[0]
