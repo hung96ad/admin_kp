@@ -8,7 +8,7 @@ import tensorflow as tf
 def load_model():
     global model
     model = build_model()
-    model.load_weights('model_weights.h5')
+    model.load_weights('model_weight.h5')
     global graph
     graph = tf.get_default_graph()
 
@@ -187,7 +187,6 @@ def get_bbox(gray):
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (9,9))
     dilate = cv2.dilate(thresh, kernel, iterations=4)
-
     cnts = cv2.findContours(dilate, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = cnts[0] if len(cnts) == 2 else cnts[1]
 
@@ -204,9 +203,10 @@ def get_bbox(gray):
                 max_area = area
                 bboxs['table'] = [x,y,w,h]
             # kiểm tra xem có dạng hình vuông hay ko
-            if distance < min_distance and 0.95<w/h<1.05:
+            if distance < min_distance and 0.85<w/h<1.15:
                 min_distance = distance
-                bboxs['stamp'] = [x,y,w,h]
+                bboxs['stamp'] = [x - int(0.05*w), y-int(0.05*h), int(1.1*w), int(1.1*h)]
+
             elif 'title' in bboxs and len(bboxs) > 3:
                 bboxs['spam'] = [x,y,w,h]
             else:
@@ -228,7 +228,7 @@ def rotate_image_by_table(gray_img):
 
 def check_tile_outside(dilate_test, bboxs_test):
     dilate_test_cp = dilate_test.copy()
-    dilate_test_cp = cv2.GaussianBlur(dilate_test_cp, (9,9), 0)
+    dilate_test_cp = cv2.GaussianBlur(dilate_test_cp, (3,3), 0)
     (thresh, dilate_test_cp) = cv2.threshold(dilate_test_cp, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
     dilate_test_cp = 255 - dilate_test_cp
     # Kiem tra phan ngoai dau va bang
@@ -248,7 +248,7 @@ def check_tile_outside(dilate_test, bboxs_test):
             y1 = y + M
             x1 = x + N
             tiles = dilate_test_cp[y:y+M,x:x+N]
-            if tiles.sum()/(tiles.shape[0]*tiles.shape[1])> 0.75:
+            if tiles.sum()/(tiles.shape[0]*tiles.shape[1])> 3.5:
                 return False, "Gạch ở ngoài bảng"
     return True, ""
 
@@ -300,7 +300,8 @@ def validation_full(path_origin='', path_test='', num_person=10):
     if abs(1 - ratio_title)>= 0.4:
         return False, "Gạch ở phần title"
     
-    (thresh, img_bin) = cv2.threshold(gray_test, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+    blur = cv2.GaussianBlur(gray_test, (9,9), 0)
+    (_, img_bin) = cv2.threshold(blur, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
     results = []
     for i in range(num_col + step + 1, len(lst_location_cell_test), step):
         stt = int((i - num_col)/step)
@@ -309,12 +310,12 @@ def validation_full(path_origin='', path_test='', num_person=10):
         x, y, w, h = lst_location_cell_test[i]
         cell = cv2.resize(img_bin[y:y+h, x:x+w], (img_width,img_height), interpolation=cv2.INTER_CUBIC).reshape(img_width,img_height,1)
         with graph.as_default():
-            pred = model.predict_classes(np.array([cell/255.]))[0]
-            if pred == 3:
+            pred = model.predict(np.array([cell/255.]))[0]
+            max_pred = np.argmax(pred)
+            if max_pred == 3 and max(pred) > 0.75:
                 return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-            if pred == 1 or pred == 2:
+            if max_pred == 1 or max_pred == 2:
                 results.append({'vote': 0, 'order_number': stt})
-            if pred == 0:
+            if max_pred == 0:
                 results.append({'vote': 1, 'order_number': stt})
     return True, results
-
