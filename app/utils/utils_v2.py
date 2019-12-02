@@ -16,7 +16,7 @@ img_width = 500
 img_height = 50
 
 step = 2
-
+template = cv2.imread('stamp.png',0)
 
 def rotate_image(mat, angle):
 
@@ -273,7 +273,9 @@ def validation_full(path_origin='', path_test='', num_person=10):
     if 'spam' in bboxs_test:
         return False, "Gạch ở ngoài spam"
     if 'stamp' not in bboxs_test:
-        return False, "Thiếu dấu"
+        res = cv2.matchTemplate(gray_test,template,cv2.TM_CCOEFF_NORMED)
+        if np.max(res) < 0.4:
+            return False, "Thiếu dấu"
     
     lst_location_cell_test, message = get_all_cell(gray_test, num_col = num_col, min_cell_w= 24, min_cell_h = 24, total_bboxs=total_bboxs)
     if message != "":
@@ -312,7 +314,7 @@ def validation_full(path_origin='', path_test='', num_person=10):
         with graph.as_default():
             pred = model.predict(np.array([cell/255.]))[0]
             max_pred = np.argmax(pred)
-            if max_pred == 3 and max(pred) > 0.75:
+            if max_pred == 3 and max(pred) > 0.85:
                 return False, "Gạch không hợp lệ ô STT %s"%(stt) 
             elif max_pred == 1 or max_pred == 2:
                 results.append({'vote': 0, 'order_number': stt})
