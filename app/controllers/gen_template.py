@@ -62,7 +62,10 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
                   </div>
             <div style="width:21cm; height:24.7cm; position:relative; z-index:2;">
             <div style="position:relative; left:4.5cm;">
-            <h2 style="text-align: center; width:100%;">
+            <p style="text-align: center; width:80%;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+              <br/>Độc lập - Tự do - Hạnh phúc</p>
+
+            <h2 style="text-align: center; width:80%;">
             ''' + line[0] +'''<br>
             ''' + line[1] +'''<br>
             ''' + line[2] +'''<br>
@@ -70,8 +73,8 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
             <br>
             </h2>
             </div>
-            <div style="position:relative; left:9.5cm;">
-            <table style="width:50%;">
+            <div>
+            <table style="width:50%; height: 100%; margin-left:8.0cm;">
               <tr>
                 <th style="width:10px;">TT</th>
                 <th>HỌ VÀ TÊN</th>
@@ -117,6 +120,8 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
                   </div>
             <div style="width:21cm; height:24.7cm; position:relative; z-index:2;">
             <div style="position:relative; left:4.5cm;">
+            <p style="text-align: center; width:80%;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+              <br/>Độc lập - Tự do - Hạnh phúc</p>
             <h2 style="text-align: center; width:80%;">
             ''' + line[0] +'''<br>
             ''' + line[1] +'''<br>
@@ -126,7 +131,7 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
             </h2>
             </div>
             <div style="position:relative; left:4.5cm;">
-            <table style="width:80%;">
+            <table style="width:80%;height: 100%;">
               <tr>
                 <th style="width:10px;">TT</th>
                 <th>HỌ VÀ TÊN</th>
