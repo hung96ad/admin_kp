@@ -193,24 +193,38 @@ def get_bbox(gray):
     min_distance = float('Inf')
     max_area = 0
     bboxs = {}
+    _bboxs = []
+    
     for c in cnts:
         area = cv2.contourArea(c)
         if area > 10000:
             x,y,w,h = cv2.boundingRect(c)
             distance = x*x + y*y
-            # lấy phần diện tích lớn nhất
-            if max_area < area:
-                max_area = area
-                bboxs['table'] = [x,y,w,h]
-            # kiểm tra xem có dạng hình vuông hay ko
+            _bboxs.append([x,y,w,h])
+            _area = w*h
+            if max_area < _area:
+                max_area = _area
             if distance < min_distance and 0.85<w/h<1.15:
                 min_distance = distance
-                bboxs['stamp'] = [x - int(0.05*w), y-int(0.05*h), int(1.1*w), int(1.1*h)]
+    
+    for bbox in _bboxs:
+        x,y,w,h = bbox
+        distance = x*x + y*y
+        if max_area == w*h:
+            bboxs['table'] = [x,y,w,h]
+            _bboxs.remove([x,y,w,h])
+        elif min_distance == distance and 0.85<w/h<1.15:
+            bboxs['stamp'] = [x - int(0.05*w), y-int(0.05*h), int(1.1*w), int(1.1*h)]
+            _bboxs.remove([x,y,w,h])
 
-            elif 'title' in bboxs and len(bboxs) > 3:
-                bboxs['spam'] = [x,y,w,h]
-            else:
-                bboxs['title'] = [x,y,w,h]
+    for bbox in _bboxs:
+        x,y,w,h = bbox
+        if 'title' in bboxs:
+            bboxs['title 2'] = [x,y,w,h]
+        elif 'title 2' in bboxs:
+            bboxs['spam'] = [x,y,w,h]
+        else:
+            bboxs['title'] = [x,y,w,h]
     return bboxs
 
 def rotate_image_by_table(gray_img):
@@ -269,7 +283,6 @@ def validation_full(path_origin='', path_test='', num_person=10):
         total_bboxs = num_person * 2 + num_col + 2
     gray_test = read_to_gray(path_test)
     gray_test, bboxs_test = rotate_image_by_table(gray_test)
-    
     if 'spam' in bboxs_test:
         return False, "Gạch ở ngoài spam"
     if 'stamp' not in bboxs_test:
@@ -286,22 +299,10 @@ def validation_full(path_origin='', path_test='', num_person=10):
     if status == False: 
         return status, message
     
-    title_test = gray_test[bboxs_test['title'][1]:bboxs_test['title'][1] + bboxs_test['title'][3], 
-                                 bboxs_test['title'][0]:bboxs_test['title'][0]+bboxs_test['title'][2]].copy()
-    
-    # tạm để test
     gray_origin = read_to_gray(path_origin)
-
     bboxs_origin = get_bbox(gray_origin)
     lst_location_cell_origin, _ = get_all_cell(gray_origin, num_col = num_col, min_cell_w= 24, min_cell_h = 24, total_bboxs=total_bboxs)
-    title_origin = gray_origin[bboxs_origin['title'][1]:bboxs_origin['title'][1] + bboxs_origin['title'][3], 
-                                 bboxs_origin['title'][0]:bboxs_origin['title'][0]+bboxs_origin['title'][2]].copy()
 
-    # Check phần title
-    ratio_title = get_ratio(title_origin, title_test)
-    if abs(1 - ratio_title)>= 0.4:
-        return False, "Gạch ở phần title"
-    
     blur = cv2.GaussianBlur(gray_test, (9,9), 0)
     (_, img_bin) = cv2.threshold(blur, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
     results = []
@@ -314,7 +315,7 @@ def validation_full(path_origin='', path_test='', num_person=10):
         with graph.as_default():
             pred = model.predict(np.array([cell/255.]))[0]
             max_pred = np.argmax(pred)
-            if max_pred == 3 and max(pred) > 0.85:
+            if max_pred == 3 and max(pred) > 0.9:
                 return False, "Gạch không hợp lệ ô STT %s"%(stt) 
             elif max_pred == 1 or max_pred == 2:
                 results.append({'vote': 0, 'order_number': stt})
