@@ -288,7 +288,7 @@ def validation_full(path_origin='', path_test='', num_person=10):
     if 'stamp' not in bboxs_test:
         res = cv2.matchTemplate(gray_test,template,cv2.TM_CCOEFF_NORMED)
         if np.max(res) < 0.4:
-            return False, "Thiếu dấu"
+            return False, "Thiếu dấu góc trái"
     
     lst_location_cell_test, message = get_all_cell(gray_test, num_col = num_col, min_cell_w= 24, min_cell_h = 24, total_bboxs=total_bboxs)
     if message != "":
