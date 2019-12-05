@@ -248,10 +248,6 @@ def check_tile_outside(dilate_test, bboxs_test):
     # Kiem tra phan ngoai dau va bang
     for item in bboxs_test:
         x,y,w,h = bboxs_test[item]
-        if x < 0:
-            x = 0
-        if y < 0:
-            y = 0
         dilate_test_cp[y:y+h, x:x+w] = 0
         
     imgheight=dilate_test_cp.shape[0]
@@ -260,6 +256,7 @@ def check_tile_outside(dilate_test, bboxs_test):
     y1 = 0
     M = imgheight//16
     N = imgwidth//16
+
     for y in range(0,imgheight,M):
         for x in range(0, imgwidth, N):
             y1 = y + M
@@ -268,7 +265,7 @@ def check_tile_outside(dilate_test, bboxs_test):
             if tiles.sum()/(tiles.shape[0]*tiles.shape[1])> 3.5:
                 return False, "Gạch ở ngoài bảng"
     return True, ""
-    
+
 def get_ratio(img_origin, img_test):    
     img_origin = 255 - img_origin
     img_test = 255 - img_test
