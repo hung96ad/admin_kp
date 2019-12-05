@@ -291,7 +291,8 @@ def validation_full(path_origin='', path_test='', num_person=10):
         return False, "Gạch ở ngoài spam"
     if 'stamp' not in bboxs_test:
         res = cv2.matchTemplate(gray_test,template,cv2.TM_CCOEFF_NORMED)
-        if np.max(res) < 0.4:
+        _, max_val, _, max_loc = cv2.minMaxLoc(res)
+        if max_val < 0.5 or max_loc[0] > 500 or max_loc[0] > 500:
             return False, "Thiếu dấu góc trái"
     
     lst_location_cell_test, message = get_all_cell(gray_test, num_col = num_col, min_cell_w= 24, min_cell_h = 24, total_bboxs=total_bboxs)
