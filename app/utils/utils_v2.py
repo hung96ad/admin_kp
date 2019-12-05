@@ -199,22 +199,23 @@ def get_bbox(gray):
         area = cv2.contourArea(c)
         if area > 10000:
             x,y,w,h = cv2.boundingRect(c)
-            distance = x*x + y*y
             _bboxs.append([x,y,w,h])
             _area = w*h
             if max_area < _area:
                 max_area = _area
-            if distance < min_distance and 0.85<w/h<1.15:
-                min_distance = distance
+            if x < min_distance and 0.85<w/h<1.15:
+                min_distance = x
     
     for bbox in _bboxs:
         x,y,w,h = bbox
-        distance = x*x + y*y
         if max_area == w*h:
             bboxs['table'] = [x,y,w,h]
             _bboxs.remove([x,y,w,h])
-        elif min_distance == distance and 0.85<w/h<1.15:
-            bboxs['stamp'] = [x - int(0.05*w), y-int(0.05*h), int(1.1*w), int(1.1*h)]
+        elif min_distance == x and 0.85<w/h<1.15 and x < 500:
+            if y-int(0.05*h) > 0 and x-int(0.05*w) > 0:
+                bboxs['stamp'] = [x - int(0.05*w), y-int(0.05*h), int(1.1*w), int(1.1*h)]
+            else:
+                bboxs['stamp'] = [x,y,w,h]
             _bboxs.remove([x,y,w,h])
 
     for bbox in _bboxs:
@@ -248,6 +249,10 @@ def check_tile_outside(dilate_test, bboxs_test):
     # Kiem tra phan ngoai dau va bang
     for item in bboxs_test:
         x,y,w,h = bboxs_test[item]
+        if x < 0:
+            x = 0
+        if y < 0:
+            y = 0
         dilate_test_cp[y:y+h, x:x+w] = 0
         
     imgheight=dilate_test_cp.shape[0]
@@ -256,7 +261,6 @@ def check_tile_outside(dilate_test, bboxs_test):
     y1 = 0
     M = imgheight//16
     N = imgwidth//16
-
     for y in range(0,imgheight,M):
         for x in range(0, imgwidth, N):
             y1 = y + M
@@ -265,7 +269,7 @@ def check_tile_outside(dilate_test, bboxs_test):
             if tiles.sum()/(tiles.shape[0]*tiles.shape[1])> 3.5:
                 return False, "Gạch ở ngoài bảng"
     return True, ""
-
+    
 def get_ratio(img_origin, img_test):    
     img_origin = 255 - img_origin
     img_test = 255 - img_test
