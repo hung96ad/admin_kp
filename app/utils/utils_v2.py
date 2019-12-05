@@ -211,7 +211,7 @@ def get_bbox(gray):
         if max_area == w*h:
             bboxs['table'] = [x,y,w,h]
             _bboxs.remove([x,y,w,h])
-        elif min_distance == x and 0.85<w/h<1.15 and x < 500:
+        elif min_distance == x and 0.85<w/h<1.15 and x < 500 and y < 600:
             if y-int(0.05*h) > 0 and x-int(0.05*w) > 0:
                 bboxs['stamp'] = [x - int(0.05*w), y-int(0.05*h), int(1.1*w), int(1.1*h)]
             else:
@@ -269,7 +269,7 @@ def check_tile_outside(dilate_test, bboxs_test):
             if tiles.sum()/(tiles.shape[0]*tiles.shape[1])> 3.5:
                 return False, "Gạch ở ngoài bảng"
     return True, ""
-    
+
 def get_ratio(img_origin, img_test):    
     img_origin = 255 - img_origin
     img_test = 255 - img_test
