@@ -8,7 +8,7 @@ import tensorflow as tf
 def load_model():
     global model
     model = build_model()
-    model.load_weights('model_weight.h5')
+    model.load_weights('model_weight_v2.h5')
     global graph
     graph = tf.get_default_graph()
 
