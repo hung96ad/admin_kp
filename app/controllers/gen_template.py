@@ -5,8 +5,9 @@ import os
 import shutil
 import random
 import pdfkit 
+from pdf2image import convert_from_path
 
-def DataFrame_to_image(css, outputfile="out.jpg", format="jpg"):
+def DataFrame_to_image(css, outputfile="out.pdf"):
     fn = str(random.random()*100000000).split(".")[0] + ".html"
     
     try:
@@ -19,13 +20,12 @@ def DataFrame_to_image(css, outputfile="out.jpg", format="jpg"):
     text_file.write(css)
     text_file.close()
     
-    # See IMGKit options for full configuration,
-    # e.g. cropping of final image
-    imgkitoptions = {"format": format,  "xvfb": ""}
-    # imgkitoptions = {"format": format}
     
-    imgkit.from_file(fn, outputfile.replace('pdf', 'jpg'), options=imgkitoptions)
     pdfkit.from_file(fn, outputfile) 
+    
+    pages = convert_from_path(outputfile)
+    pages[0].save(outputfile.replace('pdf', 'jpg'), 'JPEG')
+
     os.remove(fn)
 
 def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):

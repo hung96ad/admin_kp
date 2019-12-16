@@ -8,7 +8,7 @@ import tensorflow as tf
 def load_model():
     global model
     model = build_model()
-    model.load_weights('model_weight_v2.h5')
+    model.load_weights('model_weight.h5')
     global graph
     graph = tf.get_default_graph()
 
@@ -238,7 +238,7 @@ def rotate_image_by_table(gray_img):
     _, angle = get_contours_angle(table)
     ## xoay ảnh
     if angle != 0:
-        gray_img = rotate_image(gray_img, -angle)
+        gray_img = rotate_image(gray_img, angle)
     return gray_img, get_bbox(gray_img)
 
 def check_tile_outside(dilate_test, bboxs_test):
@@ -276,6 +276,11 @@ def get_ratio(img_origin, img_test):
     img_test = cv2.resize(img_test,(img_origin.shape[1],img_origin.shape[0]))
     return img_test.sum()/img_origin.sum()
 
+def get_cell_by_coordinates(lst_location_cell_test, img_bin, i):
+    x, y, w, h = lst_location_cell_test[i]
+    cell = cv2.resize(img_bin[y:y+h, x:x+w], (img_width,img_height), interpolation=cv2.INTER_CUBIC).reshape(img_width,img_height,1)
+    return np.array([cell/255.])
+
 def validation_full(path_origin='', path_test='', num_person=10):
     if num_person <= 20:
         num_col = 2
@@ -307,23 +312,38 @@ def validation_full(path_origin='', path_test='', num_person=10):
     gray_origin = read_to_gray(path_origin)
     bboxs_origin = get_bbox(gray_origin)
     lst_location_cell_origin, _ = get_all_cell(gray_origin, num_col = num_col, min_cell_w= 24, min_cell_h = 24, total_bboxs=total_bboxs)
-
-    blur = cv2.GaussianBlur(gray_test, (9,9), 0)
-    (_, img_bin) = cv2.threshold(blur, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+    # test
+    blur_test = cv2.GaussianBlur(gray_test, (9,9), 0)
+    (_, img_bin_test) = cv2.threshold(blur_test, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+    # origin
+    blur_origin = cv2.GaussianBlur(gray_origin, (9,9), 0)
+    (_, img_bin_origin) = cv2.threshold(blur_origin, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+    
     results = []
+    errors = []
     for i in range(num_col + step + 1, len(lst_location_cell_test), step):
         stt = int((i - num_col)/step)
         if stt > num_person:
             break
-        x, y, w, h = lst_location_cell_test[i]
-        cell = cv2.resize(img_bin[y:y+h, x:x+w], (img_width,img_height), interpolation=cv2.INTER_CUBIC).reshape(img_width,img_height,1)
+        cell_test = get_cell_by_coordinates(lst_location_cell_test, img_bin_test, i)
+        cell_origin = get_cell_by_coordinates(lst_location_cell_origin, img_bin_origin, i)
         with graph.as_default():
-            pred = model.predict(np.array([cell/255.]))[0]
-            max_pred = np.argmax(pred)
-            if max_pred == 3 and max(pred) > 0.9:
-                return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-            elif max_pred == 1 or max_pred == 2:
+            pred = model.predict([cell_test, cell_origin])[0]
+            top_values= np.argsort(pred)[-2:]
+            # max_pred = np.argmax(pred)
+            if top_values[-1] == 3:
+                if max(pred) > 0.95:
+                    return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+                errors.append(stt)
+                if top_values[-2] == 1 or top_values[-2] == 2:
+                    results.append({'vote': 0, 'order_number': stt})
+                else:
+                    results.append({'vote': 1, 'order_number': stt})
+
+            elif top_values[-1] == 1 or top_values[-1] == 2:
                 results.append({'vote': 0, 'order_number': stt})
             else:
                 results.append({'vote': 1, 'order_number': stt})
+        if len(errors) > 2:
+            return False, "Gạch không hợp lệ trong bảng" 
     return True, results
