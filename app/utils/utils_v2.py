@@ -300,7 +300,7 @@ def validation_full(path_origin='', path_test='', num_person=10):
         if max_val < 0.5 or max_loc[0] > 500 or max_loc[0] > 500:
             return False, "Thiếu dấu góc trái"
     
-    lst_location_cell_test, message = get_all_cell(gray_test, num_col = num_col, min_cell_w= 24, min_cell_h = 24, total_bboxs=total_bboxs)
+    lst_location_cell_test, message = get_all_cell(gray_test, num_col = num_col, min_cell_w= 26, min_cell_h = 26, total_bboxs=total_bboxs)
     if message != "":
         return False, message
     
@@ -311,7 +311,7 @@ def validation_full(path_origin='', path_test='', num_person=10):
     
     gray_origin = read_to_gray(path_origin)
     bboxs_origin = get_bbox(gray_origin)
-    lst_location_cell_origin, _ = get_all_cell(gray_origin, num_col = num_col, min_cell_w= 24, min_cell_h = 24, total_bboxs=total_bboxs)
+    lst_location_cell_origin, _ = get_all_cell(gray_origin, num_col = num_col, min_cell_w= 26, min_cell_h = 26, total_bboxs=total_bboxs)
     # test
     blur_test = cv2.GaussianBlur(gray_test, (9,9), 0)
     (_, img_bin_test) = cv2.threshold(blur_test, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
