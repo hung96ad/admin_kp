@@ -137,7 +137,7 @@ def upload_file():
             elec.max_persions = max_persions
             db.session.commit()
 
-    return render_template('upload_file.html', election_id = election_id)
+    return render_template('upload_file.html', user_image = image)
 
 @app.route("/upload_zip/", methods=["GET", "POST"])
 def upload_zip():
@@ -169,7 +169,7 @@ def upload_zip():
         # db.session.commit()
         process_img = run_all(db)
         if process_img == True:
-            return render_template('upload_zip_success.html', data="Upload file thành công vui lòng đợi để xử lý. Trang sẽ tự động trở về Danh sách các cuộc bầu cử để chờ kết quả sau 5s.")
+            return render_template('upload_zip_success.html', data=id)
         else:
             db.session.rollback()
     return render_template('upload_zip_success.html', data="Gặp lỗi trong quá trình xử lý")
