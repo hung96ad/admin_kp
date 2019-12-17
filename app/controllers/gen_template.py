@@ -1,4 +1,3 @@
-import imgkit
 import html5lib
 import lxml
 import os

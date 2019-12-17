@@ -137,7 +137,7 @@ def upload_file():
             elec.max_persions = max_persions
             db.session.commit()
 
-    return render_template('upload_file.html', user_image = image)
+    return render_template('upload_file.html', election_id = election_id)
 
 @app.route("/upload_zip/", methods=["GET", "POST"])
 def upload_zip():
