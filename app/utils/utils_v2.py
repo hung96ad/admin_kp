@@ -332,7 +332,7 @@ def validation_full(path_origin='', path_test='', num_person=10):
             top_values= np.argsort(pred)[-2:]
             # max_pred = np.argmax(pred)
             if top_values[-1] == 3:
-                if max(pred) > 0.85:
+                if max(pred) > 0.65:
                     return False, "Gạch không hợp lệ ô STT %s"%(stt) 
                 errors.append(stt)
                 if top_values[-2] == 1 or top_values[-2] == 2:
