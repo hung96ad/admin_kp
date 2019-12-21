@@ -56,7 +56,7 @@
   {% endblock head_tail%}
 
 </head>
-<body class="skill-blue">
+<body>
     <div class="header_banner">
       <div class="head_left">
           <div class="logo">
@@ -81,15 +81,10 @@
   <div class="wrapper">
     {% if current_user.is_authenticated %}
     <header class="main-header">
-        <div class="logo">
-        </div>
-      <!-- Header Navbar: style can be found in header.less -->
       <nav class="navbar navbar-static-top">
         
         <div class="navbar-custom-menu">
-          <ul class="nav navbar-nav">
-
-          
+          <ul class="nav navbar-nav">         
             <li>
               {% block access_control %}
               {% endblock %}
@@ -107,7 +102,7 @@
     </header>
     <!-- / TOP NAVBAR -->
     <!-- LEFT MENU -->
-    <aside class="main-sidebar">
+    <div class="main-sidebar">
         <br>
         <!-- sidebar: style can be found in sidebar.less -->
       <section class="sidebar">
@@ -145,7 +140,7 @@
       </ul>
     </section>
     <!-- /.sidebar -->
-  </aside>
+  </div>
 
   <!-- Content Wrapper. Contains page content color white-->
   <div class="content-wrapper">
@@ -225,7 +220,7 @@
 <!-- AdminLTE App -->
 <script src="{{url_for('static',filename='js/app.min.js')}}"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="{{url_for('static',filename='js/demo.js')}}"></script>
+<!-- <script src="{{url_for('static',filename='js/demo.js')}}"></script> -->
 <!-- {% if admin_view.name=="Home" %}
   <script src="{{url_for('static',filename='js/pages/dashboard.js')}}"></script>
 {% endif %} -->
