@@ -393,8 +393,8 @@
       $("body").removeClass(my_skins[i]);
     });
 
-    $("body").addClass(cls);
-    store('skin', cls);
+    $("body").addClass('skin-blue-light');
+    store('skin', 'skin-blue-light');
     return false;
   }
 

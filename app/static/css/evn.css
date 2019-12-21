@@ -1,0 +1,201 @@
+body .switch_lang {
+    display: none;
+}
+
+body a[href$="chat.html"] {
+    display: none !important;
+}
+body .navbar-header .navbar-brand {
+    display: none;
+}
+body .navbar .sidebar-collapse {
+    left: 20px;
+}
+.navbar .sidebar-collapse {
+    width: 40px;
+}
+.header_banner {
+    height: 90px;
+    background: url(/stg/Assets/app/img/header_banner5.png);
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    position: relative;
+    padding: 0 20px;
+    z-index: 500;
+}
+.header_banner:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-image: linear-gradient(0deg, rgba(1, 113, 150,1) 0%, rgba(1, 113, 150,0) 60%);
+    opacity: .25;
+    z-index: 2;
+}
+.header_banner:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(90deg, rgba(255, 255, 255,1) 0%, rgba(0, 0, 0,0) 60%);
+    opacity: 1;
+    z-index: 1;
+}
+body .head_left {
+    display: table;
+    min-height: 90px;
+    z-index: 3;
+    position: relative;
+}
+body .head_left .logo, body .head_left .site_name {
+    display: table-cell;
+    vertical-align: middle;
+}
+body .head_left .logo img {
+    max-height: 55px;
+}
+body .head_left .site_name h2, body .head_left .site_name h3 {
+    color: #04166c;
+    padding-left: 15px;
+    font-weight: bold !important;
+    text-transform: uppercase;
+    font-size: 16px;
+    line-height: 1.4;
+    font-family: "Open Sans",sans-serif;
+    margin: 0;
+    display: block;
+}
+body .appname {
+    display: none;
+}
+body .header_banner {
+    padding-left: 70px;
+}
+body .head_left .site_name h2 {
+    color: #d72119 !important;
+    display: none;
+}
+body .head_left .site_name h3 {
+    font-size: 22px;
+}
+body .head_left .site_name a {
+    text-decoration: none;
+}
+
+
+.line-control-panel {
+    height: calc(100vh - 175px);
+    height: -webkit-calc(100vh - 175px);
+    height: -moz-calc(100vh - 175px);
+    height: -ms-calc(100vh - 175px);
+    height: -o-calc(100vh - 175px);
+}
+body .custdatabox .databox .title a.red {
+    font-size: 17px;
+    color: #017196 !important;
+}
+.custdatabox .databox.bg-color .title a>i {
+    display: none;
+}
+body .custdatabox .databox.bg-color .databox-right .databox-text>ul>li>a {
+    padding-left: 15px;
+}
+body .custdatabox .databox.bg-color .databox-right .databox-text>ul>li>a:before {
+    left: 0;
+}
+body .custdatabox .databox.bg-color .databox-right .databox-text>ul>li>a>span:after,
+body .custdatabox .databox.bg-color .title a:before {
+    background: #017196;
+}
+body .custdatabox .databox.bg-color .databox-right .databox-text>ul>li>a:hover:before,
+body .custdatabox .databox .databox-right .databox-text>ul>li>a,
+body .custdatabox .databox.bg-color .databox-right .databox-text>ul>li>a:hover {
+    color: #017196!important;
+}
+body .file_button_action_list li a#BtnNote.enableOcr,
+body .attachFile[data-target*="ChangeFilePath"] {
+    display: none;
+}
+body .label-group-tab.label_group_tab_custom .tabitem#TabLabelDocNote,
+body .label-group-tab.label_group_tab_custom .tabitem#TabLabelDocVersion {
+    display: none !important;
+}
+/*RESPONSIVE*/
+@media(max-width: 860px){
+    body .navbar .sidebar-collapse {
+        left: 5px;
+    }
+    .navbar .appname {
+        margin-left: 50px;
+    }
+}
+@media(max-width: 640px){
+     .line-control-panel {
+        height: calc(100vh - 220px);
+        height: -webkit-calc(100vh - 220px);
+        height: -moz-calc(100vh - 220px);
+        height: -ms-calc(100vh - 220px);
+        height: -o-calc(100vh - 220px);
+    }
+    .navbar .appname {
+        display: block !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-right: 15px;
+    }
+   .navbar {
+        background: #017196;
+    }
+    body .head_left .site_name h2 {
+        font-size: 14px;
+    }
+    body .head_left .site_name h3 {
+        font-size: 16px;
+    }
+}
+@media(max-width: 480px){
+    body .head_left .site_name h2 {
+        font-size: 10px;
+    }
+    body .head_left .site_name h3 {
+        font-size: 13px;
+    }
+}
+
+
+@media(min-width:1400px){
+body .advanced_search_bar .form-control.input-sm {
+    width: 640px !important;
+}
+}
+@media(min-width:1200px){
+body .advanced_search_bar .form-control.input-sm {
+    width: 450px;
+}
+}
+@media(max-width:1200px){
+body .advanced_search_bar .form-control.input-sm {
+    width: 400px;
+}
+}
+@media(max-width:1136px){
+body .advanced_search_bar .form-control.input-sm {
+    width: 350px;
+}
+}
+@media(max-width:1024px){
+body .advanced_search_bar .form-control.input-sm {
+    width: 300px;
+}
+}
+@media(max-width:991px){
+body .advanced_search_bar .form-control.input-sm {
+    width: 200px;
+}
+}

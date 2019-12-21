@@ -3,12 +3,10 @@
 {% include "security/_messages.html" %}
 {% block body %}
 {{ super() }}
-<br><br><br><br><br>
+<div class='login_mainContent'>
 <section class="content">
-    <div class="col-sm-8 col-sm-offset-2">
-            <div class="login-logo">
-                    <img src="/static/img/LOGO.jpg" alt="Logo">
-                  </div>
+    <div class="col-sm-4 col-sm-offset-4">
+            
             <div class="well">
                 <h1>Đăng nhập</h1>
             <form action="{{ url_for_security('login') }}" method="POST" name="login_user_form">
@@ -23,5 +21,19 @@
     </div>
 </section>
 <br><br><br><br><br><br><br><br><br><br><br>
-<br><br><br><br><br><br><br><br><br>
+</div>
+
+</div>
+<div class="login_footer_tvdt">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h3>CÔNG TY CÔNG NGHỆ THÔNG TIN ĐIỆN LỰC HÀ NỘI</h3>
+                    <span class="pre-line">Trụ sở chính: Tầng 12, 13 Tháp B Tòa nhà EVN 11 Cửa Bắc, Ba Đình, Hà Nội</span>
+                    <span class="pre-line">Điện thoại: 024.73088688. Email: </span>
+                    <span class="pre-line">.</span>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock body %}
