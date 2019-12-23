@@ -309,10 +309,10 @@ def validation_full(path_origin='', path_test='', num_person=10):
     bboxs_origin = get_bbox(gray_origin)
     lst_location_cell_origin, _ = get_all_cell(gray_origin, num_col = num_col, min_cell_w= 26, min_cell_h = 26, total_bboxs=total_bboxs)
     # test
-    blur_test = cv2.GaussianBlur(gray_test, (9,9), 0)
+    blur_test = cv2.GaussianBlur(gray_test, (3,3), 0)
     (_, img_bin_test) = cv2.threshold(blur_test, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
     # origin
-    blur_origin = cv2.GaussianBlur(gray_origin, (9,9), 0)
+    blur_origin = cv2.GaussianBlur(gray_origin, (3,3), 0)
     (_, img_bin_origin) = cv2.threshold(blur_origin, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
     
     results = []
