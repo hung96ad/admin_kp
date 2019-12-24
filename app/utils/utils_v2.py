@@ -4,6 +4,7 @@ import imutils
 import math
 from .model import build_model
 import tensorflow as tf
+import pytesseract
 
 def load_model():
     global model
@@ -129,7 +130,7 @@ def get_contours_angle(gray_img, min_w = 100, min_h= 200, w_blur=1):
                 break
     return contours, angle
 
-def scale_ratio(gray_img, scale_ratio=0.01):
+def scale_ratio(gray_img, scale_ratio=0.05):
     h, w = gray_img.shape
     gray_img = gray_img[int(scale_ratio*h):int((1-scale_ratio)*h), int(scale_ratio*w):int((1-scale_ratio)*w)]
     return gray_img
@@ -280,7 +281,56 @@ def get_cell_by_coordinates(lst_location_cell_test, img_bin, i):
     cell = cv2.resize(img_bin[y:y+h, x:x+w], (img_width,img_height), interpolation=cv2.INTER_CUBIC).reshape(img_width,img_height,1)
     return np.array([cell/255.])
 
-def validation_full(path_origin='', path_test='', num_person=10):
+def get_info_table(path_origin='', num_person=10):
+    if num_person <= 20:
+        num_col = 2
+    else:
+        num_col=4
+    if num_person % 2 == 1 and num_col == 4:
+        total_bboxs = (num_person+1) * 2 + num_col + 2
+    else:
+        total_bboxs = num_person * 2 + num_col + 2
+    gray_origin = read_to_gray(path_origin)
+    lst_location_cell_origin, _ = get_all_cell(gray_origin, num_col = num_col, min_cell_w= 24, min_cell_h = 24, total_bboxs=total_bboxs)
+
+    return gray_origin, lst_location_cell_origin
+
+def check_tile_valid(img):
+    img_new = img.copy()
+    (_, img_new) = cv2.threshold(img_new, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+    h, w = img_new.shape
+    img_new = img_new[0:h, int(0.05*w):int((1-0.05)*w)]
+    img_new = 255 - img_new
+    num_point = 0
+    for i in range(img_new.shape[0]):
+        if img_new[i].sum()/img_new.shape[1] > 2:
+            num_point += 1
+    if num_point == h:
+        return False
+    return True
+
+def check_pre(img, pre=True):
+    img_new = img.copy()
+    (_, img_new) = cv2.threshold(img_new, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+    h, w = img_new.shape
+    img_new = img_new[0:h, int(0.05*w):int((1-0.05)*w)]
+    img_new = 255 - img_new
+    num_point = 0
+    if pre:
+        for i in range(img_new.shape[0]-1, 0, -1):
+            if img_new[i].sum()/img_new.shape[1] > 2:
+                num_point += 1
+            if num_point > 5:
+                return False
+    else:
+        for i in range(img_new.shape[0]):
+            if img_new[i].sum()/img_new.shape[1] > 2:
+                num_point += 1
+            if num_point > 5:
+                return False
+    return True
+
+def validation_full(gray_origin, lst_location_cell_origin, path_test='', num_person=10, size_blur = (0,0)):
     if num_person <= 20:
         num_col = 2
     else:
@@ -305,16 +355,17 @@ def validation_full(path_origin='', path_test='', num_person=10):
     if status == False: 
         return status, message
     
-    gray_origin = read_to_gray(path_origin)
-    bboxs_origin = get_bbox(gray_origin)
-    lst_location_cell_origin, _ = get_all_cell(gray_origin, num_col = num_col, min_cell_w= 26, min_cell_h = 26, total_bboxs=total_bboxs)
     # test
-    blur_test = cv2.GaussianBlur(gray_test, (3,3), 0)
-    (_, img_bin_test) = cv2.threshold(blur_test, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
-    # origin
-    blur_origin = cv2.GaussianBlur(gray_origin, (3,3), 0)
-    (_, img_bin_origin) = cv2.threshold(blur_origin, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
-    
+    if size_blur != (0, 0):
+        blur_test = cv2.GaussianBlur(gray_test, size_blur, 0)
+        (_, img_bin_test) = cv2.threshold(blur_test, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+        # origin
+        blur_origin = cv2.GaussianBlur(gray_origin, size_blur, 0)
+        (_, img_bin_origin) = cv2.threshold(blur_origin, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+    else:
+        img_bin_test = gray_test
+        img_bin_origin = gray_origin
+
     results = []
     errors = []
     for i in range(num_col + step + 1, len(lst_location_cell_test), step):
@@ -323,12 +374,27 @@ def validation_full(path_origin='', path_test='', num_person=10):
             break
         cell_test = get_cell_by_coordinates(lst_location_cell_test, img_bin_test, i)
         cell_origin = get_cell_by_coordinates(lst_location_cell_origin, img_bin_origin, i)
+        
+        x_test, y_test, w_test, h_test = lst_location_cell_test[i]
+        x_origin, y_origin, w_origin, h_origin = lst_location_cell_origin[i]
+
         with graph.as_default():
             pred = model.predict([cell_test, cell_origin])[0]
             top_values= np.argsort(pred)[-2:]
-            # max_pred = np.argmax(pred)
+            if not check_tile_valid(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test]):
+                x, y, w, h = lst_location_cell_test[i-num_col]
+                if not check_pre(img_bin_test[y:y+h, x:x+w]):
+                    return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+                if not i+num_col > len(lst_location_cell_test):
+                    x, y, w, h = lst_location_cell_test[i+num_col]
+                    if not check_pre(img_bin_test[y:y+h, x:x+w], False):
+                        return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+
             if top_values[-1] == 3:
-                if max(pred) > 0.9:
+                text_test = pytesseract.image_to_string(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test], lang='vie')
+                text_origin = pytesseract.image_to_string(img_bin_origin[y_origin:y_origin+h_origin, x_origin:x_origin+w_origin], lang='vie')
+
+                if max(pred) > 0.9 and text_test != text_origin and text_test != '':
                     return False, "Gạch không hợp lệ ô STT %s"%(stt) 
                 errors.append(stt)
                 if top_values[-2] == 1 or top_values[-2] == 2:
@@ -340,6 +406,6 @@ def validation_full(path_origin='', path_test='', num_person=10):
                 results.append({'vote': 0, 'order_number': stt})
             else:
                 results.append({'vote': 1, 'order_number': stt})
-        if len(errors) > 2:
-            return False, "Gạch không hợp lệ trong bảng" 
+    if len(errors) > 2:
+        return False, "Gạch không hợp lệ trong bảng" 
     return True, results

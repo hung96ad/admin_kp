@@ -44,8 +44,9 @@ def update_election(id_election):
 def run_all(db):
     results = Result.query.filter_by(processed=0).all()
     # print(results.all()[0].)
-    election = Election.query.filter_by(id=results[0].id_election).update({'status': 2})
-    election = Election.query.filter_by(id=results[0].id_election).first()
+    id_election = results[0].id_election
+    election = Election.query.filter_by(id=id_election).update({'status': 2})
+    election = Election.query.filter_by(id=id_election).first()
     if election.num_persons <= 20:
         num_col = 2
     else:
@@ -53,8 +54,11 @@ def run_all(db):
         
     # data_result = []
     data_result_detail = []
+    gray_origin, lst_location_cell_origin = get_info_table(path_origin='app/static/uploads/images/%s/%s.jpg'%(id_election, id_election), 
+    num_person = election.num_persons)
+
     for result in results:
-        temp = validation_full(path_origin='app/static/uploads/images/%s/%s.jpg'%(result.id_election, result.id_election), 
+        temp = validation_full(gray_origin, lst_location_cell_origin, 
                             path_test=result.image, num_person = election.num_persons)
         if temp[0] == False:
             result.processed = 3
