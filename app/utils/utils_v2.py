@@ -393,7 +393,6 @@ def validation_full(gray_origin, lst_location_cell_origin, path_test='', num_per
             if top_values[-1] == 3:
                 text_test = pytesseract.image_to_string(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test], lang='vie')
                 text_origin = pytesseract.image_to_string(img_bin_origin[y_origin:y_origin+h_origin, x_origin:x_origin+w_origin], lang='vie')
-
                 if max(pred) > 0.9 and text_test != text_origin and text_test != '':
                     return False, "Gạch không hợp lệ ô STT %s"%(stt) 
                 errors.append(stt)

@@ -41,13 +41,14 @@ def update_election(id_election):
     conn.commit()
     conn.close()
 
-def check_with_blur(gray_origin, lst_location_cell_origin, path_test='', num_person=10, size_blur = (0,0)):
+def check_with_blur(gray_origin, lst_location_cell_origin, path_test='', num_person=10, size_blur = (0,0), result=None):
     temp = validation_full(gray_origin, lst_location_cell_origin, 
                         path_test=path_test, num_person = num_person, size_blur = size_blur)
     total_vote = 0
     for result_detail in temp[1]:
         if 'vote' in result_detail:
             total_vote += result_detail['vote']
+            result_detail['id_result'] = result.id
     
     return temp, total_vote
 
@@ -69,14 +70,14 @@ def run_all(db):
 
     for result in results:
         temp, total_vote = check_with_blur(gray_origin, lst_location_cell_origin, 
-                            path_test=result.image, num_person = election.num_persons)
+                            path_test=result.image, num_person = election.num_persons, result=result)
         if temp[0] == False:
             result.processed = 3
             result.description = temp[1]
         else:
             if total_vote < election.min_persions:
                 temp_2, total_vote_2 = check_with_blur(gray_origin, lst_location_cell_origin, 
-                            path_test=result.image, num_person = election.num_persons,  size_blur = (3,3))
+                            path_test=result.image, num_person = election.num_persons,  size_blur = (3,3), result=result)
                 if temp_2[0] == False or total_vote_2 < election.min_persions:
                     result.processed = 3
                     result.description = "Số lượng bầu chọn quá ít (%s đại biểu)"%total_vote
@@ -89,7 +90,7 @@ def run_all(db):
 
             elif total_vote > election.max_persions:
                 temp_2, total_vote_2 = check_with_blur(gray_origin, lst_location_cell_origin, 
-                            path_test=result.image, num_person = election.num_persons,  size_blur = (3,3))
+                            path_test=result.image, num_person = election.num_persons,  size_blur = (3,3), result=result)
                 if temp_2[0] == False or total_vote_2 > election.max_persions:
                     result.processed = 3
                     result.description = "Số lượng bầu chọn quá nhiều (%s đại biểu)"%total_vote
