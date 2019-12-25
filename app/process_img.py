@@ -41,6 +41,16 @@ def update_election(id_election):
     conn.commit()
     conn.close()
 
+def check_with_blur(gray_origin, lst_location_cell_origin, path_test='', num_person=10, size_blur = (0,0)):
+    temp = validation_full(gray_origin, lst_location_cell_origin, 
+                        path_test=path_test, num_person = num_person, , size_blur = size_blur)
+    total_vote = 0
+    for result_detail in temp[1]:
+        if 'vote' in result_detail:
+            total_vote += result_detail['vote']
+    
+    return temp, total_vote
+
 def run_all(db):
     results = Result.query.filter_by(processed=0).all()
     # print(results.all()[0].)
@@ -58,31 +68,44 @@ def run_all(db):
     num_person = election.num_persons)
 
     for result in results:
-        temp = validation_full(gray_origin, lst_location_cell_origin, 
+        temp, total_vote = check_with_blur(gray_origin, lst_location_cell_origin, 
                             path_test=result.image, num_person = election.num_persons)
         if temp[0] == False:
             result.processed = 3
             result.description = temp[1]
         else:
-            total_vote = 0
-            for result_detail in temp[1]:
-                total_vote += result_detail['vote']
-                result_detail['id_result'] = result.id
             if total_vote < election.min_persions:
-                result.processed = 3
-                result.description = "Số lượng bầu chọn quá ít (%s đại biểu)"%total_vote
+                temp_2, total_vote_2 = check_with_blur(gray_origin, lst_location_cell_origin, 
+                            path_test=result.image, num_person = election.num_persons,  size_blur = (3,3))
+                if temp_2[0] == False or total_vote_2 < election.min_persions:
+                    result.processed = 3
+                    result.description = "Số lượng bầu chọn quá ít (%s đại biểu)"%total_vote
+                elif total_vote_2 >= election.min_persions and total_vote_2 <= election.max_persions:
+                    result.processed = 2
+                    data_result_detail.extend(temp_2[1])
+                else:
+                    result.processed = 3
+                    result.description = "Số lượng bầu chọn quá ít (%s đại biểu)"%total_vote_2
+
             elif total_vote > election.max_persions:
-                result.processed = 3
-                result.description = "Số lượng bầu chọn quá nhiều (%s đại biểu)"%total_vote
+                temp_2, total_vote_2 = check_with_blur(gray_origin, lst_location_cell_origin, 
+                            path_test=result.image, num_person = election.num_persons,  size_blur = (3,3))
+                if temp_2[0] == False or total_vote_2 > election.max_persions:
+                    result.processed = 3
+                    result.description = "Số lượng bầu chọn quá nhiều (%s đại biểu)"%total_vote
+                elif total_vote_2 >= election.min_persions and total_vote_2 <= election.max_persions:
+                    result.processed = 2
+                    data_result_detail.extend(temp_2[1])
+                else:
+                    result.processed = 3
+                    result.description = "Số lượng bầu chọn quá nhiều (%s đại biểu)"%total_vote
+
+                # result.processed = 3
+                # result.description = "Số lượng bầu chọn quá nhiều (%s đại biểu)"%total_vote
             else:
-    #             result.results_detail = temp[1]
                 result.processed = 2
                 data_result_detail.extend(temp[1])
-        # data_result.append({
-        #     'id': result.id,
-        #     'processed': result.processed,
-        #     'description': result.description
-        # })
+
     objects = []
     for dt in data_result_detail:
         rd = Result_Detail(id_result=dt['id_result'], order_number = dt['order_number'], vote= dt['vote'])
