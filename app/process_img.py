@@ -43,7 +43,7 @@ def update_election(id_election):
 
 def check_with_blur(gray_origin, lst_location_cell_origin, path_test='', num_person=10, size_blur = (0,0)):
     temp = validation_full(gray_origin, lst_location_cell_origin, 
-                        path_test=path_test, num_person = num_person, , size_blur = size_blur)
+                        path_test=path_test, num_person = num_person, size_blur = size_blur)
     total_vote = 0
     for result_detail in temp[1]:
         if 'vote' in result_detail:
