@@ -18,3 +18,5 @@ keras==2.2.5
 tensorflow==1.14
 patool
 pdf2image
+numpy==1.16.4
+pytesseract

@@ -26,7 +26,8 @@ import pandas as pd
 import zipfile
 import patoolib
 import uuid
-
+import locale
+locale.setlocale(locale.LC_ALL, 'vi_VN')
 from subprocess import Popen, PIPE, STDOUT
 
 def fxn():
@@ -85,9 +86,8 @@ def upload_file():
             # sinh ra file ảnh
             ho_ten = pd.read_excel(path_excel)
             num_persons = ho_ten.shape[0]
-            ho_ten = ho_ten.sort_values(['Tên', 'Họ']).reset_index(drop=True)
             ho_ten['full_name'] = ho_ten['Họ'] + " " + ho_ten['Tên']
-            image = gen_by_ho_ten(ho_ten['full_name'], election_id, line, app.config['IMAGE'])
+            image = gen_by_ho_ten(ho_ten['full_name'].str.upper(), election_id, line, app.config['IMAGE'])
 
             # add vao db
             objects = []
@@ -107,13 +107,11 @@ def upload_file():
             if file_data is None:
                 path_excel = request.form.get('file')
                 ho_ten = pd.read_excel(path_excel)
-                ho_ten = ho_ten.sort_values(['Tên', 'Họ']).reset_index(drop=True)
                 ho_ten['full_name'] = ho_ten['Họ'] + " " + ho_ten['Tên']
             else:
                 file_data.filename = str(election_id) + ".xlsx"
                 path_excel = app.config['EXCEL'] + file_data.filename
                 ho_ten = pd.read_excel(path_excel)
-                ho_ten = ho_ten.sort_values(['Tên', 'Họ']).reset_index(drop=True)
                 ho_ten['full_name'] = ho_ten['Họ'] + " " + ho_ten['Tên']
 
                 file_data.save(path_excel)
@@ -126,7 +124,7 @@ def upload_file():
                 
                 db.session.bulk_save_objects(objects)
 
-            image = gen_by_ho_ten(ho_ten['full_name'], election_id, line, app.config['IMAGE'])
+            image = gen_by_ho_ten(ho_ten['full_name'].str.upper(), election_id, line, app.config['IMAGE'])
 
             elec.title = title
             elec.line_1 = line_1

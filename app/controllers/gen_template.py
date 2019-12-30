@@ -30,25 +30,18 @@ def DataFrame_to_image(css, outputfile="out.pdf"):
 def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
     rand = ho_ten.shape[0]
     s = ''
-    if rand <= 20:
-        step = 1
-        for i in range(0, rand, step):
-            s += f'<tr><td>{i+1}</td><td>{ho_ten[i]}</td> </tr>'
-        html = '''
-            <!DOCTYPE html>
+    header = '''<!DOCTYPE html>
             <html>
             <head>
             <meta charset="utf-8"/>
             <style>
-            img{
-                width:100%;
-                max-width:159px;
-                height: 100%;
-                max-height:159px;
-            }
             table, th, td {
               border: 2px solid black;
               border-collapse: collapse;
+            }
+            table.center {
+              margin-left:auto; 
+              margin-right:auto;
             }
             th, td {
               padding: 5px;
@@ -57,93 +50,50 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
             </style>
             </head>
             <body>
-            <div style="width:21cm; height:5cm; position:relative; z-index:1">
+            <div style="width:26cm; height:5cm; position:relative; z-index:1;">
                   </div>
-            <div style="width:21cm; height:24.7cm; position:relative; z-index:2;">
-            <div style="position:relative; left:4.5cm;">
-            <p style="text-align: center; width:80%;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
-              <br/>Độc lập - Tự do - Hạnh phúc</p>
+            <div style="width:26cm; height:30cm; position:relative; z-index:2; font-size: 130%;">
+            <div style="position:relative;">
 
-            <h2 style="text-align: center; width:80%;">
-            ''' + line[0] +'''<br>
-            ''' + line[1] +'''<br>
-            ''' + line[2] +'''<br>
-            ''' + line[3] +'''<br>
+            <div style="text-align: center;font-size: 150%;">
+            ''' + line[0].upper() +'''<br>
+            ''' + line[1].upper() +'''<br>
+            ''' + line[2].upper() +'''<br>
             <br>
-            </h2>
             </div>
-            <div>
-            <table style="width:50%; height: 100%; margin-left:8.0cm;">
-              <tr>
-                <th style="width:10px;">TT</th>
-                <th>HỌ VÀ TÊN</th>
-                </tr>
-              '''+ s + '''
-            </table>
-            </div>
-            </div>
+            </div>'''
+      footer = '''</div>
             </body>
             </html>
-            '''
+      '''
+    if rand <= 20:
+        step = 1
+        for i in range(0, rand, step):
+            s += f'<tr><td style="width:1.0cm; height:1.0cm;">{i+1}</td><td style="width:11cm; height:1.0cm;">{ho_ten[i]}</td> </tr>'
+        table = '''<table class="center">
+              <tr>
+                <td style="width:1.0cm; height:1.0cm;">TT</td>
+                <td style="width:11cm; height:1.0cm;">HỌ VÀ TÊN</td>
+                </tr>
+              '''+ s + '''
+            </table>'''
     else: 
         step = 2
         for i in range(0, rand, step):
             if i+1 >= rand:
-                s += f'<tr> <td>{i+1}</td><td>{ho_ten[i]}</td> <td></td><td></td> </tr>'            
+                s += f'<tr> <td style="width:1.0cm; height:1.0cm;">{i+1}</td><td style="width:11cm; height:1.0cm;">{ho_ten[i]}</td> <td style="width:1.0cm; height:1.0cm;"></td><td style="width:11cm; height:1.0cm;"></td> </tr>'            
             else:
-                s += f'<tr> <td>{i+1}</td><td>{ho_ten[i]}</td> <td>{i+2}</td><td>{ho_ten[i+1]}</td> </tr>'
-        html = '''
-            <!DOCTYPE html>
-            <html>
-            <head>
-            <meta charset="utf-8"/>
-            <style>
-            img{
-                width:100%;
-                max-width:159px;
-                height: 100%;
-                max-height:159px;
-            }
-            table, th, td {
-              border: 2px solid black;
-              border-collapse: collapse;
-            }
-            th, td {
-              padding: 5px;
-              text-align: center;
-            }
-            </style>
-            </head>
-            <body>
-            <div style="width:21cm; height:5cm; position:relative; z-index:1">
-                  </div>
-            <div style="width:21cm; height:24.7cm; position:relative; z-index:2;">
-            <div style="position:relative; left:4.5cm;">
-            <p style="text-align: center; width:80%;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
-              <br/>Độc lập - Tự do - Hạnh phúc</p>
-            <h2 style="text-align: center; width:80%;">
-            ''' + line[0] +'''<br>
-            ''' + line[1] +'''<br>
-            ''' + line[2] +'''<br>
-            ''' + line[3] +'''<br>
-            <br>
-            </h2>
-            </div>
-            <div style="position:relative; left:4.5cm;">
-            <table style="width:80%;height: 100%;">
+                s += f'<tr> <td style="width:1.0cm; height:1.0cm;">{i+1}</td><td style="width:11cm; height:1.0cm;">{ho_ten[i]}</td> <td style="width:1.0cm; height:1.0cm;">{i+2}</td><td style="width:11cm; height:1.0cm;">{ho_ten[i+1]}</td> </tr>'
+        table = '''<table class="center">
               <tr>
-                <th style="width:10px;">TT</th>
-                <th>HỌ VÀ TÊN</th>
-                <th style="width:10px;">TT</th>
-                <th>HỌ VÀ TÊN</th>
+                <td style="width:1.0cm; height:1.0cm;"">TT</td>
+                <td style="width:11.0cm; height:1.0cm;">HỌ VÀ TÊN</td>
+                <td style="width:1.0cm; height:1.0cm;">TT</td>
+                <td style="width:11.0cm; height:1.0cm;">HỌ VÀ TÊN</td>
                 </tr>
               '''+s+'''
-            </table>
-            </div>
-            </div>
-            </body>
-            </html>
-            '''
+            </table>'''
+    html = header + table + footer
     directory = prefix + "%s/"%id_election
     try:
         shutil.rmtree(directory, ignore_errors=True)

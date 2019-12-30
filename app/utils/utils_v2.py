@@ -130,7 +130,7 @@ def get_contours_angle(gray_img, min_w = 100, min_h= 200, w_blur=1):
                 break
     return contours, angle
 
-def scale_ratio(gray_img, scale_ratio=0.05):
+def scale_ratio(gray_img, scale_ratio=0.025):
     h, w = gray_img.shape
     gray_img = gray_img[int(scale_ratio*h):int((1-scale_ratio)*h), int(scale_ratio*w):int((1-scale_ratio)*w)]
     return gray_img
@@ -211,7 +211,7 @@ def get_bbox(gray):
         if max_area == w*h:
             bboxs['table'] = [x,y,w,h]
             _bboxs.remove([x,y,w,h])
-        elif min_distance == x and 0.85<w/h<1.15 and x < 500 and y < 600:
+        elif min_distance == x and 0.85<w/h<1.15 and x < 600 and y < 600:
             if y-int(0.05*h) > 0 and x-int(0.05*w) > 0:
                 bboxs['stamp'] = [x - int(0.05*w), y-int(0.05*h), int(1.1*w), int(1.1*h)]
             else:
@@ -266,7 +266,7 @@ def check_tile_outside(dilate_test, bboxs_test):
             y1 = y + M
             x1 = x + N
             tiles = dilate_test_cp[y:y+M,x:x+N]
-            if tiles.sum()/(tiles.shape[0]*tiles.shape[1])> 3.5:
+            if tiles.sum()/(tiles.shape[0]*tiles.shape[1])> 2.0:
                 return False, "Gạch ở ngoài bảng"
     return True, ""
 
@@ -295,9 +295,12 @@ def get_info_table(path_origin='', num_person=10):
 
     return gray_origin, lst_location_cell_origin
 
-def check_tile_valid(img):
-    img_new = img.copy()
-    (_, img_new) = cv2.threshold(img_new, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+def check_tile_valid(img, rotate=False):
+    if rotate:
+        img_new = np.rot90(img)
+    else:
+        img_new = img.copy()
+    # (_, img_new) = cv2.threshold(img_new, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
     h, w = img_new.shape
     img_new = img_new[0:h, int(0.05*w):int((1-0.05)*w)]
     img_new = 255 - img_new
@@ -309,24 +312,26 @@ def check_tile_valid(img):
         return False
     return True
 
-def check_pre(img, pre=True):
-    img_new = img.copy()
-    (_, img_new) = cv2.threshold(img_new, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+def check_pre(img, pre=True, rotate=False):
+    if rotate:
+        img_new = np.rot90(img)
+    else:
+        img_new = img.copy()
     h, w = img_new.shape
     img_new = img_new[0:h, int(0.05*w):int((1-0.05)*w)]
     img_new = 255 - img_new
     num_point = 0
     if pre:
-        for i in range(img_new.shape[0]-1, 0, -1):
-            if img_new[i].sum()/img_new.shape[1] > 2:
+        for i in range(img_new.shape[0]-1, img_new.shape[0]-11, -1):
+            if img_new[i].sum()/img_new.shape[1] > 0.5:
                 num_point += 1
-            if num_point > 5:
+            if num_point > 6:
                 return False
     else:
-        for i in range(img_new.shape[0]):
-            if img_new[i].sum()/img_new.shape[1] > 2:
+        for i in range(0, 10):
+            if img_new[i].sum()/img_new.shape[1] > 0.5:
                 num_point += 1
-            if num_point > 5:
+            if num_point > 6:
                 return False
     return True
 
@@ -351,6 +356,8 @@ def validation_full(gray_origin, lst_location_cell_origin, path_test='', num_per
         return False, message
     
     bboxs_test['table'] = lst_location_cell_test[1]
+    if len(lst_location_cell_test) != len(lst_location_cell_origin):
+        return False, "Phiếu bầu cử không đúng"
     status, message = check_tile_outside(gray_test, bboxs_test)
     if status == False: 
         return status, message
@@ -358,16 +365,36 @@ def validation_full(gray_origin, lst_location_cell_origin, path_test='', num_per
     # test
     if size_blur != (0, 0):
         blur_test = cv2.GaussianBlur(gray_test, size_blur, 0)
-        (_, img_bin_test) = cv2.threshold(blur_test, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+        (_, img_bin_test) = cv2.threshold(blur_test, 127, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
         # origin
         blur_origin = cv2.GaussianBlur(gray_origin, size_blur, 0)
-        (_, img_bin_origin) = cv2.threshold(blur_origin, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+        (_, img_bin_origin) = cv2.threshold(blur_origin, 127, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
     else:
         img_bin_test = gray_test
         img_bin_origin = gray_origin
 
     results = []
-    errors = []
+    # check gach ko hop le
+    for i in range(num_col + step + 1, len(lst_location_cell_test), step):
+        stt = int((i - num_col)/step)
+        if stt > num_person:
+            break
+        x_test, y_test, w_test, h_test = lst_location_cell_test[i]
+        if not check_tile_valid(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test]):
+            x, y, w, h = lst_location_cell_test[i-num_col]
+            if not check_pre(img_bin_test[y:y+h, x:x+w]):
+                return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+            if not i+num_col > len(lst_location_cell_test):
+                x, y, w, h = lst_location_cell_test[i+num_col]
+                if not check_pre(img_bin_test[y:y+h, x:x+w], False):
+                    return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+        # stt
+        x_test, y_test, w_test, h_test = lst_location_cell_test[i-1]
+        if not check_tile_valid(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test]):
+            return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+        if not check_tile_valid(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test], rotate=True):
+            return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+
     for i in range(num_col + step + 1, len(lst_location_cell_test), step):
         stt = int((i - num_col)/step)
         if stt > num_person:
@@ -377,25 +404,15 @@ def validation_full(gray_origin, lst_location_cell_origin, path_test='', num_per
         
         x_test, y_test, w_test, h_test = lst_location_cell_test[i]
         x_origin, y_origin, w_origin, h_origin = lst_location_cell_origin[i]
-
+        
         with graph.as_default():
             pred = model.predict([cell_test, cell_origin])[0]
             top_values= np.argsort(pred)[-2:]
-            if not check_tile_valid(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test]):
-                x, y, w, h = lst_location_cell_test[i-num_col]
-                if not check_pre(img_bin_test[y:y+h, x:x+w]):
-                    return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-                if not i+num_col > len(lst_location_cell_test):
-                    x, y, w, h = lst_location_cell_test[i+num_col]
-                    if not check_pre(img_bin_test[y:y+h, x:x+w], False):
-                        return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-
             if top_values[-1] == 3:
                 text_test = pytesseract.image_to_string(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test], lang='vie')
                 text_origin = pytesseract.image_to_string(img_bin_origin[y_origin:y_origin+h_origin, x_origin:x_origin+w_origin], lang='vie')
                 if max(pred) > 0.9 and text_test != text_origin and text_test != '':
                     return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-                errors.append(stt)
                 if top_values[-2] == 1 or top_values[-2] == 2:
                     results.append({'vote': 0, 'order_number': stt})
                 else:
@@ -405,6 +422,4 @@ def validation_full(gray_origin, lst_location_cell_origin, path_test='', num_per
                 results.append({'vote': 0, 'order_number': stt})
             else:
                 results.append({'vote': 1, 'order_number': stt})
-    if len(errors) > 2:
-        return False, "Gạch không hợp lệ trong bảng" 
     return True, results
