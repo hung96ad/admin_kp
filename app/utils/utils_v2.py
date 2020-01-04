@@ -2,21 +2,21 @@ import cv2
 import numpy as np
 import imutils
 import math
-from .model import build_model
-import tensorflow as tf
-import pytesseract
+# from .model import build_model
+# import tensorflow as tf
+# import pytesseract
 
-def load_model():
-    global model
-    model = build_model()
-    model.load_weights('model_weight.h5')
-    global graph
-    graph = tf.get_default_graph()
+# def load_model():
+#     global model
+#     model = build_model()
+#     model.load_weights('model_weight.h5')
+#     global graph
+#     graph = tf.get_default_graph()
 
-img_width = 500
-img_height = 50
+# img_width = 330
+# img_height = 30
 
-step = 2
+# step = 2
 
 def rotate_image(mat, angle):
 
@@ -67,17 +67,18 @@ def detect_angle(gray):
     # Apply edge detection method on the image 
     edges = cv2.Canny(gray,100, 100,apertureSize = 3) 
 
-    lines = cv2.HoughLinesP(edges, 1, np.pi/180.0, 100, minLineLength=100, maxLineGap=30)
+    lines = cv2.HoughLinesP(edges, 1, np.pi/180.0, 100, minLineLength=100, maxLineGap=10)
     angles = []
-    
     for line in lines:
         x1, y1, x2, y2 = line[0]
         cv2.line(gray, (x1, y1), (x2, y2), (255, 0, 0), 3)
         angle = math.degrees(math.atan2(y2 - y1, x2 - x1))
-        angles.append(angle)
-    median_angle = np.median(angles)
-
-    return (median_angle)
+        if abs(angle) < 30:
+            angles.append(angle)
+        if len(angles) > 5:
+            break
+    median = np.median(angles)
+    return median
 
 def get_contours_angle(gray_img, min_w = 100, min_h= 200, w_blur=1):
     blur = gray_img.copy()
@@ -203,15 +204,14 @@ def get_bbox(gray):
             _area = w*h
             if max_area < _area:
                 max_area = _area
-            if x < min_distance and 0.85<w/h<1.15:
+            if x < min_distance and 0.55<w/h<1.35:
                 min_distance = x
-    
     for bbox in _bboxs:
         x,y,w,h = bbox
         if max_area == w*h:
             bboxs['table'] = [x,y,w,h]
             _bboxs.remove([x,y,w,h])
-        elif min_distance == x and 0.85<w/h<1.15 and x < 600 and y < 600:
+        elif min_distance == x and 0.65<w/h<1.35 and x < 600 and y < 600:
             if y-int(0.05*h) > 0 and x-int(0.05*w) > 0:
                 bboxs['stamp'] = [x - int(0.05*w), y-int(0.05*h), int(1.1*w), int(1.1*h)]
             else:
@@ -221,8 +221,6 @@ def get_bbox(gray):
     for bbox in _bboxs:
         x,y,w,h = bbox
         if 'title' in bboxs:
-            bboxs['title 2'] = [x,y,w,h]
-        elif 'title 2' in bboxs:
             bboxs['spam'] = [x,y,w,h]
         else:
             bboxs['title'] = [x,y,w,h]
@@ -295,47 +293,127 @@ def get_info_table(path_origin='', num_person=10):
 
     return gray_origin, lst_location_cell_origin
 
-def check_tile_valid(img, rotate=False):
-    if rotate:
-        img_new = np.rot90(img)
-    else:
-        img_new = img.copy()
-    # (_, img_new) = cv2.threshold(img_new, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+def check_horizontally(img):
+    img_new = img.copy()
     h, w = img_new.shape
     img_new = img_new[0:h, int(0.05*w):int((1-0.05)*w)]
     img_new = 255 - img_new
     num_point = 0
     for i in range(img_new.shape[0]):
-        if img_new[i].sum()/img_new.shape[1] > 2:
+        if img_new[i].sum()/img_new.shape[1] > 0.5:
             num_point += 1
     if num_point == h:
         return False
     return True
 
-def check_pre(img, pre=True, rotate=False):
-    if rotate:
-        img_new = np.rot90(img)
-    else:
-        img_new = img.copy()
-    h, w = img_new.shape
-    img_new = img_new[0:h, int(0.05*w):int((1-0.05)*w)]
-    img_new = 255 - img_new
-    num_point = 0
-    if pre:
-        for i in range(img_new.shape[0]-1, img_new.shape[0]-11, -1):
-            if img_new[i].sum()/img_new.shape[1] > 0.5:
-                num_point += 1
-            if num_point > 6:
-                return False
-    else:
-        for i in range(0, 10):
-            if img_new[i].sum()/img_new.shape[1] > 0.5:
-                num_point += 1
-            if num_point > 6:
-                return False
-    return True
+def get_pixcel_crop(img_bin_test):
+    top_left = 0
+    for i in range(10):
+        if img_bin_test[i][0:5].sum() >= 255:
+            top_left = i+1
+    bottom_left = 0
+    for i in range(img_bin_test.shape[0]-1,img_bin_test.shape[0]-11, -1):
+        if img_bin_test[i][0:5].sum() >= 255:
+            bottom_left = img_bin_test.shape[0] - i
+    top_right = 0
+    for i in range(10):
+        if img_bin_test[i][-6:-1].sum() >= 255:
+            top_right = i+1
+    bottom_right = 0
+    for i in range(img_bin_test.shape[0]-1,img_bin_test.shape[0]-11, -1):
+        if img_bin_test[i][-6:-1].sum() >= 255:
+            bottom_right = img_bin_test.shape[0] - i
+    return max([top_left, bottom_left, top_right, bottom_right, 2])
 
-def validation_full(gray_origin, lst_location_cell_origin, path_test='', num_person=10, size_blur = (0,0)):
+def get_segment(img_crop, thresh=254):
+    status = 0
+    segment = 0
+    segments = []
+    max_sum = 0
+    for i in range(img_crop.shape[1]):
+        value_sum = img_crop[: , i].sum()
+        if value_sum > thresh:
+            if status == 0:
+                segments.append({'status' : status, 'segment':segment, 'sum': max_sum})
+                status = 1
+                segment = 0
+            if max_sum < value_sum:
+                max_sum = value_sum
+            segment += 1
+        else:
+            if status == 1:
+                segments.append({'status' : status, 'segment':segment, 'sum': max_sum})
+                max_sum = 0
+                status = 0
+                segment = 0
+            segment += 1
+    segments.append({'status' : status, 'segment':segment, 'sum': max_sum})
+    return segments
+
+def validate_pre_cell(img, check_num=False):
+    h, w = img.shape
+    img_bin_test = 255 - img
+    pixel_crop = get_pixcel_crop(img_bin_test)
+    img_crop = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
+    # check theo chieu ngang
+    img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, 0:w-pixel_crop*2]
+    cnt = 0
+    step = 6
+    thresh = 254
+    if not check_num:
+        segment_one = 0
+        segments = get_segment(img_crop, thresh = thresh)
+        for i in range(len(segments)):
+            if segments[i]['segment'] > 30 and segments[i]['sum'] <= 2550 and segments[i]['status'] == 1:
+                return 'small', None
+            if i != 0 and i!= len(segments)-1:
+                if (segments[i]['segment'] > segments[0]['segment'] \
+                    or segments[i]['segment'] > segments[-1]['segment']) \
+                and segments[i]['status'] == 0 and segments[i]['segment'] > 30 \
+                and segments[i+1]['segment'] > 8 and segments[i-1]['segment'] > 8:
+                    return 'alone', None
+            if segments[i]['status'] == 1:
+                segment_one += 1
+        return '', segment_one
+    if check_num:
+        for i in range(0, step):
+            if img_crop[: , i].sum()> thresh:
+                cnt += 1
+            if img_crop_horizontal[: , i].sum()> thresh:
+                cnt += 1
+        if cnt == step*2:
+            return 'left', None
+        cnt = 0
+        img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop*2:w]
+        for i in range(img_crop.shape[1]-1, img_crop.shape[1]-step-1, -1):
+            if img_crop[: , i].sum()> 255:
+                cnt += 1
+            if img_crop_horizontal[: , i-pixel_crop].sum()> thresh:
+                    cnt += 1
+        if cnt == step*2:
+            return 'right', None
+    # check theo chieu doc thi xoa bot lop dau va cuoi
+    img_crop_vertical = img_bin_test[0:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
+    cnt = 0
+    for i in range(0, step):
+        if img_crop[i].sum()> thresh:
+            cnt += 1
+        if img_crop_vertical[i].sum()> thresh:
+                cnt += 1
+    if cnt == step*2:
+        return 'top', segment_one
+    cnt = 0
+    img_crop_vertical = img_bin_test[pixel_crop*2:h, pixel_crop:w-pixel_crop*2]
+    for i in range(img_crop.shape[0]-1, img_crop.shape[0]-step-1, -1):
+        if img_crop[i].sum()> thresh:
+            cnt += 1
+        if img_crop_vertical[i-pixel_crop].sum()> thresh:
+            cnt += 1
+    if cnt == step*2:
+        return 'bottom', segment_one
+    # check gach khong hop le
+    return '', None
+def validation_full(list_people, lst_location_cell_origin, path_test='', num_person=10, size_blur = (0,0)):
     if num_person <= 20:
         num_col = 2
     else:
@@ -346,18 +424,17 @@ def validation_full(gray_origin, lst_location_cell_origin, path_test='', num_per
         total_bboxs = num_person * 2 + num_col + 2
     gray_test = read_to_gray(path_test)
     gray_test, bboxs_test = rotate_image_by_table(gray_test)
-    if 'spam' in bboxs_test:
-        return False, "Gạch ở ngoài spam"
     if 'stamp' not in bboxs_test:
         return False, "Thiếu dấu góc trái"
-    
+    if 'spam' in bboxs_test:
+        return False, "Gạch ở ngoài spam"    
     lst_location_cell_test, message = get_all_cell(gray_test, num_col = num_col, min_cell_w= 26, min_cell_h = 26, total_bboxs=total_bboxs)
     if message != "":
         return False, message
     
     bboxs_test['table'] = lst_location_cell_test[1]
     if len(lst_location_cell_test) != len(lst_location_cell_origin):
-        return False, "Phiếu bầu cử không đúng"
+        return False, "Phiếu bầu cử không hợp lệ"
     status, message = check_tile_outside(gray_test, bboxs_test)
     if status == False: 
         return status, message
@@ -365,61 +442,77 @@ def validation_full(gray_origin, lst_location_cell_origin, path_test='', num_per
     # test
     if size_blur != (0, 0):
         blur_test = cv2.GaussianBlur(gray_test, size_blur, 0)
-        (_, img_bin_test) = cv2.threshold(blur_test, 127, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+        (_, img_bin_test) = cv2.threshold(blur_test, 30, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
         # origin
-        blur_origin = cv2.GaussianBlur(gray_origin, size_blur, 0)
-        (_, img_bin_origin) = cv2.threshold(blur_origin, 127, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+        # blur_origin = cv2.GaussianBlur(gray_origin, size_blur, 0)
+        # (_, img_bin_origin) = cv2.threshold(blur_origin, 30, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
     else:
-        img_bin_test = gray_test
-        img_bin_origin = gray_origin
+        (_, img_bin_test) = cv2.threshold(gray_test, 30, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+        # (_, img_bin_origin) = cv2.threshold(gray_origin, 30, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
 
     results = []
+    step = 2
     # check gach ko hop le
     for i in range(num_col + step + 1, len(lst_location_cell_test), step):
         stt = int((i - num_col)/step)
-        if stt > num_person:
-            break
-        x_test, y_test, w_test, h_test = lst_location_cell_test[i]
-        if not check_tile_valid(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test]):
-            x, y, w, h = lst_location_cell_test[i-num_col]
-            if not check_pre(img_bin_test[y:y+h, x:x+w]):
-                return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-            if not i+num_col > len(lst_location_cell_test):
-                x, y, w, h = lst_location_cell_test[i+num_col]
-                if not check_pre(img_bin_test[y:y+h, x:x+w], False):
-                    return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-        # stt
+        # check stt 
         x_test, y_test, w_test, h_test = lst_location_cell_test[i-1]
-        if not check_tile_valid(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test]):
+        message, _ = validate_pre_cell(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test], check_num=True)
+        if message != '':
             return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-        if not check_tile_valid(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test], rotate=True):
+        # top
+        x_test, y_test, w_test, h_test = lst_location_cell_test[i]
+        message, segments = validate_pre_cell(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test])
+        if message == 'top':
+            x, y, w, h = lst_location_cell_test[i-num_col]
+            re_mes, _ = validate_pre_cell(img_bin_test[y:y+h, x:x+w])
+            if re_mes == 'bottom':
+                return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+        # bottom
+        if message == 'bottom' and i+num_col <= len(lst_location_cell_test):
+            x, y, w, h = lst_location_cell_test[i+num_col]
+            re_mes, _ = validate_pre_cell(img_bin_test[y:y+h, x:x+w])
+            if re_mes == 'top':
+                return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+        # alone small
+        if message == 'small' or message == 'alone':
             return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-
-    for i in range(num_col + step + 1, len(lst_location_cell_test), step):
-        stt = int((i - num_col)/step)
         if stt > num_person:
             break
-        cell_test = get_cell_by_coordinates(lst_location_cell_test, img_bin_test, i)
-        cell_origin = get_cell_by_coordinates(lst_location_cell_origin, img_bin_origin, i)
+        if len(list_people[stt].split()) >= segments:
+            results.append({'vote': 0, 'order_number': stt})
+        else:
+            results.append({'vote': 1, 'order_number': stt})
         
-        x_test, y_test, w_test, h_test = lst_location_cell_test[i]
-        x_origin, y_origin, w_origin, h_origin = lst_location_cell_origin[i]
         
-        with graph.as_default():
-            pred = model.predict([cell_test, cell_origin])[0]
-            top_values= np.argsort(pred)[-2:]
-            if top_values[-1] == 3:
-                text_test = pytesseract.image_to_string(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test], lang='vie')
-                text_origin = pytesseract.image_to_string(img_bin_origin[y_origin:y_origin+h_origin, x_origin:x_origin+w_origin], lang='vie')
-                if max(pred) > 0.9 and text_test != text_origin and text_test != '':
-                    return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-                if top_values[-2] == 1 or top_values[-2] == 2:
-                    results.append({'vote': 0, 'order_number': stt})
-                else:
-                    results.append({'vote': 1, 'order_number': stt})
 
-            elif top_values[-1] == 1 or top_values[-1] == 2:
-                results.append({'vote': 0, 'order_number': stt})
-            else:
-                results.append({'vote': 1, 'order_number': stt})
+
+    # for i in range(num_col + step + 1, len(lst_location_cell_test), step):
+    #     stt = int((i - num_col)/step)
+    #     if stt > num_person:
+    #         break
+    #     cell_test = get_cell_by_coordinates(lst_location_cell_test, img_bin_test, i)
+    #     cell_origin = get_cell_by_coordinates(lst_location_cell_origin, img_bin_origin, i)
+        
+    #     x_test, y_test, w_test, h_test = lst_location_cell_test[i]
+    #     x_origin, y_origin, w_origin, h_origin = lst_location_cell_origin[i]
+        
+    #     with graph.as_default():
+    #         pred = model.predict([cell_test, cell_origin])[0]
+    #         top_values= np.argsort(pred)[-2:]
+    #         if top_values[-1] == 3:
+    #             if max(pred) > 0.9:
+    #                 text_test = pytesseract.image_to_string(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test], lang='vie')
+    #                 text_origin = pytesseract.image_to_string(img_bin_origin[y_origin:y_origin+h_origin, x_origin:x_origin+w_origin], lang='vie')
+    #                 if text_test != text_origin and text_test != '':
+    #                     return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+    #             if top_values[-2] == 1 or top_values[-2] == 2:
+    #                 results.append({'vote': 0, 'order_number': stt})
+    #             else:
+    #                 results.append({'vote': 1, 'order_number': stt})
+
+    #         elif top_values[-1] == 1 or top_values[-1] == 2:
+    #             results.append({'vote': 0, 'order_number': stt})
+    #         else:
+    #             results.append({'vote': 1, 'order_number': stt})
     return True, results

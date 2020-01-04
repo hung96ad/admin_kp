@@ -30,6 +30,7 @@ def DataFrame_to_image(css, outputfile="out.pdf"):
 def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
     rand = ho_ten.shape[0]
     s = ''
+    footer = '''</div></body></html>'''
     header = '''<!DOCTYPE html>
             <html>
             <head>
@@ -62,10 +63,6 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
             <br>
             </div>
             </div>'''
-      footer = '''</div>
-            </body>
-            </html>
-      '''
     if rand <= 20:
         step = 1
         for i in range(0, rand, step):

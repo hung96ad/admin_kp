@@ -26,8 +26,7 @@ import pandas as pd
 import zipfile
 import patoolib
 import uuid
-import locale
-locale.setlocale(locale.LC_ALL, 'vi_VN')
+import time
 from subprocess import Popen, PIPE, STDOUT
 
 def fxn():
@@ -139,6 +138,7 @@ def upload_file():
 
 @app.route("/upload_zip/", methods=["GET", "POST"])
 def upload_zip():
+    start_time = time.time()
     if request.method == "POST":
         id = request.form.get('comp_select')
         file_data = request.files["input_file"]
@@ -167,10 +167,11 @@ def upload_zip():
         # db.session.commit()
         process_img = run_all(db)
         if process_img == True:
-            return render_template('upload_zip_success.html', data=id)
+            return render_template('upload_zip_success.html', data={'id': id, 
+            'message': 'Xử lý thành công trong thời gian %ss. Trang sẽ tự động trở về kết quả bầu cử sau 2s.'%s(time.time()-start_time)})
         else:
             db.session.rollback()
-    return render_template('upload_zip_success.html', data="Gặp lỗi trong quá trình xử lý")
+    return render_template('upload_zip_success.html', data={"Gặp lỗi trong quá trình xử lý"})
 
 # Create admin
 admin = flask_admin.Admin(

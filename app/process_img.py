@@ -4,8 +4,9 @@ from .utils.utils_v2 import *
 from .models.election import Election
 from .models.result import Result
 from .models.result_detail import Result_Detail
+from .models.eletion_detail import Eletion_Detail
 
-load_model()
+# load_model()
 
 def get_all( sql='' ):
     conn = sqlite3.connect( DB )
@@ -47,18 +48,21 @@ def run_all(db):
     id_election = results[0].id_election
     election = Election.query.filter_by(id=id_election).update({'status': 2})
     election = Election.query.filter_by(id=id_election).first()
+    eds = Eletion_Detail.query.filter_by(id_election=id_election).filter_by(is_delete=0).all()
     if election.num_persons <= 20:
         num_col = 2
     else:
         num_col=4
-        
+    list_people = {}
+    for ed in eds:
+        list_people[ed.order_number] = ed.full_name
     # data_result = []
     data_result_detail = []
-    gray_origin, lst_location_cell_origin = get_info_table(path_origin='app/static/uploads/images/%s/%s.jpg'%(id_election, id_election), 
+    _, lst_location_cell_origin = get_info_table(path_origin='app/static/uploads/images/%s/%s.jpg'%(id_election, id_election), 
     num_person = election.num_persons)
 
     for result in results:
-        temp = validation_full(gray_origin, lst_location_cell_origin, 
+        temp = validation_full(list_people, lst_location_cell_origin, 
                             path_test=result.image, num_person = election.num_persons)
         if temp[0] == False:
             result.processed = 3
