@@ -44,7 +44,6 @@ def update_election(id_election):
 
 def run_all(db):
     results = Result.query.filter_by(processed=0).all()
-    # print(results.all()[0].)
     id_election = results[0].id_election
     election = Election.query.filter_by(id=id_election).update({'status': 2})
     election = Election.query.filter_by(id=id_election).first()
@@ -56,7 +55,6 @@ def run_all(db):
     list_people = {}
     for ed in eds:
         list_people[ed.order_number] = ed.full_name
-    # data_result = []
     data_result_detail = []
     _, lst_location_cell_origin = get_info_table(path_origin='app/static/uploads/images/%s/%s.jpg'%(id_election, id_election), 
     num_person = election.num_persons)
@@ -79,21 +77,13 @@ def run_all(db):
                 result.processed = 3
                 result.description = "Số lượng bầu chọn quá nhiều (%s đại biểu)"%total_vote
             else:
-    #             result.results_detail = temp[1]
                 result.processed = 2
                 data_result_detail.extend(temp[1])
-        # data_result.append({
-        #     'id': result.id,
-        #     'processed': result.processed,
-        #     'description': result.description
-        # })
+
     objects = []
     for dt in data_result_detail:
         rd = Result_Detail(id_result=dt['id_result'], order_number = dt['order_number'], vote= dt['vote'])
         objects.append(rd)
     db.session.bulk_save_objects(objects)
     db.session.commit()
-    # insert_result_detail(data_result_detail)
-    # update_result(data_result)
-    # update_election(election['id)
     return True

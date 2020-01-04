@@ -2,21 +2,7 @@ import cv2
 import numpy as np
 import imutils
 import math
-# from .model import build_model
-# import tensorflow as tf
-# import pytesseract
 
-# def load_model():
-#     global model
-#     model = build_model()
-#     model.load_weights('model_weight.h5')
-#     global graph
-#     graph = tf.get_default_graph()
-
-# img_width = 330
-# img_height = 30
-
-# step = 2
 
 def rotate_image(mat, angle):
 
@@ -483,36 +469,4 @@ def validation_full(list_people, lst_location_cell_origin, path_test='', num_per
             results.append({'vote': 0, 'order_number': stt})
         else:
             results.append({'vote': 1, 'order_number': stt})
-        
-        
-
-
-    # for i in range(num_col + step + 1, len(lst_location_cell_test), step):
-    #     stt = int((i - num_col)/step)
-    #     if stt > num_person:
-    #         break
-    #     cell_test = get_cell_by_coordinates(lst_location_cell_test, img_bin_test, i)
-    #     cell_origin = get_cell_by_coordinates(lst_location_cell_origin, img_bin_origin, i)
-        
-    #     x_test, y_test, w_test, h_test = lst_location_cell_test[i]
-    #     x_origin, y_origin, w_origin, h_origin = lst_location_cell_origin[i]
-        
-    #     with graph.as_default():
-    #         pred = model.predict([cell_test, cell_origin])[0]
-    #         top_values= np.argsort(pred)[-2:]
-    #         if top_values[-1] == 3:
-    #             if max(pred) > 0.9:
-    #                 text_test = pytesseract.image_to_string(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test], lang='vie')
-    #                 text_origin = pytesseract.image_to_string(img_bin_origin[y_origin:y_origin+h_origin, x_origin:x_origin+w_origin], lang='vie')
-    #                 if text_test != text_origin and text_test != '':
-    #                     return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-    #             if top_values[-2] == 1 or top_values[-2] == 2:
-    #                 results.append({'vote': 0, 'order_number': stt})
-    #             else:
-    #                 results.append({'vote': 1, 'order_number': stt})
-
-    #         elif top_values[-1] == 1 or top_values[-1] == 2:
-    #             results.append({'vote': 0, 'order_number': stt})
-    #         else:
-    #             results.append({'vote': 1, 'order_number': stt})
     return True, results
