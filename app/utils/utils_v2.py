@@ -116,7 +116,7 @@ def get_contours_angle(gray_img, min_w = 100, min_h= 200, w_blur=1):
                 break
     return contours, angle
 
-def scale_ratio(gray_img, scale_ratio=0.025):
+def scale_ratio(gray_img, scale_ratio=0.03):
     h, w = gray_img.shape
     gray_img = gray_img[int(scale_ratio*h):int((1-scale_ratio)*h), int(scale_ratio*w):int((1-scale_ratio)*w)]
     return gray_img
@@ -317,9 +317,9 @@ def validate_pre_cell(img, check_num=False):
     img_bin_test = 255 - img
     pixel_crop = get_pixcel_crop(img_bin_test)
     img_crop = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
-    step = 6
     thresh = 254
     if not check_num:
+        step = 6
         segment_one = 0
         segments = get_segment(img_crop, thresh = thresh)
         for i in range(len(segments)):
@@ -355,6 +355,7 @@ def validate_pre_cell(img, check_num=False):
         # check gach khong hop le
         return '', segment_one
     if check_num:
+        step = 3
         # check theo chieu ngang
         img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, 0:w-pixel_crop*2]
         cnt = 0
