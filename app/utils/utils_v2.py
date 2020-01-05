@@ -421,7 +421,7 @@ def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0))
 
     bboxs_test['table'] = lst_location_cell_test[1]
     if len(lst_location_cell_test) != total_bboxs:
-        return False, "Ảnh quá mờ hoặc phiếu bầu cử không hợp lệ"
+        return False, "Ảnh bị mờ hoặc phiếu bầu cử không hợp lệ"
     status, message = check_tile_outside(gray_test, bboxs_test)
     if status == False: 
         return status, message
