@@ -85,7 +85,10 @@ def get_contours_angle(gray_img, min_w = 100, min_h= 200, w_blur=1):
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     # Morphological operation to detect vertical lines from an image
     img_temp1 = cv2.erode(img_bin, verticle_kernel, iterations=2)
-    verticle_lines_img = cv2.dilate(img_temp1, verticle_kernel, iterations=2)
+    if w_blur == 17:
+        verticle_lines_img = cv2.dilate(img_temp1, verticle_kernel, iterations=3)
+    else:
+        verticle_lines_img = cv2.dilate(img_temp1, verticle_kernel, iterations=2)
     # Morphological operation to detect horizontal lines from an image
     img_temp2 = cv2.erode(img_bin, hori_kernel, iterations=1)
     horizontal_lines_img = cv2.dilate(img_temp2, hori_kernel, iterations=1)
@@ -158,14 +161,14 @@ def get_all_cell(gray, num_col = 4, min_cell_w= 20, min_cell_h = 20, img_path=''
                         lst_location.append([x + int(0.05*w), y+int(0.05*h), int(0.95*w), int(0.95*h)])
                 lst_box = []
 
-    if len(lst_location) < total_bboxs and w_blur < 15:
+    if len(lst_location) < total_bboxs and w_blur < 17:
         return get_all_cell(gray, num_col=num_col, min_cell_w=min_cell_w, min_cell_h=min_cell_h, img_path=img_path, total_bboxs=total_bboxs, w_blur=w_blur+2)
     elif len(lst_location) > total_bboxs and min_cell_h < 80:
         return get_all_cell(gray, num_col=num_col, min_cell_w=min_cell_w+2, min_cell_h=min_cell_h+2, img_path=img_path, total_bboxs=total_bboxs, w_blur=w_blur)
     if len(lst_location) == total_bboxs:
-        return lst_location, ""
+        return lst_location
     else:
-        return lst_location, "Ảnh không đúng template hoặc quá mờ"
+        return lst_location
     
 def get_bbox(gray):
     blur = cv2.GaussianBlur(gray, (9,9), 0)
@@ -413,13 +416,11 @@ def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0))
     gray_test, bboxs_test = rotate_image_by_table(gray_test)
     if 'stamp' not in bboxs_test:
         return False, "Thiếu dấu góc trái" 
-    lst_location_cell_test, message = get_all_cell(gray_test, num_col = num_col, min_cell_w= 50, min_cell_h = 50, total_bboxs=total_bboxs)
-    if message != "":
-        return False, message
-    
+    lst_location_cell_test = get_all_cell(gray_test, num_col = num_col, min_cell_w= 50, min_cell_h = 50, total_bboxs=total_bboxs)
+
     bboxs_test['table'] = lst_location_cell_test[1]
     if len(lst_location_cell_test) != total_bboxs:
-        return False, "Phiếu bầu cử không hợp lệ"
+        return False, "Ảnh quá mờ hoặc phiếu bầu cử không hợp lệ"
     status, message = check_tile_outside(gray_test, bboxs_test)
     if status == False: 
         return status, message
