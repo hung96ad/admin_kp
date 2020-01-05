@@ -357,6 +357,8 @@ def validate_pre_cell(img, check_num=False):
     if check_num:
         step = 4
         pixel_crop = 0
+        if img_bin_test.shape[0] < 58 or img_bin_test.shape[0] < 58:
+            return 'size', None
         img_crop = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
         # check theo chieu ngang
         img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, 0:w-pixel_crop*2]
