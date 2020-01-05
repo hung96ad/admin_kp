@@ -186,30 +186,31 @@ def get_bbox(gray):
         area = cv2.contourArea(c)
         if area > 10000:
             x,y,w,h = cv2.boundingRect(c)
+            _distance = x*x + y*y
             _bboxs.append([x,y,w,h])
             _area = w*h
             if max_area < _area:
                 max_area = _area
-            if x < min_distance and 0.55<w/h<1.35:
-                min_distance = x
+            if _distance < min_distance and 0.65<w/h<1.35:
+                min_distance = _distance
     for bbox in _bboxs:
         x,y,w,h = bbox
         if max_area == w*h:
-            bboxs['table'] = [x,y,w,h]
+            bboxs['table'] = [x,y,w,h].copy()
             _bboxs.remove([x,y,w,h])
-        elif min_distance == x and 0.65<w/h<1.35 and x < 600 and y < 600:
+        elif min_distance == x*x + y*y and 0.65<w/h<1.35 and x < 600 and y < 600:
             if y-int(0.05*h) > 0 and x-int(0.05*w) > 0:
-                bboxs['stamp'] = [x - int(0.05*w), y-int(0.05*h), int(1.1*w), int(1.1*h)]
+                bboxs['stamp'] = [x - int(0.05*w), y-int(0.05*h), int(1.1*w), int(1.1*h)].copy()
             else:
-                bboxs['stamp'] = [x,y,w,h]
+                bboxs['stamp'] = [x,y,w,h].copy()
             _bboxs.remove([x,y,w,h])
 
     for bbox in _bboxs:
         x,y,w,h = bbox
         if 'title' in bboxs:
-            bboxs['spam'] = [x,y,w,h]
+            bboxs['spam'] = [x,y,w,h].copy()
         else:
-            bboxs['title'] = [x,y,w,h]
+            bboxs['title'] = [x,y,w,h].copy()
     return bboxs
 
 def rotate_image_by_table(gray_img):
