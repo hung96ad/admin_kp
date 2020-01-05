@@ -56,7 +56,6 @@ def run_all(db):
     for ed in eds:
         list_people[ed.order_number] = ed.full_name
     data_result_detail = []
-    num_person = election.num_persons)
 
     for result in results:
         temp = validation_full(list_people, path_test=result.image, num_person = election.num_persons)
