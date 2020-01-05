@@ -56,11 +56,10 @@ def run_all(db):
     for ed in eds:
         list_people[ed.order_number] = ed.full_name
     data_result_detail = []
-    _, lst_location_cell_origin = get_info_table(path_origin='app/static/uploads/images/%s/%s.jpg'%(id_election, id_election), 
     num_person = election.num_persons)
 
     for result in results:
-        temp = validation_full(list_people, lst_location_cell_origin, 
+        temp = validation_full(list_people, 
                             path_test=result.image, num_person = election.num_persons)
         if temp[0] == False:
             result.processed = 3

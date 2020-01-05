@@ -254,30 +254,6 @@ def check_tile_outside(dilate_test, bboxs_test):
                 return False, "Gạch ở ngoài bảng"
     return True, ""
 
-def get_ratio(img_origin, img_test):    
-    img_origin = 255 - img_origin
-    img_test = 255 - img_test
-    img_test = cv2.resize(img_test,(img_origin.shape[1],img_origin.shape[0]))
-    return img_test.sum()/img_origin.sum()
-
-def get_cell_by_coordinates(lst_location_cell_test, img_bin, i):
-    x, y, w, h = lst_location_cell_test[i]
-    cell = cv2.resize(img_bin[y:y+h, x:x+w], (img_width,img_height), interpolation=cv2.INTER_CUBIC).reshape(img_width,img_height,1)
-    return np.array([cell/255.])
-
-def get_info_table(path_origin='', num_person=10):
-    if num_person <= 20:
-        num_col = 2
-    else:
-        num_col=4
-    if num_person % 2 == 1 and num_col == 4:
-        total_bboxs = (num_person+1) * 2 + num_col + 2
-    else:
-        total_bboxs = num_person * 2 + num_col + 2
-    gray_origin = read_to_gray(path_origin)
-    lst_location_cell_origin, _ = get_all_cell(gray_origin, num_col = num_col, min_cell_w= 24, min_cell_h = 24, total_bboxs=total_bboxs)
-
-    return gray_origin, lst_location_cell_origin
 
 def check_horizontally(img):
     img_new = img.copy()
@@ -399,7 +375,7 @@ def validate_pre_cell(img, check_num=False):
         return 'bottom', segment_one
     # check gach khong hop le
     return '', None
-def validation_full(list_people, lst_location_cell_origin, path_test='', num_person=10, size_blur = (0,0)):
+def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0)):
     if num_person <= 20:
         num_col = 2
     else:
@@ -419,7 +395,7 @@ def validation_full(list_people, lst_location_cell_origin, path_test='', num_per
         return False, message
     
     bboxs_test['table'] = lst_location_cell_test[1]
-    if len(lst_location_cell_test) != len(lst_location_cell_origin):
+    if len(lst_location_cell_test) != total_bboxs:
         return False, "Phiếu bầu cử không hợp lệ"
     status, message = check_tile_outside(gray_test, bboxs_test)
     if status == False: 
@@ -429,12 +405,8 @@ def validation_full(list_people, lst_location_cell_origin, path_test='', num_per
     if size_blur != (0, 0):
         blur_test = cv2.GaussianBlur(gray_test, size_blur, 0)
         (_, img_bin_test) = cv2.threshold(blur_test, 30, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
-        # origin
-        # blur_origin = cv2.GaussianBlur(gray_origin, size_blur, 0)
-        # (_, img_bin_origin) = cv2.threshold(blur_origin, 30, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
     else:
         (_, img_bin_test) = cv2.threshold(gray_test, 30, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
-        # (_, img_bin_origin) = cv2.threshold(gray_origin, 30, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
 
     results = []
     step = 2
