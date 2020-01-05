@@ -4,7 +4,6 @@ import os
 import shutil
 import random
 import pdfkit 
-from pdf2image import convert_from_path
 
 def DataFrame_to_image(css, outputfile="out.pdf"):
     fn = str(random.random()*100000000).split(".")[0] + ".html"
@@ -22,8 +21,6 @@ def DataFrame_to_image(css, outputfile="out.pdf"):
     
     pdfkit.from_file(fn, outputfile) 
     
-    pages = convert_from_path(outputfile)
-    pages[0].save(outputfile.replace('pdf', 'jpg'), 'JPEG')
 
     os.remove(fn)
 
