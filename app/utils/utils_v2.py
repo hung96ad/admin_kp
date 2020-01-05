@@ -67,7 +67,9 @@ def detect_angle(gray):
 
 def get_contours_angle(gray_img, min_w = 100, min_h= 200, w_blur=1):
     blur = gray_img.copy()
-    if w_blur != 1:
+    if w_blur == 17:
+        blur = cv2.GaussianBlur(gray_img, (3, 3), 0)
+    elif w_blur != 1:
         blur = cv2.GaussianBlur(gray_img, (w_blur, w_blur), 0)
 
     (thresh, img_bin) = cv2.threshold(blur, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
@@ -109,7 +111,6 @@ def get_contours_angle(gray_img, min_w = 100, min_h= 200, w_blur=1):
     angle = 0
 
     for c in contours:
-        # Returns the location and width,height for every contour
         x, y, w, h = cv2.boundingRect(c)
         if (w > min_w and h > min_h):
             idx += 1
@@ -461,7 +462,7 @@ def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0))
             return False, "Gạch không hợp lệ ô STT %s"%(stt) 
         if stt > num_person:
             break
-        if len(list_people[stt].split()) + 2 >= segments:
+        if 2*len(list_people[stt].split()) >= segments:
             results.append({'vote': 0, 'order_number': stt})
         else:
             results.append({'vote': 1, 'order_number': stt})
