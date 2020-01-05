@@ -57,7 +57,6 @@ def detect_angle(gray):
     angles = []
     for line in lines:
         x1, y1, x2, y2 = line[0]
-        cv2.line(gray, (x1, y1), (x2, y2), (255, 0, 0), 3)
         angle = math.degrees(math.atan2(y2 - y1, x2 - x1))
         if abs(angle) < 30:
             angles.append(angle)
@@ -369,7 +368,7 @@ def validate_pre_cell(img, check_num=False):
         cnt = 0
         img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop*2:w]
         for i in range(img_crop.shape[1]-1, img_crop.shape[1]-step-1, -1):
-            if img_crop[: , i].sum()> 255:
+            if img_crop[: , i].sum()> thresh:
                 cnt += 1
             if img_crop_horizontal[: , i-pixel_crop].sum()> thresh:
                     cnt += 1
