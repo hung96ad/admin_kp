@@ -161,7 +161,7 @@ def get_all_cell(gray, num_col = 4, min_cell_w= 20, min_cell_h = 20, img_path=''
 
     if len(lst_location) < total_bboxs and w_blur < 15:
         return get_all_cell(gray, num_col=num_col, min_cell_w=min_cell_w, min_cell_h=min_cell_h, img_path=img_path, total_bboxs=total_bboxs, w_blur=w_blur+2)
-    elif len(lst_location) > total_bboxs and min_cell_h < 35:
+    elif len(lst_location) > total_bboxs and min_cell_h < 80:
         return get_all_cell(gray, num_col=num_col, min_cell_w=min_cell_w+2, min_cell_h=min_cell_h+2, img_path=img_path, total_bboxs=total_bboxs, w_blur=w_blur)
     if len(lst_location) == total_bboxs:
         return lst_location, ""
@@ -408,10 +408,8 @@ def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0))
     gray_test = read_to_gray(path_test)
     gray_test, bboxs_test = rotate_image_by_table(gray_test)
     if 'stamp' not in bboxs_test:
-        return False, "Thiếu dấu góc trái"
-    if 'spam' in bboxs_test:
-        return False, "Gạch ở ngoài spam"    
-    lst_location_cell_test, message = get_all_cell(gray_test, num_col = num_col, min_cell_w= 26, min_cell_h = 26, total_bboxs=total_bboxs)
+        return False, "Thiếu dấu góc trái" 
+    lst_location_cell_test, message = get_all_cell(gray_test, num_col = num_col, min_cell_w= 50, min_cell_h = 50, total_bboxs=total_bboxs)
     if message != "":
         return False, message
     
