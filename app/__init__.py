@@ -168,7 +168,7 @@ def upload_zip():
         process_img = run_all(db)
         if process_img == True:
             return render_template('upload_zip_success.html', data={'id': id, 
-            'message': 'Xử lý thành công trong thời gian %ss. Trang sẽ tự động trở về kết quả bầu cử sau 2s.'%s(time.time()-start_time)})
+            'message': 'Xử lý thành công trong thời gian %ss. Trang sẽ tự động trở về kết quả bầu cử sau 2s.'%(time.time()-start_time)})
         else:
             db.session.rollback()
     return render_template('upload_zip_success.html', data={"Gặp lỗi trong quá trình xử lý"})

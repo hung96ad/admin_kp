@@ -465,7 +465,7 @@ def validation_full(list_people, lst_location_cell_origin, path_test='', num_per
             return False, "Gạch không hợp lệ ô STT %s"%(stt) 
         if stt > num_person:
             break
-        if len(list_people[stt].split()) >= segments:
+        if len(list_people[stt].split()) + 2 >= segments:
             results.append({'vote': 0, 'order_number': stt})
         else:
             results.append({'vote': 1, 'order_number': stt})
