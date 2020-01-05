@@ -355,7 +355,9 @@ def validate_pre_cell(img, check_num=False):
         # check gach khong hop le
         return '', segment_one
     if check_num:
-        step = 3
+        step = 4
+        pixel_crop = 0
+        img_crop = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
         # check theo chieu ngang
         img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, 0:w-pixel_crop*2]
         cnt = 0
