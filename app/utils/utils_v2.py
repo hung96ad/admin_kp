@@ -321,7 +321,6 @@ def validate_pre_cell(img, check_num=False):
     step = 6
     thresh = 254
     if not check_num:
-        print(check_num)
         segment_one = 0
         segments = get_segment(img_crop, thresh = thresh)
         for i in range(len(segments)):
