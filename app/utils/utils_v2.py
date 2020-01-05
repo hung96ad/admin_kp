@@ -318,12 +318,10 @@ def validate_pre_cell(img, check_num=False):
     img_bin_test = 255 - img
     pixel_crop = get_pixcel_crop(img_bin_test)
     img_crop = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
-    # check theo chieu ngang
-    img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, 0:w-pixel_crop*2]
-    cnt = 0
     step = 6
     thresh = 254
     if not check_num:
+        print(check_num)
         segment_one = 0
         segments = get_segment(img_crop, thresh = thresh)
         for i in range(len(segments)):
@@ -337,8 +335,31 @@ def validate_pre_cell(img, check_num=False):
                     return 'alone', None
             if segments[i]['status'] == 1:
                 segment_one += 1
+            # check theo chieu doc thi xoa bot lop dau va cuoi
+        img_crop_vertical = img_bin_test[0:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
+        cnt = 0
+        for i in range(0, step):
+            if img_crop[i].sum()> thresh:
+                cnt += 1
+            if img_crop_vertical[i].sum()> thresh:
+                    cnt += 1
+        if cnt == step*2:
+            return 'top', segment_one
+        cnt = 0
+        img_crop_vertical = img_bin_test[pixel_crop*2:h, pixel_crop:w-pixel_crop*2]
+        for i in range(img_crop.shape[0]-1, img_crop.shape[0]-step-1, -1):
+            if img_crop[i].sum()> thresh:
+                cnt += 1
+            if img_crop_vertical[i-pixel_crop].sum()> thresh:
+                cnt += 1
+        if cnt == step*2:
+            return 'bottom', segment_one
+        # check gach khong hop le
         return '', segment_one
     if check_num:
+        # check theo chieu ngang
+        img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, 0:w-pixel_crop*2]
+        cnt = 0
         for i in range(0, step):
             if img_crop[: , i].sum()> thresh:
                 cnt += 1
@@ -355,27 +376,27 @@ def validate_pre_cell(img, check_num=False):
                     cnt += 1
         if cnt == step*2:
             return 'right', None
-    # check theo chieu doc thi xoa bot lop dau va cuoi
-    img_crop_vertical = img_bin_test[0:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
-    cnt = 0
-    for i in range(0, step):
-        if img_crop[i].sum()> thresh:
-            cnt += 1
-        if img_crop_vertical[i].sum()> thresh:
+        # check theo chieu doc thi xoa bot lop dau va cuoi
+        img_crop_vertical = img_bin_test[0:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
+        cnt = 0
+        for i in range(0, step):
+            if img_crop[i].sum()> thresh:
                 cnt += 1
-    if cnt == step*2:
-        return 'top', segment_one
-    cnt = 0
-    img_crop_vertical = img_bin_test[pixel_crop*2:h, pixel_crop:w-pixel_crop*2]
-    for i in range(img_crop.shape[0]-1, img_crop.shape[0]-step-1, -1):
-        if img_crop[i].sum()> thresh:
-            cnt += 1
-        if img_crop_vertical[i-pixel_crop].sum()> thresh:
-            cnt += 1
-    if cnt == step*2:
-        return 'bottom', segment_one
-    # check gach khong hop le
+            if img_crop_vertical[i].sum()> thresh:
+                    cnt += 1
+        if cnt == step*2:
+            return 'top', None
+        cnt = 0
+        img_crop_vertical = img_bin_test[pixel_crop*2:h, pixel_crop:w-pixel_crop*2]
+        for i in range(img_crop.shape[0]-1, img_crop.shape[0]-step-1, -1):
+            if img_crop[i].sum()> thresh:
+                cnt += 1
+            if img_crop_vertical[i-pixel_crop].sum()> thresh:
+                cnt += 1
+        if cnt == step*2:
+            return 'bottom', None
     return '', None
+
 def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0)):
     if num_person <= 20:
         num_col = 2
