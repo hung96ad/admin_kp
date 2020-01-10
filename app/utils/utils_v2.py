@@ -327,7 +327,8 @@ def validate_pre_cell(img, check_num=False):
         segment_one = 0
         segments = get_segment(img_crop, thresh = thresh)
         for i in range(len(segments)):
-            if segments[i]['segment'] > 30 and segments[i]['sum'] <= 2550 and segments[i]['status'] == 1:
+            if segments[i]['segment'] > 30 and segments[i]['sum'] <= 2550 \
+            and segments[i]['status'] == 1 and segments[i+1]['segment'] > 8 and segments[i-1]['segment'] > 8:
                 return 'small', None
             if i != 0 and i!= len(segments)-1:
                 if (segments[i]['segment'] > segments[0]['segment'] \
