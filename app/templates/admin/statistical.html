@@ -45,15 +45,16 @@
                     </td>
 
                     <td class="col-num_valid">
-                            {{dt['num_valid']}}
+                            {{dt['num_valid']}} 
+                            {% if dt['num_valid'] != 0 %}
+                            <a href="/admin/statistical/success/{{dt['id_election']}}">Xem chi tiết</a>
+                            {% endif %}
                     </td>
 
                     <td class="col-num_invalid">
+                        {{dt['num_invalid']}} 
                         {% if dt['num_invalid'] != 0 %}
-                            {{dt['num_invalid']}} 
                             <a href="/admin/statistical/error/{{dt['id_election']}}">Xem chi tiết</a>
-                            {% else %}
-                            {{dt['num_invalid']}} 
                             {% endif %}
                     </td>
 
