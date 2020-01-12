@@ -137,6 +137,13 @@
               <li><a href="/admin/statistical/" style="color: aliceblue;"><i class="fa fa-circle-o"></i>Kết quả bầu cử</a></li>
             </ul>
           </li>
+          {% if current_user.has_role('superuser') %}
+          <li>
+            <a href="/admin/user/" style="color: aliceblue;">
+              <i class="fa fa-users"></i> <span><b>Quản trị người dùng</b></span>
+            </a>
+          </li>
+          {% endif %}
       </ul>
     </section>
     <!-- /.sidebar -->

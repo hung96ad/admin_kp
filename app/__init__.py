@@ -180,14 +180,10 @@ admin = flask_admin.Admin(
     base_template='my_master.html',
     template_mode='bootstrap3'
 )
-# print(Election().all())
-# Add model views
+admin.add_view(UserView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-users', name="Quản trị người dùng"))
 admin.add_view(AddView(name="Thêm mới bầu cử", endpoint='add', menu_icon_type='fa', menu_icon_value='fa-calendar-plus-o',))
 admin.add_view(ElectionView(endpoint='election', menu_icon_type='fa', menu_icon_value='fa-server', name="Quản lý danh sách các cuộc bầu cử", model=Election, db=db))
 admin.add_view(ResultView(endpoint='statistical', menu_icon_type='fa', menu_icon_value='fa-table', name="Thống kê bầu cử", db=db))
-# admin.add_view(UpdateView(name="Bổ sung phiếu bầu cử", endpoint='update', menu_icon_type='fa', menu_icon_value='fa-edit (alias)',))
-# define a context processor for merging flask-admin's template context into the
-# flask-security views.
 @security.context_processor
 def security_context_processor():
     return dict(
@@ -198,10 +194,6 @@ def security_context_processor():
     )
 
 if __name__ == '__main__':
-
-    # # Build a sample db on the fly, if one does not exist yet.
-    # app_dir = os.path.realpath(os.path.dirname(__file__))
-    # database_path = os.path.join(app_dir, app.config['DATABASE_FILE'])
 
     # Start app
     app.run(debug=True)
