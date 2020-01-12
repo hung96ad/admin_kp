@@ -82,8 +82,13 @@
     {% if current_user.is_authenticated %}
     <header class="main-header">
       <nav class="navbar navbar-static-top">
+        <div class="logo">
+          <a href="/admin">
+            <span class="logo-lg" style="color: aliceblue;"><i class="fa fa-home"></i> Trang chủ</span>
+          </a>
+        </div>
         
-        <div class="navbar-custom-menu">
+      <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">         
             <li>
               {% block access_control %}
@@ -103,7 +108,6 @@
     <!-- / TOP NAVBAR -->
     <!-- LEFT MENU -->
     <div class="main-sidebar">
-        <br>
         <!-- sidebar: style can be found in sidebar.less -->
       <section class="sidebar">
         
