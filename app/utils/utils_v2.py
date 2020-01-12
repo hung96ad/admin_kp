@@ -448,16 +448,10 @@ def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0))
         x_test, y_test, w_test, h_test = lst_location_cell_test[i]
         message, segments = validate_pre_cell(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test])
         if message == 'top':
-            x, y, w, h = lst_location_cell_test[i-num_col]
-            re_mes, _ = validate_pre_cell(img_bin_test[y:y+h, x:x+w])
-            if re_mes == 'bottom':
-                return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+            return False, "Gạch không hợp lệ ô STT %s"%(stt) 
         # bottom
         if message == 'bottom' and i+num_col <= len(lst_location_cell_test):
-            x, y, w, h = lst_location_cell_test[i+num_col]
-            re_mes, _ = validate_pre_cell(img_bin_test[y:y+h, x:x+w])
-            if re_mes == 'top':
-                return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+            return False, "Gạch không hợp lệ ô STT %s"%(stt) 
         # alone small
         if message == 'small' or message == 'alone':
             return False, "Gạch không hợp lệ ô STT %s"%(stt) 
