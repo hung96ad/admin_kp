@@ -72,7 +72,7 @@ def get_contours_angle(gray_img, min_w = 100, min_h= 200, w_blur=1):
     elif w_blur != 1:
         blur = cv2.GaussianBlur(gray_img, (w_blur, w_blur), 0)
 
-    (thresh, img_bin) = cv2.threshold(blur, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+    (thresh, img_bin) = cv2.threshold(blur, 128, 255,cv2.THRESH_BINARY)
     # Invert the image
     img_bin = 255-img_bin
 
@@ -100,7 +100,7 @@ def get_contours_angle(gray_img, min_w = 100, min_h= 200, w_blur=1):
     # This function helps to add two image with specific weight parameter to get a third image as summation of two image.
     img_final_bin = cv2.addWeighted(verticle_lines_img, alpha, horizontal_lines_img, beta, 0.0)
     img_final_bin = cv2.erode(~img_final_bin, kernel, iterations=2)
-    (thresh, img_final_bin) = cv2.threshold(img_final_bin, 128,255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+    (thresh, img_final_bin) = cv2.threshold(img_final_bin, 128,255, cv2.THRESH_BINARY )
 
     # Find contours for image, which will detect all the boxes
     cnts = cv2.findContours(img_final_bin, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -232,7 +232,7 @@ def rotate_image_by_table(gray_img):
 def check_tile_outside(dilate_test, bboxs_test):
     dilate_test_cp = dilate_test.copy()
     dilate_test_cp = cv2.GaussianBlur(dilate_test_cp, (3,3), 0)
-    (thresh, dilate_test_cp) = cv2.threshold(dilate_test_cp, 128, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+    (thresh, dilate_test_cp) = cv2.threshold(dilate_test_cp, 128, 255,cv2.THRESH_BINARY)
     dilate_test_cp = 255 - dilate_test_cp
     # Kiem tra phan ngoai dau va bang
     for item in bboxs_test:
@@ -430,9 +430,9 @@ def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0))
     # test
     if size_blur != (0, 0):
         blur_test = cv2.GaussianBlur(gray_test, size_blur, 0)
-        (_, img_bin_test) = cv2.threshold(blur_test, 30, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+        (_, img_bin_test) = cv2.threshold(blur_test, 170, 255,cv2.THRESH_BINARY)
     else:
-        (_, img_bin_test) = cv2.threshold(gray_test, 30, 255,cv2.THRESH_BINARY| cv2.THRESH_OTSU)
+        (_, img_bin_test) = cv2.threshold(gray_test, 170, 255,cv2.THRESH_BINARY)
 
     results = []
     step = 2
