@@ -16,7 +16,7 @@ body .navbar .sidebar-collapse {
 }
 .header_banner {
     height: 90px;
-    background: url(/stg/Assets/app/img/header_banner5.png);
+    background: url(/static/img/header_banner5.png);
     background-size: cover;
     background-position: center bottom;
     background-repeat: no-repeat;

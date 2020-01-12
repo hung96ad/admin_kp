@@ -33,7 +33,8 @@
             <thead>
                 <tr>                   
                     <th class="column-header">STT</th>
-                    <th class="column-header">Lỗi</th>
+                    <th class="column-header">Tổng số bầu cử</th>
+                    <th class="column-header">STT bị gạch</th>
                     <th class="column-header">Link ảnh</th>
                 </tr>
             </thead>
@@ -46,12 +47,16 @@
                             {{ count.value }}
                             {% set count.value = count.value + 1 %}
                     </td>
-                    <td class="col-description">
-                            {%  print(dt['description'])  %}
+                    <td class="col-count">
+                            {%  print(dt['count'])  %}
+                    </td>
+
+                    <td class="col-stt">
+                        {%  print(dt['stt'])  %}
                     </td>
 
                     <td class="col-image">
-                            <a href="{{dt['image'].replace("app","")}}" target="_blank">Xem</a>
+                        <a href="{{dt['image'].replace("app","")}}" target="_blank">Xem</a>
                     </td>
                 </tr>
                 {% endfor %}

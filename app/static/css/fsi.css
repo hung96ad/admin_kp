@@ -230,7 +230,7 @@ body .login_header .head_left .site_name h2, body .login_header .head_left .site
 }
 
 .login_mainContent {
-    background: url(/login/Assets/app/img/bg_login.jpg) #1e9bc5;
+    background: url(/static/img/bg_login.jpg) #1e9bc5;
     background-size: cover;
     background-position: 100% 100%;
     background-repeat: no-repeat;

@@ -67,7 +67,19 @@ class ResultView(BaseView):
 
         data = self.db.engine.execute(sql)
         return self.render('admin/error.html', data=data)
-    
+
+    @expose('/success/<id>/')
+    def success(self, id):
+        sql = "SELECT r.image, group_concat(rd.order_number) as stt, e.num_persons - COUNT(r.id) as count \
+        FROM result AS r \
+        JOIN result_detail AS rd \
+        ON r.id = rd.id_result AND r.processed = 2 AND rd.vote = 0 \
+        JOIN election e ON e.id = r.id_election \
+        WHERE e.id = %s \
+        GROUP BY r.id"%id
+
+        data = self.db.engine.execute(sql)
+        return self.render('admin/success.html', data=data)
     @expose('/export_excel/<id>/')
     def export_excel(self, id):
         data = {}
