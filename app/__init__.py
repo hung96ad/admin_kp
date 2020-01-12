@@ -27,7 +27,9 @@ import zipfile
 import patoolib
 import uuid
 import time
-from subprocess import Popen, PIPE, STDOUT
+
+import locale
+locale.setlocale(locale.LC_COLLATE, 'vi_VN')
 
 def fxn():
     warnings.warn("deprecated", DeprecationWarning)
@@ -58,8 +60,19 @@ security = Security(app, user_datastore)
 def index():
     return render_template('index.html')
 
+def read_sort_name(path_excel):
+    df = pd.read_excel(path_excel)
+    df['Họ và tên'] = df['Họ và tên'].str.upper().str.strip().str.replace(r" +", ' ')
+    df['split'] = df['Họ và tên'].str.rsplit(" ", 1)
+    list_ho_ten = sorted(df['split'].values, key=lambda x: (locale.strxfrm(x[1]), locale.strxfrm(x[0])))
+    ho_ten = pd.DataFrame(list_ho_ten, columns=['Họ', 'Tên'])
+    ho_ten['Họ và tên'] = ho_ten['Họ'] + ' '+ ho_ten['Tên']
+    ho_ten.to_excel(path_excel)
+    return ho_ten
+
 @app.route("/upload-file", methods=["GET", "POST"])
 def upload_file():
+
     if request.method == "POST":
         election_id = request.form.get('id')
         line_1 = request.form.get('line_1')
@@ -83,10 +96,8 @@ def upload_file():
             file_data.save(path_excel)
 
             # sinh ra file ảnh
-            ho_ten = pd.read_excel(path_excel)
-            num_persons = ho_ten.shape[0]
-            ho_ten['full_name'] = ho_ten['Họ'] + " " + ho_ten['Tên']
-            image = gen_by_ho_ten(ho_ten['full_name'].str.upper(), election_id, line, app.config['IMAGE'])
+            ho_ten = read_sort_name(path_excel)
+            image = gen_by_ho_ten(ho_ten['Họ và tên'].str.upper(), election_id, line, app.config['IMAGE'])
 
             # add vao db
             objects = []
@@ -95,7 +106,7 @@ def upload_file():
             objects.append(elec)
             
             for i in range(ho_ten.shape[0]):
-                ed = Eletion_Detail(full_name=ho_ten['full_name'][i], id_election=election_id, order_number=i+1)
+                ed = Eletion_Detail(full_name=ho_ten['Họ và tên'][i], id_election=election_id, order_number=i+1)
                 objects.append(ed)
             
             db.session.bulk_save_objects(objects)
@@ -105,25 +116,23 @@ def upload_file():
             file_data = request.files["input_file"]
             if file_data is None:
                 path_excel = request.form.get('file')
-                ho_ten = pd.read_excel(path_excel)
-                ho_ten['full_name'] = ho_ten['Họ'] + " " + ho_ten['Tên']
+                ho_ten = read_sort_name(path_excel)
             else:
                 file_data.filename = str(election_id) + ".xlsx"
                 path_excel = app.config['EXCEL'] + file_data.filename
-                ho_ten = pd.read_excel(path_excel)
-                ho_ten['full_name'] = ho_ten['Họ'] + " " + ho_ten['Tên']
-
                 file_data.save(path_excel)
+                ho_ten = read_sort_name(path_excel)
+
                 ede = Eletion_Detail.query.filter(Eletion_Detail.id_election == election_id).update({"is_delete":True})
 
                 objects = []
                 for i in range(ho_ten.shape[0]):
-                    ed = Eletion_Detail(full_name=ho_ten['full_name'][i], id_election=election_id, order_number=i+1)
+                    ed = Eletion_Detail(full_name=ho_ten['Họ và tên'][i], id_election=election_id, order_number=i+1)
                     objects.append(ed)
                 
                 db.session.bulk_save_objects(objects)
 
-            image = gen_by_ho_ten(ho_ten['full_name'].str.upper(), election_id, line, app.config['IMAGE'])
+            image = gen_by_ho_ten(ho_ten['Họ và tên'].str.upper(), election_id, line, app.config['IMAGE'])
 
             elec.title = title
             elec.line_1 = line_1
