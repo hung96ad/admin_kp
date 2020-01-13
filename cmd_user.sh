@@ -1,6 +1,9 @@
 sudo apt-get update
 sudo apt install unzip -y
 sudo apt-get install tesseract-ocr tesseract-ocr-vie -y
+sudo locale-gen vi_VN
+sudo update-locale LANG=vi_VN
+export LC_ALL="vi_VN.UTF-8"
 sudo su
 # root
 apt-get install wkhtmltopdf xvfb -y
