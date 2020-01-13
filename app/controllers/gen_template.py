@@ -50,10 +50,10 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
             <body>
             <div style="width:26cm; height:5cm; position:relative; z-index:1;">
                   </div>
-            <div style="width:26cm; height:30cm; position:relative; z-index:2; font-size: 130%;">
+            <div style="width:26cm; height:30cm; position:relative; z-index:2; font-size: 110%;">
             <div style="position:relative;">
 
-            <div style="text-align: center;font-size: 150%;">
+            <div style="text-align: center; font-size: 120%;">
             ''' + line[0].upper() +'''<br>
             ''' + line[1].upper() +'''<br>
             ''' + line[2].upper() +'''<br>
@@ -63,27 +63,31 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
     if rand <= 20:
         step = 1
         for i in range(0, rand, step):
-            s += f'<tr><td style="width:1.0cm; height:1.0cm;">{i+1}</td><td style="width:11cm; height:1.0cm;">{ho_ten[i]}</td> </tr>'
+            s += f'<tr><td style="width:1.0cm; height:1.0cm;">{i+1}</td><td style="width:10cm; height:1.0cm;">{ho_ten[i]}</td> </tr>'
         table = '''<table class="center">
               <tr>
                 <td style="width:1.0cm; height:1.0cm;">TT</td>
-                <td style="width:11cm; height:1.0cm;">HỌ VÀ TÊN</td>
+                <td style="width:10cm; height:1.0cm;">HỌ VÀ TÊN</td>
                 </tr>
               '''+ s + '''
             </table>'''
     else: 
-        step = 2
-        for i in range(0, rand, step):
-            if i+1 >= rand:
-                s += f'<tr> <td style="width:1.0cm; height:1.0cm;">{i+1}</td><td style="width:11cm; height:1.0cm;">{ho_ten[i]}</td> <td style="width:1.0cm; height:1.0cm;"></td><td style="width:11cm; height:1.0cm;"></td> </tr>'            
+        if rand%2 == 1:
+            rand_new =rand+ 1
+        else:
+            rand_new = rand
+        rand_2 = rand_new//2
+        for i in range(rand_2):
+            if i+rand_2 >= rand:
+                s += f'<tr> <td style="width:1.0cm; height:1.0cm;">{i+1}</td><td style="width:10cm; height:1.0cm;">{ho_ten[i]}</td> <td style="width:1.0cm; height:1.0cm;"></td><td style="width:10cm; height:1.0cm;"></td> </tr>'            
             else:
-                s += f'<tr> <td style="width:1.0cm; height:1.0cm;">{i+1}</td><td style="width:11cm; height:1.0cm;">{ho_ten[i]}</td> <td style="width:1.0cm; height:1.0cm;">{i+2}</td><td style="width:11cm; height:1.0cm;">{ho_ten[i+1]}</td> </tr>'
+                s += f'<tr> <td style="width:1.0cm; height:1.0cm;">{i+1}</td><td style="width:10cm; height:1.0cm;">{ho_ten[i]}</td> <td style="width:1.0cm; height:1.0cm;">{i+rand_2+1}</td><td style="width:10cm; height:1.0cm;">{ho_ten[i+rand_2]}</td> </tr>'
         table = '''<table class="center">
               <tr>
                 <td style="width:1.0cm; height:1.0cm;"">TT</td>
-                <td style="width:11.0cm; height:1.0cm;">HỌ VÀ TÊN</td>
+                <td style="width:10cm; height:1.0cm;">HỌ VÀ TÊN</td>
                 <td style="width:1.0cm; height:1.0cm;">TT</td>
-                <td style="width:11.0cm; height:1.0cm;">HỌ VÀ TÊN</td>
+                <td style="width:10cm; height:1.0cm;">HỌ VÀ TÊN</td>
                 </tr>
               '''+s+'''
             </table>'''
