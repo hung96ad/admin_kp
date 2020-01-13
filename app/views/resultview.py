@@ -22,7 +22,7 @@ class ResultView(BaseView):
         self.admin = None
         self.blueprint = None
         self.db = db
-        self.sql = "SELECT e.title, a.*, b.num_valid, IFNULL( b.num_valid, 0 ) AS num_valid, IFNULL( c.num_invalid, 0 ) AS num_invalid\
+        self.sql = "SELECT e.title, a.*, IFNULL( b.num_valid, 0 ) AS num_valid, IFNULL( c.num_invalid, 0 ) AS num_invalid\
                     FROM \
                 ( SELECT id_election, COUNT( * ) AS total FROM result GROUP BY id_election ) a \
                 LEFT JOIN ( SELECT id_election, COUNT( * ) AS num_valid FROM result WHERE result.processed = 2 GROUP BY id_election ) AS b ON a.id_election = b.id_election \
