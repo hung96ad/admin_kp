@@ -319,10 +319,11 @@ def get_segment(img_crop, thresh=254):
 def validate_pre_cell(img, check_num=False):
     h, w = img.shape
     img_bin_test = 255 - img
-    pixel_crop = get_pixcel_crop(img_bin_test)
-    img_crop = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
+
     thresh = 254
     if not check_num:
+        pixel_crop = get_pixcel_crop(img_bin_test)
+        img_crop = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
         step = 6
         segment_one = 0
         segments = get_segment(img_crop, thresh = thresh)
@@ -339,15 +340,42 @@ def validate_pre_cell(img, check_num=False):
             if segments[i]['status'] == 1:
                 segment_one += 1
             # check theo chieu doc thi xoa bot lop dau va cuoi
+            
+        img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, 0:w-pixel_crop*2]
+        cnt = 0
+
+        for i in range(0, step):
+            if img_crop[: , i].sum()> thresh:
+                cnt += 1
+            if img_crop_horizontal[: , i].sum()> thresh:
+                cnt += 1
+
+
+        if cnt == step*2:
+            return 'left', segment_one
+        cnt = 0
+        
+        img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop*2:w]
+        for i in range(img_crop.shape[1]-1, img_crop.shape[1]-step-1, -1):
+            if img_crop[: , i].sum()> thresh:
+                cnt += 1
+            if img_crop_horizontal[: , i-pixel_crop].sum()> thresh:
+                    cnt += 1
+
+        if cnt == step*2:
+            return 'right', segment_one
         img_crop_vertical = img_bin_test[0:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
+        
         cnt = 0
         for i in range(0, step):
             if img_crop[i].sum()> thresh:
                 cnt += 1
             if img_crop_vertical[i].sum()> thresh:
                     cnt += 1
+
         if cnt == step*2:
             return 'top', segment_one
+        
         cnt = 0
         img_crop_vertical = img_bin_test[pixel_crop*2:h, pixel_crop:w-pixel_crop*2]
         for i in range(img_crop.shape[0]-1, img_crop.shape[0]-step-1, -1):
@@ -355,17 +383,19 @@ def validate_pre_cell(img, check_num=False):
                 cnt += 1
             if img_crop_vertical[i-pixel_crop].sum()> thresh:
                 cnt += 1
+
         if cnt == step*2:
             return 'bottom', segment_one
         # check gach khong hop le
         return '', segment_one
-    if check_num:
+    else:
         step = 4
         pixel_crop = 0
-        if img_bin_test.shape[0] < 58 or img_bin_test.shape[0] < 58:
+        if img_bin_test.shape[0] < 60 or img_bin_test.shape[0] < 60:
             return 'size', None
         img_crop = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
         # check theo chieu ngang
+
         img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, 0:w-pixel_crop*2]
         cnt = 0
         for i in range(0, step):
@@ -373,6 +403,7 @@ def validate_pre_cell(img, check_num=False):
                 cnt += 1
             if img_crop_horizontal[: , i].sum()> thresh:
                 cnt += 1
+
         if cnt == step*2:
             return 'left', None
         cnt = 0
@@ -382,8 +413,10 @@ def validate_pre_cell(img, check_num=False):
                 cnt += 1
             if img_crop_horizontal[: , i-pixel_crop].sum()> thresh:
                     cnt += 1
+
         if cnt == step*2:
             return 'right', None
+        
         # check theo chieu doc thi xoa bot lop dau va cuoi
         img_crop_vertical = img_bin_test[0:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
         cnt = 0
@@ -392,6 +425,7 @@ def validate_pre_cell(img, check_num=False):
                 cnt += 1
             if img_crop_vertical[i].sum()> thresh:
                     cnt += 1
+
         if cnt == step*2:
             return 'top', None
         cnt = 0
@@ -401,10 +435,35 @@ def validate_pre_cell(img, check_num=False):
                 cnt += 1
             if img_crop_vertical[i-pixel_crop].sum()> thresh:
                 cnt += 1
+
         if cnt == step*2:
             return 'bottom', None
     return '', None
 
+def validate_small(img, right=True):
+    h, w = img.shape
+    img_bin_test = 255 - img
+    pixel_crop = 2
+
+    thresh = 254            
+    img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, 0:w-pixel_crop*2]
+    status = True
+    if right:
+        for i in range(h):
+            if img_crop_horizontal[: , i].sum()< thresh:
+                status = False
+                break
+            if img_crop_horizontal[: , i].sum()< 2550:
+                break
+    else:
+        for i in range(h-1,0,-1):
+            if img_crop_horizontal[: , i].sum()< thresh:
+                status = False
+                break
+            if img_crop_horizontal[: , i].sum()< 2550:
+                break
+    return not status
+    
 def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0)):
     if num_person <= 20:
         num_col = 2
@@ -447,10 +506,17 @@ def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0))
         # top
         x_test, y_test, w_test, h_test = lst_location_cell_test[i]
         message, segments = validate_pre_cell(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test])
-        if message == 'top':
-            return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-        # bottom
-        if message == 'bottom' and i+num_col <= len(lst_location_cell_test):
+        if message == 'right':
+            x_test_new = x_test + w_test -10
+            w_test_new = 40
+            if not validate_small(img_bin_test[y_test:y_test+h_test, x_test_new:x_test_new+w_test_new]):
+                return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+        if message == 'left':
+            x_test_new = x_test + w_test -10
+            w_test_new = 40
+            if not validate_small(img_bin_test[y_test:y_test+h_test, x_test_new:x_test_new+w_test_new], right=False):
+                return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+        if message == 'top' or message == 'bottom':
             return False, "Gạch không hợp lệ ô STT %s"%(stt) 
         # alone small
         if message == 'small' or message == 'alone':
