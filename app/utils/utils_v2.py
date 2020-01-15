@@ -391,7 +391,7 @@ def validate_pre_cell(img, check_num=False):
     else:
         step = 4
         pixel_crop = 0
-        if img_bin_test.shape[0] < 60 or img_bin_test.shape[0] < 60:
+        if img_bin_test.shape[0] < 58 or img_bin_test.shape[0] < 58:
             return 'size', None
         img_crop = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
         # check theo chieu ngang
