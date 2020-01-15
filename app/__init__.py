@@ -83,7 +83,7 @@ def upload_file():
         title = ' '.join(filter(None, line))
         min_persions = request.form.get('min_persions')
         max_persions = request.form.get('max_persions')
-
+        os.makedirs(app.config['EXCEL'], exist_ok=True)
         if election_id is None:
             election_id = db.session.query(db.func.max(Election.id)).scalar()
             if election_id is None:
