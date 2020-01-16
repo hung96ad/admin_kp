@@ -194,14 +194,14 @@ def get_bbox(gray):
             _area = w*h
             if max_area < _area:
                 max_area = _area
-            if _distance < min_distance and 0.65<w/h<1.35:
+            if _distance < min_distance and 0.55<w/h<1.45:
                 min_distance = _distance
     for bbox in _bboxs:
         x,y,w,h = bbox
         if max_area == w*h:
             bboxs['table'] = [x,y,w,h].copy()
             _bboxs.remove([x,y,w,h])
-        elif min_distance == x*x + y*y and 0.65<w/h<1.35 and x < 600 and y < 600:
+        elif min_distance == x*x + y*y and 0.55<w/h<1.45 and x < 600 and y < 600:
             if y-int(0.05*h) > 0 and x-int(0.05*w) > 0:
                 bboxs['stamp'] = [x - int(0.05*w), y-int(0.05*h), int(1.1*w), int(1.1*h)].copy()
             else:
