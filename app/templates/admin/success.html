@@ -33,6 +33,7 @@
             <thead>
                 <tr>                   
                     <th class="column-header">STT</th>
+                    <th class="column-header">Tên file</th>
                     <th class="column-header">Tổng số bầu cử</th>
                     <th class="column-header">STT bị gạch</th>
                     <th class="column-header">Link ảnh</th>
@@ -46,6 +47,8 @@
                     <td class="col-stt">
                             {{ count.value }}
                             {% set count.value = count.value + 1 %}
+                    </td>
+                    <td class="col-file">{{dt['image'].split("/")[-1]}}
                     </td>
                     <td class="col-count">
                             {%  print(dt['count'])  %}
