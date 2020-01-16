@@ -447,23 +447,24 @@ def validate_small(img, right=True):
 
     thresh = 254            
     img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, 0:w-pixel_crop*2]
+    h, w = img_crop_horizontal.shape
     status = True
     if right:
-        for i in range(h):
+        for i in range(w):
             if img_crop_horizontal[: , i].sum()< thresh:
                 status = False
                 break
             if img_crop_horizontal[: , i].sum()< 2550:
                 break
     else:
-        for i in range(h-1,0,-1):
+        for i in range(w-1,0,-1):
             if img_crop_horizontal[: , i].sum()< thresh:
                 status = False
                 break
             if img_crop_horizontal[: , i].sum()< 2550:
                 break
     return not status
-    
+        
 def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0)):
     if num_person <= 20:
         num_col = 2
