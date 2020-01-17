@@ -120,9 +120,9 @@ def get_contours_angle(gray_img, min_w = 100, min_h= 200, w_blur=1):
                 break
     return contours, angle
 
-def scale_ratio(gray_img, scale_ratio=0.03):
+def scale_ratio(gray_img, scale_ratio=0.025):
     h, w = gray_img.shape
-    gray_img = gray_img[int(scale_ratio*h):int((1-scale_ratio)*h), int(scale_ratio*w):int((1-scale_ratio)*w)]
+    gray_img = gray_img[int(scale_ratio*h):int((1-scale_ratio*2)*h), int(scale_ratio*w):int((1-scale_ratio*2)*w)]
     return gray_img
 
 # đọc ảnh và chuyển sang gray
