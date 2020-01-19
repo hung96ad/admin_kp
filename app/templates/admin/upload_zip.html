@@ -1,0 +1,105 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+{{ super() }}
+
+{% if current_user.is_authenticated %}
+<section class="content">
+
+  <div class="row">
+      <div class="col-sm-12">
+      <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">{% if admin_view.category %}{{ admin_view.category }} - {% endif %}{{ admin_view.name }}</h3>
+            </div>
+            <!-- form start -->
+            <form class="form-horizontal"  action="/upload_zip/" method="POST" enctype="multipart/form-data">
+              <div class="box-body">
+                  <div class="form-group">
+                      <label class="col-sm-2 control-label">Chọn cuộc bầu cử</label>
+                      <div class="col-sm-10"> 
+                        {% if data['type'] == 0 %}
+                        <select name="comp_select" class="form-control" required>
+                        <option value="">Chọn cuộc bầu cử</option>
+                        {% for o in data['data'] %}
+                          <option value="{{ o.id }}">{{ o.title }}</option>
+                        {% endfor %}  
+                      </select>
+                      {% else %}
+                      <select class="form-control" disabled>
+                          <option>{{ data['data'].title }}</option>
+                        </select>
+                        <input name="comp_select" name="comp_select" type="hidden" value='{{data["data"]["id"]}}'>
+
+                      {% endif %}
+                    </div>
+                  </div>
+
+                <div class="form-group">
+                  <label  class="col-sm-2 control-label" for="input_file">File zip (Chứa ảnh)</label>
+                  <div class="col-sm-10"> 
+                      <input type="file" id="input_file" name="input_file" accept=".zip,.rar" required>
+                    </div>
+                </div>
+
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary" onClick="this.form.submit(); this.disabled=true; this.innerText='Đang tải lên';">Tải lên</button>
+              </div>
+            </form>
+          </div>
+
+
+  </div>
+</div>
+</section>
+<script>
+
+window.onload = (function () {
+    //Date picker
+    $('#datepicker').datepicker({
+      autoclose: true,
+    })
+
+  })
+</script>
+
+<!-- /.content -->
+{% else %}
+
+<center>
+    <section class="content" style="color: white">
+        <div class="col-sm-12">
+            <h1>Admin Manager</h1>
+            <!-- <p class="lead">
+                Authentication
+            </p>
+            <p>
+                This example shows how you can use Flask-Admin in an admin template, <br> here I used AdminLTE and <a href="https://pythonhosted.org/Flask-Security/index.html" target="_blank">Flask-Security</a> for authentication.
+            </p> -->
+            {% if not current_user.is_authenticated %}
+            <meta http-equiv="Refresh" content="0; url={{ url_for('security.login') }}" />
+
+                <!-- email: <b>admin</b> <br> -->
+                <!-- password: <b>admin</b> <br> -->
+                <br>
+                <p>
+                    <a class="btn btn-primary" href="{{ url_for('security.login') }}">Login</a>
+                </p>
+                {% endif %}
+                <br>
+                <p>
+                    <a class="btn btn-primary" href="/"><i class="glyphicon glyphicon-chevron-left"></i> Back</a>
+                </p>
+            </div>
+
+            
+        </section>
+    </center>
+
+    <br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br>
+ {% endif %}
+
+  {% endblock body %}

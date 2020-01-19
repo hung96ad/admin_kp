@@ -24,3 +24,7 @@ SECURITY_POST_REGISTER_VIEW = "/admin/"
 SECURITY_REGISTERABLE = True
 SECURITY_SEND_REGISTER_EMAIL = False
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+# File upload
+EXCEL = "app/static/uploads/excels/"
+IMAGE = "app/static/uploads/images/"

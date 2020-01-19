@@ -1,0 +1,123 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+{{ super() }}
+
+{% if current_user.is_authenticated %}
+<!-- <link rel="stylesheet" href="/static/css/all.css"> -->
+<link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+<section class="content-header">
+        <h1>Thống kê bầu cử </h1>
+    </section>
+<section class="content">
+        
+        <table id="table" 
+                     data-toggle="table"
+                     data-search="true"
+                     data-filter-control="true" 
+                     data-show-export="true"
+                     data-click-to-select="true">
+            <thead>
+                <tr>                   
+                    <th class="column-header">STT</th>
+                    <th class="column-header">Tên cuộc bầu cử</th>
+                    <th class="column-header">Tổng số phiếu bầu</th>
+                    <th class="column-header">Số phiếu bầu hợp lệ</th>
+                    <th class="column-header">Số phiếu bầu không hợp lệ</th>
+                    <th class="column-header">File excel thống kê</th>
+                    <th class="column-header col-file">Xem chi tiết</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                    {% set count = namespace(value=1) %}
+                    {%  for dt in data  %}
+                <tr>
+                    <td class="col-id">
+                            {{ count.value }}
+                            {% set count.value = count.value + 1 %}
+                    </td>
+                    <td class="col-title">
+                            {{dt['title']}}
+                    </td>
+
+                    <td class="col-total">
+                            {{dt['total']}}
+                    </td>
+
+                    <td class="col-num_valid">
+                            {{dt['num_valid']}} 
+                            {% if dt['num_valid'] != 0 %}
+                            <a href="/admin/statistical/success/{{dt['id_election']}}">Xem chi tiết</a>
+                            {% endif %}
+                    </td>
+
+                    <td class="col-num_invalid">
+                        {{dt['num_invalid']}} 
+                        {% if dt['num_invalid'] != 0 %}
+                            <a href="/admin/statistical/error/{{dt['id_election']}}">Xem chi tiết</a>
+                            {% endif %}
+                    </td>
+
+                    <td class="col-download">
+                            <a href="/admin/statistical/export_excel/{{dt['id_election']}}" target="_blank"> Tải về
+                            </a>
+                    </td>
+                    <td class="col-detail">
+                            <a href="/admin/statistical/detail/{{dt['id_election']}}">Xem chi tiết</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    
+</section>
+<script src="/static/js/jquery-3.3.1.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/bootstrap-table.min.js"></script>
+<script>
+var $table = $('#table');
+		var trBoldBlue = $("table");
+
+	$(trBoldBlue).on("click", "tr", function (){
+			$(this).toggleClass("bold-blue");
+	});
+</script>
+<!-- /.content -->
+{% else %}
+
+<center>
+    <section class="content" style="color: white">
+        <div class="col-sm-12">
+            <h1>Admin Manager</h1>
+            <!-- <p class="lead">
+                Authentication
+            </p>
+            <p>
+                This example shows how you can use Flask-Admin in an admin template, <br> here I used AdminLTE and <a href="https://pythonhosted.org/Flask-Security/index.html" target="_blank">Flask-Security</a> for authentication.
+            </p> -->
+            {% if not current_user.is_authenticated %}
+            <meta http-equiv="Refresh" content="0; url={{ url_for('security.login') }}" />
+
+            <!-- email: <b>admin</b> <br> -->
+            <!-- password: <b>admin</b> <br> -->
+            <br>
+            <p>
+                <a class="btn btn-primary" href="{{ url_for('security.login') }}">Login</a>
+            </p>
+            {% endif %}
+            <br>
+            <p>
+                <a class="btn btn-primary" href="/"><i class="glyphicon glyphicon-chevron-left"></i> Back</a>
+            </p>
+        </div>
+
+
+    </section>
+</center>
+
+<br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br>
+{% endif %}
+
+{% endblock body %}

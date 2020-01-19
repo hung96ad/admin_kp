@@ -1,7 +1,8 @@
-{% macro render_field_with_errors(field) %}
+{% macro render_field_with_errors(field, label="") %}
 
 <div class="form-group">
-    {{ field.label }} {{ field(class_='form-control', **kwargs)|safe }}
+    <label for="{{ field.id }}" class="control-label">{{ label }}</label>
+    {{ field(class_='form-control', **kwargs)|safe }}
     {% if field.errors %}
     <ul>
         {% for error in field.errors %}
@@ -12,15 +13,15 @@
 </div>
 {% endmacro %}
 
-{% macro render_field(field) %}
-<p>{{ field(class_='form-control', **kwargs)|safe }}</p>
+{% macro render_field(field, label="") %}
+<p>{{ field(class_='form-control', value=label, **kwargs)|safe }}</p>
 {% endmacro %}
 
-{% macro render_checkbox_field(field) -%}
+{% macro render_checkbox_field(field, label="") -%}
 <div class="form-group">
     <div class="checkbox">
         <label>
-            {{ field(type='checkbox', **kwargs) }} {{ field.label }}
+            {{ field(type='checkbox', **kwargs) }} {{ label }}
         </label>
     </div>
 </div>
