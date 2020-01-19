@@ -125,13 +125,15 @@ def scale_ratio(gray_img, scale_ratio=0.025):
     gray_img = gray_img[int(scale_ratio*h):int((1-scale_ratio*2)*h), int(scale_ratio*w):int((1-scale_ratio*2)*w)]
     return gray_img
 
+coefficients = [0.1, 0.6, 0.3]
+coefficients = np.array(coefficients).reshape((1,3))
 # đọc ảnh và chuyển sang gray
 def read_to_gray(path_file):
     img = cv2.imread(path_file)
     if len(img.shape) == 2:  
         gray_img = img
     elif len(img.shape) == 3:
-        gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        gray_img = cv2.transform(img, coefficients)
     return scale_ratio(gray_img)
 
 def get_all_cell(gray, num_col = 4, min_cell_w= 20, min_cell_h = 20, img_path='', total_bboxs=0, w_blur=1):
@@ -159,7 +161,7 @@ def get_all_cell(gray, num_col = 4, min_cell_w= 20, min_cell_h = 20, img_path=''
                 for id, box in enumerate(boundingBoxes):
                     x, y, w, h = box 
                     if (w > min_cell_w and h > min_cell_h):
-                        lst_location.append([x + int(0.05*w), y+int(0.05*h), int(0.95*w), int(0.95*h)])
+                        lst_location.append([x + int(0.025*w), y+int(0.05*h), int(0.95*w), int(0.9*h)])
                 lst_box = []
 
     if len(lst_location) < total_bboxs and w_blur < 17:
@@ -242,10 +244,8 @@ def check_tile_outside(dilate_test, bboxs_test):
         if y < 0:
             y = 0
         dilate_test_cp[y:y+h, x:x+w] = 0
-        
     imgheight=dilate_test_cp.shape[0]
     imgwidth=dilate_test_cp.shape[1]
-
     y1 = 0
     M = imgheight//16
     N = imgwidth//16
@@ -254,25 +254,11 @@ def check_tile_outside(dilate_test, bboxs_test):
             y1 = y + M
             x1 = x + N
             tiles = dilate_test_cp[y:y+M,x:x+N]
-            if tiles.sum()/(tiles.shape[0]*tiles.shape[1])> 2.0:
+            if tiles.sum()/(tiles.shape[0]*tiles.shape[1])> 3.5:
                 return False, "Gạch ở ngoài bảng"
     return True, ""
-
-
-def check_horizontally(img):
-    img_new = img.copy()
-    h, w = img_new.shape
-    img_new = img_new[0:h, int(0.05*w):int((1-0.05)*w)]
-    img_new = 255 - img_new
-    num_point = 0
-    for i in range(img_new.shape[0]):
-        if img_new[i].sum()/img_new.shape[1] > 0.5:
-            num_point += 1
-    if num_point == h:
-        return False
-    return True
-
-def get_pixcel_crop(img_bin_test):
+    
+def get_pixcel_crop(img_bin_test, check_num=False):
     top_left = 0
     for i in range(10):
         if img_bin_test[i][0:5].sum() >= 255:
@@ -289,6 +275,8 @@ def get_pixcel_crop(img_bin_test):
     for i in range(img_bin_test.shape[0]-1,img_bin_test.shape[0]-11, -1):
         if img_bin_test[i][-6:-1].sum() >= 255:
             bottom_right = img_bin_test.shape[0] - i
+    if check_num:
+        return max([top_left, bottom_left, top_right, bottom_right])
     return max([top_left, bottom_left, top_right, bottom_right, 2])
 
 def get_segment(img_crop, thresh=254):
@@ -318,16 +306,22 @@ def get_segment(img_crop, thresh=254):
 
 def validate_pre_cell(img, check_num=False):
     h, w = img.shape
-    img_bin_test = 255 - img
-
     thresh = 254
+    img_bin = 255 - img
+    if check_num:
+        img_bin_test = img_bin
+    else:
+        img_bin_test = img_bin[10:h-20, 40:w-80]
+
+    h, w = img_bin_test.shape
+
     if not check_num:
         pixel_crop = get_pixcel_crop(img_bin_test)
         img_crop = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
         step = 6
         segment_one = 0
         segments = get_segment(img_crop, thresh = thresh)
-        for i in range(len(segments)):
+        for i in range(len(segments) - 1):
             if segments[i]['segment'] > 30 and segments[i]['sum'] <= 2550 \
             and segments[i]['status'] == 1 and segments[i+1]['segment'] > 8 and segments[i-1]['segment'] > 8:
                 return 'small', None
@@ -349,33 +343,31 @@ def validate_pre_cell(img, check_num=False):
                 cnt += 1
             if img_crop_horizontal[: , i].sum()> thresh:
                 cnt += 1
-
-
         if cnt == step*2:
-            return 'left', segment_one
+            if not validate_left_right(img_bin[20:h-40, 0:40]):
+                return 'left', segment_one
         cnt = 0
-        
         img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop*2:w]
         for i in range(img_crop.shape[1]-1, img_crop.shape[1]-step-1, -1):
             if img_crop[: , i].sum()> thresh:
                 cnt += 1
             if img_crop_horizontal[: , i-pixel_crop].sum()> thresh:
                     cnt += 1
-
         if cnt == step*2:
-            return 'right', segment_one
+            if not validate_left_right(img_bin[20:h-40, img.shape[1]-40:img.shape[1]], right=False):
+                return 'right', segment_one
         img_crop_vertical = img_bin_test[0:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
-        
         cnt = 0
         for i in range(0, step):
             if img_crop[i].sum()> thresh:
                 cnt += 1
             if img_crop_vertical[i].sum()> thresh:
                     cnt += 1
-
+                    
         if cnt == step*2:
-            return 'top', segment_one
-        
+            if not validate_top_bot(img_bin[0:20, 40:img.shape[1]-80], bot=False):
+                return 'top', segment_one
+
         cnt = 0
         img_crop_vertical = img_bin_test[pixel_crop*2:h, pixel_crop:w-pixel_crop*2]
         for i in range(img_crop.shape[0]-1, img_crop.shape[0]-step-1, -1):
@@ -385,13 +377,14 @@ def validate_pre_cell(img, check_num=False):
                 cnt += 1
 
         if cnt == step*2:
-            return 'bottom', segment_one
-        # check gach khong hop le
+            if not validate_top_bot(img_bin[img.shape[0]-20:img.shape[0], 40:img.shape[1]-80]):
+                return 'bottom', segment_one
+        
         return '', segment_one
     else:
         step = 4
         pixel_crop = 0
-        if img_bin_test.shape[0] < 58 or img_bin_test.shape[0] < 58:
+        if img_bin_test.shape[0] < 60 or img_bin_test.shape[0] < 60:
             return 'size', None
         img_crop = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
         # check theo chieu ngang
@@ -440,9 +433,28 @@ def validate_pre_cell(img, check_num=False):
             return 'bottom', None
     return '', None
 
-def validate_small(img, right=True):
-    h, w = img.shape
-    img_bin_test = 255 - img
+def validate_top_bot(img_bin_test, bot=True):
+    h, w = img_bin_test.shape
+    thresh = 254            
+    status = True
+    if bot:
+        for i in range(h):
+            if img_bin_test[i].sum()< thresh:
+                status = False
+                break
+            if img_bin_test[i].sum()< 2550:
+                break
+    else:
+        for i in range(h-1,0,-1):
+            if img_bin_test[i].sum()< thresh:
+                status = False
+                break
+            if img_bin_test[i].sum()< 2550:
+                break
+    return not status
+    
+def validate_left_right(img_bin_test, right=True):
+    h, w = img_bin_test.shape
     pixel_crop = 2
 
     thresh = 254            
@@ -464,7 +476,7 @@ def validate_small(img, right=True):
             if img_crop_horizontal[: , i].sum()< 2550:
                 break
     return not status
-        
+
 def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0)):
     if num_person <= 20:
         num_col = 2
@@ -477,22 +489,21 @@ def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0))
     gray_test = read_to_gray(path_test)
     gray_test, bboxs_test = rotate_image_by_table(gray_test)
     if 'stamp' not in bboxs_test:
-        return False, "Thiếu dấu góc trái" 
+        return False, "Thiếu dấu góc trái"
+    if size_blur != (0, 0):
+        blur_test = cv2.GaussianBlur(gray_test, size_blur, 0)
+        (_, img_bin_test) = cv2.threshold(blur_test, 200, 255,cv2.THRESH_BINARY)
+    else:
+        (_, img_bin_test) = cv2.threshold(gray_test, 200, 255,cv2.THRESH_BINARY)
     lst_location_cell_test = get_all_cell(gray_test, num_col = num_col, min_cell_w= 50, min_cell_h = 50, total_bboxs=total_bboxs)
 
     bboxs_test['table'] = lst_location_cell_test[1]
     if len(lst_location_cell_test) != total_bboxs:
-        return False, "Ảnh bị mờ hoặc phiếu bầu cử không hợp lệ"
+        return False, "Phiếu bầu cử không hợp lệ"
     status, message = check_tile_outside(gray_test, bboxs_test)
     if status == False: 
         return status, message
-    
     # test
-    if size_blur != (0, 0):
-        blur_test = cv2.GaussianBlur(gray_test, size_blur, 0)
-        (_, img_bin_test) = cv2.threshold(blur_test, 170, 255,cv2.THRESH_BINARY)
-    else:
-        (_, img_bin_test) = cv2.threshold(gray_test, 170, 255,cv2.THRESH_BINARY)
 
     results = []
     step = 2
@@ -503,28 +514,18 @@ def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0))
         x_test, y_test, w_test, h_test = lst_location_cell_test[i-1]
         message, _ = validate_pre_cell(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test], check_num=True)
         if message != '':
-            return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-        # top
+            return False, "Gạch không hợp lệ ô STT %s %s"%(stt, message) 
         x_test, y_test, w_test, h_test = lst_location_cell_test[i]
+        x_test -= 40
+        y_test -= 20
+        w_test += 80
+        h_test += 40
         message, segments = validate_pre_cell(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test])
-        if message == 'right':
-            x_test_new = x_test + w_test -10
-            w_test_new = 40
-            if not validate_small(img_bin_test[y_test:y_test+h_test, x_test_new:x_test_new+w_test_new]):
-                return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-        if message == 'left':
-            x_test_new = x_test + w_test -10
-            w_test_new = 40
-            if not validate_small(img_bin_test[y_test:y_test+h_test, x_test_new:x_test_new+w_test_new], right=False):
-                return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-        if message == 'top' or message == 'bottom':
-            return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-        # alone small
-        if message == 'small' or message == 'alone':
-            return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+        if message != '':
+            return False, "Gạch không hợp lệ ô STT %s %s"%(stt, message) 
         if stt > num_person:
             break
-        if 2*len(list_people[stt].split()) >= segments:
+        if segments <= 6:
             results.append({'vote': 0, 'order_number': stt})
         else:
             results.append({'vote': 1, 'order_number': stt})
