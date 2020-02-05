@@ -12,8 +12,9 @@ class Result(db.Model):
     # 3 không hợp lệ
     processed = db.Column(db.Integer)
 
-    def __init__(self, id_election=1, image='', processed=0, description=''):
+    def __init__(self, id_election=1, stt=0, image='', processed=0, description=''):
         self.id_election = id_election
+        self.stt = stt
         self.image = image
         self.processed = processed        
         self.description = description        

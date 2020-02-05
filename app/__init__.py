@@ -160,16 +160,18 @@ def upload_zip():
         else:
             os.makedirs(path_folder, exist_ok=True)
             patoolib.extract_archive(path_file, outdir=path_folder)
-        list_image = os.listdir(path_folder)
+        list_image = sorted(os.listdir(path_folder))
         if not os.path.isfile(path_folder + '/' + list_image[0]):
             path_folder += '/' + list_image[0]
-            list_image = os.listdir(path_folder)
+            list_image = sorted(os.listdir(path_folder))
 
         objects = []
+        stt = 1
         for image in list_image:
             if image.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')):
-                rs = Result(id_election=id, image = path_folder + '/' + image)
+                rs = Result(id_election=id, stt=stt, image = path_folder + '/' + image)
                 objects.append(rs)
+                stt += 1
         
         el = Election.query.filter_by(id=id).update({'status': 1})
         db.session.bulk_save_objects(objects)
