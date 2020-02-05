@@ -4,6 +4,7 @@ class Result(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     id_election = db.Column(db.Integer, db.ForeignKey('election.id'))
+    stt = db.Column(db.Integer)
     image = db.Column(db.String(255))
     description = db.Column(db.String(255))
     # 0 chưa làm gì chờ để detect 
