@@ -41,13 +41,11 @@
             </thead>
 
             <tbody>
-                    {% set count = namespace(value=1) %}
                     {%  for dt in data  %}
                 <tr>
                     <td class="col-stt">
-                            {{ count.value }}
-                            {% set count.value = count.value + 1 %}
-                    </td>
+                            {%  print(dt['stt'])  %}
+                        </td>
                     <td class="col-file">{{dt['image'].split("/")[-1]}}
                     </td>
                     <td class="col-count">
@@ -55,7 +53,7 @@
                     </td>
 
                     <td class="col-stt">
-                        {%  print(dt['stt'])  %}
+                        {%  print(dt['stt_gach'])  %}
                     </td>
 
                     <td class="col-image">

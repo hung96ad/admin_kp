@@ -70,7 +70,7 @@ class ResultView(BaseView):
 
     @expose('/success/<id>/')
     def success(self, id):
-        sql = "SELECT r.image, group_concat(rd.order_number) as stt, e.num_persons - COUNT(r.id) as count \
+        sql = "SELECT r.stt, r.image, group_concat(rd.order_number) as stt_gach, e.num_persons - COUNT(r.id) as count \
         FROM result AS r \
         JOIN result_detail AS rd \
         ON r.id = rd.id_result AND r.processed = 2 AND rd.vote = 0 \

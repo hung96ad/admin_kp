@@ -40,12 +40,10 @@
             </thead>
 
             <tbody>
-                    {% set count = namespace(value=1) %}
                     {%  for dt in data  %}
                 <tr>
                     <td class="col-stt">
-                            {{ count.value }}
-                            {% set count.value = count.value + 1 %}
+                        {{dt['stt']}}
                     </td>
                     <td class="col-file">{{dt['image'].split("/")[-1]}}
                 </td>
