@@ -67,7 +67,7 @@ def read_sort_name(path_excel):
     list_ho_ten = sorted(df['split'].values, key=lambda x: (locale.strxfrm(x[1]), locale.strxfrm(x[0])))
     ho_ten = pd.DataFrame(list_ho_ten, columns=['Họ', 'Tên'])
     ho_ten['Họ và tên'] = ho_ten['Họ'] + ' '+ ho_ten['Tên']
-    ho_ten.to_excel(path_excel)
+    ho_ten.to_excel(path_excel, index=False)
     return ho_ten
 
 @app.route("/upload-file", methods=["GET", "POST"])

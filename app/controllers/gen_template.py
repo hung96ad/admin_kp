@@ -48,19 +48,20 @@ def gen_by_ho_ten(ho_ten, id_election, line, prefix=''):
             </style>
             </head>
             <body>
-            <div style="width:26cm; height:5cm; position:relative; z-index:1;">
+            <div style="width:26cm; height:7cm; position:relative; z-index:1;">
+
                   </div>
-            <div style="width:26cm; height:30cm; position:relative; z-index:2; font-size: 130%;">
+            <div style="width:26cm; height:30cm; position:relative; z-index:2; font-size: 120%;">
             <div style="position:relative;">
 
-            <div style="text-align: center;font-size: 150%;">
+            <div style="text-align: center;font-size: 130%;">
             ''' + line[0].upper() +'''<br>
             ''' + line[1].upper() +'''<br>
             ''' + line[2].upper() +'''<br>
             <br>
             </div>
             </div>'''
-    if rand <= 20:
+    if rand <= 19:
         step = 1
         for i in range(0, rand, step):
             s += f'<tr><td style="width:1.0cm; height:1.0cm;">{i+1}</td><td style="width:11cm; height:1.0cm;">{ho_ten[i]}</td> </tr>'
