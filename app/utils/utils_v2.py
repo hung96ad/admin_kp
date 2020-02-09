@@ -64,7 +64,7 @@ def detect_angle(gray):
             break
     median = np.median(angles)
     return median
-
+    
 def get_contours_angle(gray_img, min_w = 100, min_h= 200, w_blur=1):
     blur = gray_img.copy()
     if w_blur == 17:
@@ -87,17 +87,15 @@ def get_contours_angle(gray_img, min_w = 100, min_h= 200, w_blur=1):
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     # Morphological operation to detect vertical lines from an image
     img_temp1 = cv2.erode(img_bin, verticle_kernel, iterations=2)
+    img_temp2 = cv2.erode(img_bin, hori_kernel, iterations=1)
     if w_blur == 17:
-        verticle_lines_img = cv2.dilate(img_temp1, verticle_kernel, iterations=3)
+        verticle_lines_img = cv2.dilate(img_temp1, verticle_kernel, iterations=4)
+        horizontal_lines_img = cv2.dilate(img_temp2, hori_kernel, iterations=2)
     else:
         verticle_lines_img = cv2.dilate(img_temp1, verticle_kernel, iterations=2)
-    # Morphological operation to detect horizontal lines from an image
-    img_temp2 = cv2.erode(img_bin, hori_kernel, iterations=1)
-    horizontal_lines_img = cv2.dilate(img_temp2, hori_kernel, iterations=1)
-    # Weighting parameters, this will decide the quantity of an image to be added to make a new image.
+        horizontal_lines_img = cv2.dilate(img_temp2, hori_kernel, iterations=1)
     alpha = 0.5
     beta = 1.0 - alpha
-    # This function helps to add two image with specific weight parameter to get a third image as summation of two image.
     img_final_bin = cv2.addWeighted(verticle_lines_img, alpha, horizontal_lines_img, beta, 0.0)
     img_final_bin = cv2.erode(~img_final_bin, kernel, iterations=2)
     (thresh, img_final_bin) = cv2.threshold(img_final_bin, 128,255, cv2.THRESH_BINARY )
@@ -125,7 +123,6 @@ def scale_ratio(gray_img, scale_ratio=0.025):
     gray_img = gray_img[int(scale_ratio*h):int((1-scale_ratio*2)*h), int(scale_ratio*w):int((1-scale_ratio*2)*w)]
     return gray_img
 
-# đọc ảnh và chuyển sang gray
 def read_to_gray(path_file):
     img = cv2.imread(path_file)
     if len(img.shape) == 2:  
@@ -135,8 +132,6 @@ def read_to_gray(path_file):
     return scale_ratio(gray_img)
 
 def get_all_cell(gray, num_col = 4, min_cell_w= 20, min_cell_h = 20, img_path='', total_bboxs=0, w_blur=1):
-
-    # Thresholding the image
     gray_img = gray.copy()
     h, w = gray_img.shape
     contours, _ = get_contours_angle(gray_img, w_blur=w_blur)
@@ -159,7 +154,10 @@ def get_all_cell(gray, num_col = 4, min_cell_w= 20, min_cell_h = 20, img_path=''
                 for id, box in enumerate(boundingBoxes):
                     x, y, w, h = box 
                     if (w > min_cell_w and h > min_cell_h):
-                        lst_location.append([x + int(0.05*w), y+int(0.05*h), int(0.95*w), int(0.95*h)])
+                        if w > 200:
+                            lst_location.append([x + int(0.005*w), y+int(0.025*h), int(0.99*w), int(0.95*h)])
+                        else:
+                            lst_location.append([x + int(0.025*w), y+int(0.025*h), int(0.95*w), int(0.95*h)])                            
                 lst_box = []
 
     if len(lst_location) < total_bboxs and w_blur < 17:
@@ -170,7 +168,7 @@ def get_all_cell(gray, num_col = 4, min_cell_w= 20, min_cell_h = 20, img_path=''
         return lst_location
     else:
         return lst_location
-    
+
 def get_bbox(gray):
     blur = cv2.GaussianBlur(gray, (9,9), 0)
     thresh = cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV,11,15)
@@ -201,7 +199,7 @@ def get_bbox(gray):
         if max_area == w*h:
             bboxs['table'] = [x,y,w,h].copy()
             _bboxs.remove([x,y,w,h])
-        elif min_distance == x*x + y*y and 0.55<w/h<1.45 and x < 600 and y < 600:
+        elif min_distance == x*x + y*y and 0.55<w/h<1.45 and x < 750 and y < 750:
             if y-int(0.05*h) > 0 and x-int(0.05*w) > 0:
                 bboxs['stamp'] = [x - int(0.05*w), y-int(0.05*h), int(1.1*w), int(1.1*h)].copy()
             else:
@@ -215,16 +213,12 @@ def get_bbox(gray):
         else:
             bboxs['title'] = [x,y,w,h].copy()
     return bboxs
-
+    
 def rotate_image_by_table(gray_img):
     bboxs_test = get_bbox(gray_img)
-    # xoay ảnh dựa theo bảng và title
-    ## lấy phần bảng và title
     bbox_tb_and_tt = bboxs_test['table']
     table = gray_img[bbox_tb_and_tt[1]:bbox_tb_and_tt[1] + bbox_tb_and_tt[3], bbox_tb_and_tt[0]:bbox_tb_and_tt[0]+bbox_tb_and_tt[2]].copy()
-    ### lấy góc
     _, angle = get_contours_angle(table)
-    ## xoay ảnh
     if angle != 0:
         gray_img = rotate_image(gray_img, angle)
     return gray_img, get_bbox(gray_img)
@@ -234,7 +228,6 @@ def check_tile_outside(dilate_test, bboxs_test):
     dilate_test_cp = cv2.GaussianBlur(dilate_test_cp, (3,3), 0)
     (thresh, dilate_test_cp) = cv2.threshold(dilate_test_cp, 128, 255,cv2.THRESH_BINARY)
     dilate_test_cp = 255 - dilate_test_cp
-    # Kiem tra phan ngoai dau va bang
     for item in bboxs_test:
         x,y,w,h = bboxs_test[item]
         if x < 0:
@@ -257,7 +250,6 @@ def check_tile_outside(dilate_test, bboxs_test):
             if tiles.sum()/(tiles.shape[0]*tiles.shape[1])> 2.0:
                 return False, "Gạch ở ngoài bảng"
     return True, ""
-
 
 def check_horizontally(img):
     img_new = img.copy()
@@ -316,11 +308,21 @@ def get_segment(img_crop, thresh=254):
     segments.append({'status' : status, 'segment':segment, 'sum': max_sum})
     return segments
 
+x_crop = 40
+y_crop = 20
+w_crop = 80
+h_crop = 40
 def validate_pre_cell(img, check_num=False):
     h, w = img.shape
-    img_bin_test = 255 - img
-
     thresh = 254
+    img_bin = 255 - img
+    if check_num:
+        img_bin_test = img_bin
+    else:
+        img_bin_test = img_bin[y_crop:h-h_crop, x_crop:w-w_crop]
+
+    h, w = img_bin_test.shape
+
     if not check_num:
         pixel_crop = get_pixcel_crop(img_bin_test)
         img_crop = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
@@ -328,61 +330,51 @@ def validate_pre_cell(img, check_num=False):
         segment_one = 0
         segments = get_segment(img_crop, thresh = thresh)
         for i in range(len(segments)):
-            if segments[i]['status'] == 1:
+            if segments[i]['status'] == 0 and segments[i]['segment'] > 10:
                 segment_one += 1
-            # check theo chieu doc thi xoa bot lop dau va cuoi
-            
-        img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, 0:w-pixel_crop*2]
         cnt = 0
-
-        for i in range(0, step):
-            if img_crop[: , i].sum()> thresh:
-                cnt += 1
-            if img_crop_horizontal[: , i].sum()> thresh:
-                cnt += 1
-
-
-        if cnt == step*2:
-            return 'left', segment_one
-        cnt = 0
-        
         img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop*2:w]
-        for i in range(img_crop.shape[1]-1, img_crop.shape[1]-step-1, -1):
+        for i in range(-1, -step-1, -1):
             if img_crop[: , i].sum()> thresh:
                 cnt += 1
             if img_crop_horizontal[: , i-pixel_crop].sum()> thresh:
                     cnt += 1
-
         if cnt == step*2:
-            return 'right', segment_one
+            img_validate = img_bin[y_crop+pixel_crop:img.shape[0]-h_crop-pixel_crop, img.shape[1]-x_crop:img.shape[1]]
+            if not validate_left_right(img_validate):
+                return 'right', segment_one
+            
         img_crop_vertical = img_bin_test[0:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
-        
         cnt = 0
         for i in range(0, step):
             if img_crop[i].sum()> thresh:
                 cnt += 1
             if img_crop_vertical[i].sum()> thresh:
                     cnt += 1
-
+                    
         if cnt == step*2:
-            return 'top', segment_one
-        
+            img_validate = img_bin[0:y_crop+pixel_crop, x_crop:img.shape[1]-w_crop]
+            if not validate_top_bot(img_bin[0:y_crop, x_crop:img.shape[1]-w_crop], bot=False):
+                return 'top', segment_one
+
         cnt = 0
         img_crop_vertical = img_bin_test[pixel_crop*2:h, pixel_crop:w-pixel_crop*2]
-        for i in range(img_crop.shape[0]-1, img_crop.shape[0]-step-1, -1):
+        for i in range(-1, -step-1, -1):
             if img_crop[i].sum()> thresh:
                 cnt += 1
-            if img_crop_vertical[i-pixel_crop].sum()> thresh:
+            if img_crop_vertical[i].sum()> thresh:
                 cnt += 1
 
         if cnt == step*2:
-            return 'bottom', segment_one
-        # check gach khong hop le
+            img_validate = img_bin[img.shape[0]-y_crop-pixel_crop:img.shape[0], x_crop:img.shape[1]-w_crop]
+            if not validate_top_bot(img_validate):
+                return 'bottom', segment_one
+        
         return '', segment_one
     else:
         step = 4
         pixel_crop = 0
-        if img_bin_test.shape[0] < 58 or img_bin_test.shape[0] < 58:
+        if img_bin_test.shape[0] < 60 or img_bin_test.shape[0] < 60:
             return 'size', None
         img_crop = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
         # check theo chieu ngang
@@ -397,16 +389,6 @@ def validate_pre_cell(img, check_num=False):
 
         if cnt == step*2:
             return 'left', None
-        cnt = 0
-        img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop*2:w]
-        for i in range(img_crop.shape[1]-1, img_crop.shape[1]-step-1, -1):
-            if img_crop[: , i].sum()> thresh:
-                cnt += 1
-            if img_crop_horizontal[: , i-pixel_crop].sum()> thresh:
-                    cnt += 1
-
-        if cnt == step*2:
-            return 'right', None
         
         # check theo chieu doc thi xoa bot lop dau va cuoi
         img_crop_vertical = img_bin_test[0:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
@@ -431,10 +413,57 @@ def validate_pre_cell(img, check_num=False):
             return 'bottom', None
     return '', None
 
-def validate_small(img, right=True):
-    h, w = img.shape
-    img_bin_test = 255 - img
+def validate_top_bot(img_bin_test, bot=True):
+    h, w = img_bin_test.shape
+    thresh = 254
+    thresh_2 = w*0.6*255
+    thresh_3 = 30*255
+    status = True
+    img_crop = img_bin_test
+    _w_crop = 50
+    for i in range(_w_crop, w):
+        if img_bin_test[0][i] == 255:
+            if i+_w_crop*2 > w:
+                img_crop = img_bin_test[0:h, i: w]
+            else:
+                img_crop = img_bin_test[0:h, i: i+_w_crop*2]
+            break
+    if bot:
+        for i in range(h):
+            if img_crop[i].sum()< thresh:
+                status = False
+                break
+            if img_bin_test[i].sum() > thresh_2:
+                break
+        if status:
+            status_2 = True
+            for j in range(h-1, i, -1):
+                if 0 < img_crop[j].sum() < thresh_3:
+                    status_2 = False
+                    break
+            if status_2:
+                status = False
+    else:
+        for i in range(h-1,0,-1):
+            if img_crop[i].sum()< thresh:
+                status = False
+                break
+            if img_bin_test[i].sum() > thresh_2:
+                break
+        if status:
+            status_2 = True
+            for j in range(i):
+                if 0 < img_crop[j].sum() < thresh_3:
+                    status_2 = False
+                    break
+            if status_2:
+                status = False
+    return not status
+
+def validate_left_right(img_bin_test, right=True):
+    h, w = img_bin_test.shape
     pixel_crop = 2
+    thresh_2 = h*0.6*255
 
     thresh = 254            
     img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, 0:w-pixel_crop*2]
@@ -445,18 +474,18 @@ def validate_small(img, right=True):
             if img_crop_horizontal[: , i].sum()< thresh:
                 status = False
                 break
-            if img_crop_horizontal[: , i].sum()< 2550:
+            if img_crop_horizontal[: , i].sum() > thresh_2:
                 break
     else:
         for i in range(w-1,0,-1):
             if img_crop_horizontal[: , i].sum()< thresh:
                 status = False
                 break
-            if img_crop_horizontal[: , i].sum()< 2550:
+            if img_crop_horizontal[: , i].sum() > thresh_2:
                 break
     return not status
-        
-def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0)):
+
+def validation_full(list_people, path_test='', num_person=10, size_blur = (3,3), thresh=200):
     if num_person <= 20:
         num_col = 2
     else:
@@ -468,54 +497,39 @@ def validation_full(list_people, path_test='', num_person=10, size_blur = (0,0))
     gray_test = read_to_gray(path_test)
     gray_test, bboxs_test = rotate_image_by_table(gray_test)
     if 'stamp' not in bboxs_test:
-        return False, "Thiếu dấu góc trái" 
+        return False, "Thiếu dấu góc trái"
+    if size_blur != (0, 0):
+        blur_test = cv2.GaussianBlur(gray_test, size_blur, 0)
+        (_, img_bin_test) = cv2.threshold(blur_test, thresh, 255,cv2.THRESH_BINARY)
+    else:
+        (_, img_bin_test) = cv2.threshold(gray_test, thresh, 255,cv2.THRESH_BINARY)
     lst_location_cell_test = get_all_cell(gray_test, num_col = num_col, min_cell_w= 50, min_cell_h = 50, total_bboxs=total_bboxs)
 
     bboxs_test['table'] = lst_location_cell_test[1]
     if len(lst_location_cell_test) != total_bboxs:
-        return False, "Ảnh bị mờ hoặc phiếu bầu cử không hợp lệ"
+        return False, "Phiếu bầu cử không hợp lệ"
     status, message = check_tile_outside(gray_test, bboxs_test)
     if status == False: 
         return status, message
-    
-    # test
-    if size_blur != (0, 0):
-        blur_test = cv2.GaussianBlur(gray_test, size_blur, 0)
-        (_, img_bin_test) = cv2.threshold(blur_test, 170, 255,cv2.THRESH_BINARY)
-    else:
-        (_, img_bin_test) = cv2.threshold(gray_test, 170, 255,cv2.THRESH_BINARY)
-
     results = []
     step = 2
-    # check gach ko hop le
     for i in range(num_col + step + 1, len(lst_location_cell_test), step):
         stt = int((i - num_col)/step)
-        # check stt 
         x_test, y_test, w_test, h_test = lst_location_cell_test[i-1]
         message, _ = validate_pre_cell(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test], check_num=True)
         if message != '':
-            return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-        # top
+            return False, "Gạch không hợp lệ ô STT %s %s stt"%(stt, message) 
         x_test, y_test, w_test, h_test = lst_location_cell_test[i]
+        x_test -= x_crop
+        y_test -= y_crop
+        w_test += w_crop
+        h_test += h_crop
         message, segments = validate_pre_cell(img_bin_test[y_test:y_test+h_test, x_test:x_test+w_test])
-        if message == 'right':
-            x_test_new = x_test + w_test -10
-            w_test_new = 40
-            if not validate_small(img_bin_test[y_test:y_test+h_test, x_test_new:x_test_new+w_test_new]):
-                return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-        if message == 'left':
-            x_test_new = x_test + w_test -10
-            w_test_new = 40
-            if not validate_small(img_bin_test[y_test:y_test+h_test, x_test_new:x_test_new+w_test_new], right=False):
-                return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-        if message == 'top' or message == 'bottom':
-            return False, "Gạch không hợp lệ ô STT %s"%(stt) 
-        # alone small
-        if message == 'small' or message == 'alone':
-            return False, "Gạch không hợp lệ ô STT %s"%(stt) 
+        if message != '':
+            return False, "Gạch không hợp lệ ô STT %s %s"%(stt, message) 
         if stt > num_person:
             break
-        if 2*len(list_people[stt].split()) >= segments:
+        if segments <= (len(list_people[stt].split())):
             results.append({'vote': 0, 'order_number': stt})
         else:
             results.append({'vote': 1, 'order_number': stt})

@@ -6,42 +6,6 @@ from .models.result import Result
 from .models.result_detail import Result_Detail
 from .models.eletion_detail import Eletion_Detail
 
-# load_model()
-
-def get_all( sql='' ):
-    conn = sqlite3.connect( DB )
-    conn.row_factory = sqlite3.Row # This enables column access by name: row['column_name 
-    db = conn.cursor()
-
-    rows = db.execute(sql).fetchall()
-
-    conn.commit()
-    conn.close()
-
-    return  [dict(ix) for ix in rows] #CREATE JSON
-
-def insert_result_detail(data):
-    conn = sqlite3.connect(DB)
-    c = conn.cursor()
-    c.executemany('INSERT INTO result_detail (id_result, order_number, vote) '
-                 'VALUES (:id_result,:order_number,:vote)', data)
-    conn.commit()
-    conn.close()
-
-def update_result(data):
-    conn = sqlite3.connect(DB)
-    c = conn.cursor()
-    c.executemany('UPDATE result SET processed = :processed, description = :description WHERE id = :id', data)
-    conn.commit()
-    conn.close()
-
-def update_election(id_election):
-    conn = sqlite3.connect(DB)
-    c = conn.cursor()
-    c.execute('UPDATE election SET status = 2 WHERE id = %s'%id_election)
-    conn.commit()
-    conn.close()
-
 def run_all(db):
     results = Result.query.filter_by(processed=0).all()
     id_election = results[0].id_election
