@@ -486,7 +486,7 @@ def validate_left_right(img_bin_test, right=True):
     return not status
 
 def validation_full(list_people, path_test='', num_person=10, size_blur = (3,3), thresh=200):
-    if num_person <= 20:
+    if num_person <= 19:
         num_col = 2
     else:
         num_col=4
