@@ -319,7 +319,7 @@ def validate_pre_cell(img, check_num=False):
     if check_num:
         img_bin_test = img_bin
     else:
-        img_bin_test = img_bin[y_crop:h-h_crop, x_crop:w-w_crop]
+        img_bin_test = img_bin[y_crop:h-y_crop, x_crop:w-x_crop]
 
     h, w = img_bin_test.shape
 
@@ -327,11 +327,12 @@ def validate_pre_cell(img, check_num=False):
         pixel_crop = get_pixcel_crop(img_bin_test)
         img_crop = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop:w-pixel_crop*2]
         step = 6
-        segment_one = 0
+        segment_one = 10
         segments = get_segment(img_crop, thresh = thresh)
         for i in range(len(segments)):
-            if segments[i]['status'] == 0 and segments[i]['segment'] > 10:
-                segment_one += 1
+            if segments[i]['status'] == 1 and segments[i]['segment'] > 100:
+                segment_one = 2
+                break
         cnt = 0
         img_crop_horizontal = img_bin_test[pixel_crop:h-pixel_crop*2, pixel_crop*2:w]
         for i in range(-1, -step-1, -1):
@@ -417,16 +418,20 @@ def validate_top_bot(img_bin_test, bot=True):
     h, w = img_bin_test.shape
     thresh = 254
     thresh_2 = w*0.6*255
-    thresh_3 = 30*255
+    thresh_3 = 20*255
     status = True
     img_crop = img_bin_test
     _w_crop = 50
-    for i in range(_w_crop, w):
+    for i in range(w):
+        if i < 50:
+            _w_crop_left = 0
+        else:
+            _w_crop_left = i - _w_crop
         if img_bin_test[0][i] == 255:
             if i+_w_crop*2 > w:
-                img_crop = img_bin_test[0:h, i: w]
+                img_crop = img_bin_test[0:h, _w_crop_left: w]
             else:
-                img_crop = img_bin_test[0:h, i: i+_w_crop*2]
+                img_crop = img_bin_test[0:h, _w_crop_left: i+_w_crop*2]
             break
     if bot:
         for i in range(h):
@@ -496,8 +501,8 @@ def validation_full(list_people, path_test='', num_person=10, size_blur = (3,3),
         total_bboxs = num_person * 2 + num_col + 2
     gray_test = read_to_gray(path_test)
     gray_test, bboxs_test = rotate_image_by_table(gray_test)
-    if 'stamp' not in bboxs_test:
-        return False, "Thiếu dấu góc trái"
+#     if 'stamp' not in bboxs_test:
+#         return False, "Thiếu dấu góc trái"
     if size_blur != (0, 0):
         blur_test = cv2.GaussianBlur(gray_test, size_blur, 0)
         (_, img_bin_test) = cv2.threshold(blur_test, thresh, 255,cv2.THRESH_BINARY)
@@ -529,7 +534,7 @@ def validation_full(list_people, path_test='', num_person=10, size_blur = (3,3),
             return False, "Gạch không hợp lệ ô STT %s %s"%(stt, message) 
         if stt > num_person:
             break
-        if segments <= (len(list_people[stt].split())):
+        if segments <= 3:
             results.append({'vote': 0, 'order_number': stt})
         else:
             results.append({'vote': 1, 'order_number': stt})
